@@ -63,7 +63,7 @@ def get_inbound_file():
     loaded = None
     while not loaded:
         try:
-            archivo = max(['inbound_file_cache' + "\\" + f for f in os.listdir('inbound_file_cache')],key=os.path.getctime)
+            archivo = max(['inbound_file_cache' + bot.OS_SLASH + f for f in os.listdir('inbound_file_cache')],key=os.path.getctime)
             if archivo != bot.LAST_FILE:
                 loaded = True
                 bot.LAST_FILE = archivo
@@ -164,6 +164,8 @@ def send_message(mensaje="", archivo="", celular="", driver=None, selectors=None
 
             # Archivar el chat
             archive(driver, selectors, celular)
+            if archivo != "":
+                return file_path
         else:
             if bot.SHOW_EX_PRINTS:
                 print("Contacto no encontrado")
@@ -209,13 +211,13 @@ def get_inbounds(driver, selectors):
         first_msg = None
         messages = []
         try:
-            driver.find_element_by_xpath(selectors["unread"]).click()
-            driver.find_element_by_xpath(selectors["unread"]).send_keys(Keys.ARROW_DOWN)
+            driver.find_element_by_xpath('//div[@data-id="' + bot.LAST_MSG_CACHE + '"]').send_keys(Keys.ARROW_DOWN)
+            if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
+                driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
         except:
             try:
-                driver.find_element_by_xpath('//div[@data-id="' + bot.LAST_MSG_CACHE + '"]').send_keys(Keys.ARROW_DOWN)
-                if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
-                    driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
+                driver.find_element_by_xpath(selectors["unread"]).click()
+                driver.find_element_by_xpath(selectors["unread"]).send_keys(Keys.ARROW_DOWN)
             except:
                 try:
                     driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
@@ -270,8 +272,10 @@ def make_inbound_messages(driver, selectors, messages):
         is_image = False
         is_video = False
         try:
-            m.find_element_by_xpath(selectors["audio_button"]).click()
-            m.find_element_by_xpath(selectors["audio_button"]).click()
+            try:
+                m.find_element_by_xpath(selectors["audio_icon"])
+            except:
+                m.find_element_by_xpath(selectors["audio_status"])
             is_audio = True
         except:
             try:

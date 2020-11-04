@@ -14,14 +14,18 @@ FILE_SERVER = "http://apicloud.com.ar:8080"
 FILE_SERVER_2 = "https://apicloud.com.ar"
 
 # Variables de ejecución
-DOWNLOAD_PATH = os.getcwd() + '\inbound_file_cache\\'
-MIME_TYPES = ""
-MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime']
+OS_SLASH = "/" # / -> linux \\ -> windows
+DOWNLOAD_PATH = os.getcwd() + OS_SLASH + 'inbound_file_cache' + OS_SLASH
+MIME_TYPES = "" # Los tipos incluidos se descargarán sin confirmación
+MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime'] # Estos archivos se envían por el botón "galería"
+
+# Log
 SHOW_ERRORS = True
 SHOW_API_RESPONSES = False
-SHOW_EX_PRINTS = False
+SHOW_EX_PRINTS = True
 
 # Cache
 LAST_FILE = ""
 LAST_MSG_CACHE = ""
+AUTO_RESPONSES = []
 

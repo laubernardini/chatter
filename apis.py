@@ -79,7 +79,7 @@ def get_response():
             print(e)
             print(repr(e))
             print(e.args)
-        r = {}
+        r = e
         bot.STATE = "ERROR"
         bot.RESPONDE = bot.MASIVO = bot.AUTO = "NO"
 
@@ -92,6 +92,8 @@ def get_response():
 
         content = json.loads(r.content)
         r = content[0]
+    else:
+        r = {}
 
     return r
 
@@ -133,29 +135,72 @@ async def post_response(pk, estado):
 
     return r
 
-def get_auto_response():
+# Respuestas automáticas
+def get_auto_response(mensaje, celular):
     try:
-        r = urlfetch.get(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/respuesta?pk=" + str(bot.BOT_PK), validate_certificate=False)
+        mensaje = urllib.parse.quote(mensaje)
+        r = urlfetch.get(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/r-auto?pk=" +bot.BOT_PK + "&celular=" + celular + "&mensaje=" + mensaje, validate_certificate=False)
     except Exception as e:
         if bot.SHOW_ERRORS:
-            print("Error obteniendo respuesta")
+            print("Error obteniendo respuesta automática")
             print("     Detalle: ")
             print(e)
             print(repr(e))
             print(e.args)
-        r = {}
+        r = e
         bot.STATE = "ERROR"
         bot.RESPONDE = bot.MASIVO = bot.AUTO = "NO"
 
     if type(r) != urlfetch.UrlfetchException:
         if bot.SHOW_API_RESPONSES:
-            print("API get_response: " + str(r.status_code))
+            print("API get_auto_response: " + str(r.status_code))
             print("Data:")
             print("     pk=" + str(bot.BOT_PK))
             print("Response: " + str(r.content))
-
+        
         content = json.loads(r.content)
         r = content[0]
+        if r.get("response", "") != "" or r.get("archivo", "") != "":
+            bot.AUTO_RESPONSES.append({
+                "celular": celular,
+                "mensaje": r.get("response", ""), 
+                "archivo": r.get("archivo", "")
+            })
+    else:
+        r = {}
+
+async def post_auto_response(mensaje, celular, archivo):
+    try:
+        files = {}
+        fields = {
+            "pk": bot.BOT_PK,
+            "celular": celular,
+            "mensaje": mensaje
+        }
+        if archivo != "":
+            files = {
+                "archivo": open(archivo, 'rb')
+            }
+        r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/r-auto", data=fields, files=files, validate_certificate=False)
+    except Exception as e:
+        if bot.SHOW_ERRORS:
+            print("Error confirmando respuesta automática")
+            print("     Detalle: ")
+            print(e)
+            print(repr(e))
+            print(e.args)
+        r = e
+        bot.STATE = "ERROR"
+        bot.RESPONDE = bot.MASIVO = bot.AUTO = "NO"
+
+    if type(r) != urlfetch.UrlfetchException:
+        if bot.SHOW_API_RESPONSES:
+            print("API post_auto_response: " + str(r.status_code))
+            print("Data:")
+            print("     pk=" + str(bot.BOT_PK))
+            print("Response: " + str(r.content))
+    else:
+        r = {}
 
     return r
 
@@ -170,7 +215,7 @@ def get_masiv():
             print(e)
             print(repr(e))
             print(e.args)
-        r = {}
+        r = e
         bot.STATE = "ERROR"
         bot.RESPONDE = bot.MASIVO = bot.AUTO = "NO"
 
@@ -183,6 +228,8 @@ def get_masiv():
 
         content = json.loads(r.content)
         r = content[0]
+    else:
+        r = {}
 
     return r
 
@@ -220,14 +267,15 @@ async def post_masiv(pk, estado):
 
         content = json.loads(r.content)
         r = content[0]
+    else:
+        r = {}
 
     return r
 
-# Mensajes salientes
+# Mensajes entrantes
 async def send_inbounds(messages):
     try:
         for m in messages:
-            print(m)
             fields = {
                 "pk": bot.BOT_PK,
                 "celular": m["celular"],
@@ -241,11 +289,12 @@ async def send_inbounds(messages):
             
             try:
                 r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/recepcion", validate_certificate=False, data=fields, files=files)
+                # Buscar respuesta automática
+                get_auto_response(mensaje=m["mensaje"], celular=m["celular"])
             except Exception as e:
                 if bot.SHOW_ERRORS:
                     print(e)
                 r = e
-            print(r)
             time.sleep(0.5)
         
     except Exception as e:
@@ -270,5 +319,7 @@ async def send_inbounds(messages):
 
         content = json.loads(r.content)
         r = content[0]
+    else:
+        r = {}
 
     return r

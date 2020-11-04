@@ -19,6 +19,8 @@
     "attach_inbound_class": "serpP",
     "attach_inbound_download": ".//a[@class='_3_4_I']",
     "audio_button": ".//span[@data-testid='audio-play']",
+    "audio_status": ".//span[@data-testid='ptt-status']",
+    "audio_icon": ".//span[@data-testid='audio-file']",
     "video_button": ".//span[@data-testid='media-play']",
     "thumbnail": ".//img[@class='_39rvu _20GbR']",
     "emogi_container": ".//span[@class='jaTrn']",
