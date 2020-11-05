@@ -8,6 +8,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 import json
 import time
 import asyncio
+from datetime import datetime, timedelta
 
 import bot 
 import apis
@@ -15,6 +16,7 @@ import actions
 
 
 def start():
+
     # Obtener selectores
     with open('selectores.json', 'rb') as selectors:
         selectors = json.load(selectors)
@@ -25,7 +27,6 @@ def start():
     # Abrir WhatsApp
     while bot.STATE != "OK":
         driver = driver_connect("https://web.whatsapp.com")
-    
     if bot.SHOW_EX_PRINTS:
         print("WhatsApp abierto, esperando sincronización")
     
@@ -43,6 +44,12 @@ def start():
     if bot.SHOW_EX_PRINTS:
         print("\nSincronizado!") 
     
+    # Registrar inicio
+    bot.START_DATE = datetime.now()
+
+    # Proximo reload
+    bot.NEXT_RELOAD = bot.START_DATE + timedelta(minutes=bot.RELOAD_FRECUENCY)
+    
     # Loop principal
     while True:
         check_status()
@@ -55,6 +62,9 @@ def start():
         actions.clear_cache()
         manage_inbounds(driver, selectors)
         time.sleep(1)
+        if datetime.now() >= bot.NEXT_RELOAD:
+            driver.refresh()
+            bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FRECUENCY)
 
 # Funciones de inicio  
 def driver_connect(url=""):

@@ -123,7 +123,8 @@ def send_message(mensaje="", archivo="", celular="", driver=None, selectors=None
                 time.sleep(1)
 
                 # Actualizar elementos html para adjuntar
-                driver.find_element_by_xpath(selectors["pre_attach"]).click()
+                driver.find_element_by_xpath(selectors["search"]).click()
+                driver.find_element_by_xpath(selectors["preview"]).click()
                 
                 if attach_type == 'multimedia':
                     # Obtener input de mensaje

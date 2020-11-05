@@ -3,6 +3,7 @@ import shutil
 
 import urllib
 import urlfetch
+from datetime import datetime, timedelta
 
 from selenium import webdriver
 
@@ -28,18 +29,22 @@ driver.get("https://web.whatsapp.com/")
 with open('selectores.json', 'rb') as selectors:
     selectors = json.load(selectors)
 
+# Registrar inicio
+bot.START_DATE = datetime.now()
+print("inicio: ", str(bot.START_DATE))
+
+# Proximo reload
+bot.NEXT_RELOAD = bot.START_DATE + timedelta(seconds=30)
+print("next: ", str(bot.NEXT_RELOAD))
+
 while True:
     try:
-        e = driver.switch_to.active_element
-        print(e.get_attribute("class"))
-        emogis = e.find_elements_by_xpath(selectors["emogi_container"])
-        print(len(emogis))
-        text = ''
-        for ec in emogis:
-            ec.get_attribute("class")
-            text += ec.find_element_by_xpath(".//img").get_attribute("data-plain-text")
-        print(text)
+        print("ahora: ", str(datetime.now()))
+        if datetime.now() >= bot.NEXT_RELOAD:
+            driver.refresh()
+            bot.NEXT_RELOAD = datetime.now() + timedelta(seconds=20)
+            print("next: ", str(bot.NEXT_RELOAD))
     except Exception as e:
         print(e)
     
-    time.sleep(3)
+    time.sleep(5)

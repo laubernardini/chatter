@@ -6,7 +6,7 @@
     "download": "//div[@title='Descargar'][@class='Ut_N0 n-CQr _2vuxN']",
     "download_media": "//div[@title='Descargar'][@role='button']",
     "close_media": "//div[@title='Cerrar'][@role='button']",
-    "pre_attach": "//div[@class='_3vTfY']",
+    "preview": "//div[@class='_3vTfY']",
     "attach_multimedia": "//input[@accept='image/*,video/mp4,video/3gpp,video/quicktime']",
     "attach_file": "//input[@accept='*']",
     "file_submit": "//div[@class='_3y5oW _3qMYG']",
