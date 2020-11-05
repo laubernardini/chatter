@@ -49,7 +49,9 @@ def start():
 
     # Proximo reload
     bot.NEXT_RELOAD = bot.START_DATE + timedelta(minutes=bot.RELOAD_FRECUENCY)
-    
+    if bot.SHOW_EX_PRINTS:
+        print("Próximo reload: ", str(bot.NEXT_RELOAD))
+
     # Loop principal
     while True:
         check_status()
@@ -63,8 +65,13 @@ def start():
         manage_inbounds(driver, selectors)
         time.sleep(1)
         if datetime.now() >= bot.NEXT_RELOAD:
+            if bot.SHOW_EX_PRINTS:
+                print("Recargando...")
             driver.refresh()
             bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FRECUENCY)
+            
+            if bot.SHOW_EX_PRINTS:
+                print("Próximo reload: ", str(bot.NEXT_RELOAD))
 
 # Funciones de inicio  
 def driver_connect(url=""):
