@@ -73,7 +73,7 @@ def get_inbound_file():
             time.sleep(2)
     return archivo
 
-def send_message(mensaje="", archivo="", celular="", masive=False driver=None, selectors=None):
+def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, selectors=None):
     try:
         # Obtener chat
         elem = search(driver, selectors, celular)

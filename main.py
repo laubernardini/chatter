@@ -167,7 +167,8 @@ def manage_masiv(driver, selectors):
             celular=response.get("celular", ""), 
             archivo=response.get("archivo", ""),
             driver=driver, 
-            selectors=selectors
+            selectors=selectors,
+            masive=True,
         )
         asyncio.run(apis.post_masiv(pk=response.get("pk", ""), estado=('ERROR' if r == "ERROR" else 'FINALIZADO')))
     else:
