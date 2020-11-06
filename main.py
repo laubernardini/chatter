@@ -69,6 +69,7 @@ def start():
                 print("Recargando...")
             driver.refresh()
             bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FRECUENCY)
+            driver.find_element_by_tag_name("body").click()
             
             if bot.SHOW_EX_PRINTS:
                 print("Próximo reload: ", str(bot.NEXT_RELOAD))

@@ -2,5 +2,13 @@
 /__pycache__
 __pycache__/
 __pycache__
+/file_cache/
+/file_cache
+file_cache/
+file_cache
+/inbound_file_cache/
+/inbound_file_cache
+inbound_file_cache/
+inbound_file_cache
 geckodriver.log
 test.py

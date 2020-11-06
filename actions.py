@@ -70,7 +70,7 @@ def get_inbound_file():
                 if bot.SHOW_EX_PRINTS:
                     print("Archivo obtenido")
         except:
-            pass
+            time.sleep(2)
     return archivo
 
 def send_message(mensaje="", archivo="", celular="", driver=None, selectors=None):
