@@ -43,29 +43,28 @@ def start():
 
     # Loop principal
     while True:
-        if not bot.WAIT_RELOAD:
-            check_status()
-            bot.STATE = "OK"
-            manage_inbounds(driver, selectors)
-            if bot.RESPONDE == "SI":
-                manage_response(driver=driver, selectors=selectors)
-            if bot.MASIVO == "SI":
-                manage_masiv(driver=driver, selectors=selectors)
-            actions.clear_cache()
-            manage_inbounds(driver, selectors)
-            time.sleep(1)
-            if datetime.now() >= bot.NEXT_RELOAD:
-                if bot.SHOW_EX_PRINTS:
-                    print("Recargando...")
-                driver.refresh()
+        check_status()
+        bot.STATE = "OK"
+        manage_inbounds(driver, selectors)
+        if bot.RESPONDE == "SI":
+            manage_response(driver=driver, selectors=selectors)
+        if bot.MASIVO == "SI":
+            manage_masiv(driver=driver, selectors=selectors)
+        actions.clear_cache()
+        manage_inbounds(driver, selectors)
+        time.sleep(1)
+        if datetime.now() >= bot.NEXT_RELOAD:
+            if bot.SHOW_EX_PRINTS:
+                print("Recargando...")
+            driver.refresh()
 
-                # Sincronización
-                sync(driver, selectors)
+            # Sincronización
+            sync(driver, selectors)
 
-                bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FRECUENCY)
+            bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FRECUENCY)
 
-                if bot.SHOW_EX_PRINTS:
-                    print("Próximo reload: ", str(bot.NEXT_RELOAD))
+            if bot.SHOW_EX_PRINTS:
+                print("Próximo reload: ", str(bot.NEXT_RELOAD))
 
 # Funciones de inicio  
 def driver_connect(url=""):

@@ -73,7 +73,7 @@ def get_inbound_file():
             time.sleep(2)
     return archivo
 
-def send_message(mensaje="", archivo="", celular="", driver=None, selectors=None):
+def send_message(mensaje="", archivo="", celular="", masive=False driver=None, selectors=None):
     try:
         # Obtener chat
         elem = search(driver, selectors, celular)
@@ -152,6 +152,7 @@ def send_message(mensaje="", archivo="", celular="", driver=None, selectors=None
                 else:
                     message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
                 time.sleep(0.02)
+
 
             if archivo == "":
                 if celular in bot.LAST_MSG_CACHE:
