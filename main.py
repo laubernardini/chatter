@@ -93,7 +93,7 @@ def driver_connect(url=""):
 
     return driver
 
-def check_status(driver, selectors):
+def check_status():
     asyncio.run(apis.status())
 
 def sync(driver, selectors):
