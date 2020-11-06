@@ -31,19 +31,7 @@ def start():
         print("WhatsApp abierto, esperando sincronización")
     
     # Sincronización
-    done = None
-    while not done:
-        try:
-            driver.find_element_by_xpath(selectors["search"]).click()
-            done = True
-        except:
-            time.sleep(2)
-            # driver.save_screenshot("qr.png")
-            if bot.SHOW_EX_PRINTS:
-                print('.')
-    
-    if bot.SHOW_EX_PRINTS:
-        print("\nSincronizado!") 
+    sync(driver, selectors)
     
     # Registrar inicio
     bot.START_DATE = datetime.now()
@@ -55,25 +43,29 @@ def start():
 
     # Loop principal
     while True:
-        check_status()
-        bot.STATE = "OK"
-        manage_inbounds(driver, selectors)
-        if bot.RESPONDE == "SI":
-            manage_response(driver=driver, selectors=selectors)
-        if bot.MASIVO == "SI":
-            manage_masiv(driver=driver, selectors=selectors)
-        actions.clear_cache()
-        manage_inbounds(driver, selectors)
-        time.sleep(1)
-        if datetime.now() >= bot.NEXT_RELOAD:
-            if bot.SHOW_EX_PRINTS:
-                print("Recargando...")
-            driver.refresh()
-            bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FRECUENCY)
-            driver.find_element_by_tag_name("body").click()
-            
-            if bot.SHOW_EX_PRINTS:
-                print("Próximo reload: ", str(bot.NEXT_RELOAD))
+        if not bot.WAIT_RELOAD:
+            check_status()
+            bot.STATE = "OK"
+            manage_inbounds(driver, selectors)
+            if bot.RESPONDE == "SI":
+                manage_response(driver=driver, selectors=selectors)
+            if bot.MASIVO == "SI":
+                manage_masiv(driver=driver, selectors=selectors)
+            actions.clear_cache()
+            manage_inbounds(driver, selectors)
+            time.sleep(1)
+            if datetime.now() >= bot.NEXT_RELOAD:
+                if bot.SHOW_EX_PRINTS:
+                    print("Recargando...")
+                driver.refresh()
+
+                # Sincronización
+                sync(driver, selectors)
+
+                bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FRECUENCY)
+
+                if bot.SHOW_EX_PRINTS:
+                    print("Próximo reload: ", str(bot.NEXT_RELOAD))
 
 # Funciones de inicio  
 def driver_connect(url=""):
@@ -102,8 +94,27 @@ def driver_connect(url=""):
 
     return driver
 
-def check_status():
+def check_status(driver, selectors):
     asyncio.run(apis.status())
+
+def sync(driver, selectors):
+    if bot.SHOW_EX_PRINTS:
+        print("WhatsApp abierto, esperando sincronización")
+    
+    # Sincronización
+    done = None
+    while not done:
+        try:
+            driver.find_element_by_xpath(selectors["search"]).click()
+            done = True
+        except:
+            time.sleep(2)
+            # driver.save_screenshot("qr.png")
+            if bot.SHOW_EX_PRINTS:
+                print('.')
+    
+    if bot.SHOW_EX_PRINTS:
+        print("\nSincronizado!")
 
 # Managers
 def manage_response(driver, selectors):
