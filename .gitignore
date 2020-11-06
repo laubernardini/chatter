@@ -12,3 +12,4 @@ inbound_file_cache/
 inbound_file_cache
 geckodriver.log
 test.py
+qr.png

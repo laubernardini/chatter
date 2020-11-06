@@ -37,7 +37,8 @@ def start():
             driver.find_element_by_xpath(selectors["search"]).click()
             done = True
         except:
-            time.sleep(1)
+            time.sleep(2)
+            # driver.save_screenshot("qr.png")
             if bot.SHOW_EX_PRINTS:
                 print('.')
     
@@ -83,7 +84,9 @@ def driver_connect(url=""):
     profile.set_preference("browser.download.viewableInternally.enabledTypes", "")
     profile.set_preference("browser.helperApps.neverAsk.saveToDisk", bot.MIME_TYPES)
     profile.set_preference("pdfjs.disabled", True)
-    driver = webdriver.Firefox(profile)
+    #options = webdriver.firefox.options.Options()
+    #options.headless = True
+    driver = webdriver.Firefox(profile)#, options=options)
     try:
         driver.get(url)
         bot.STATE = "OK"
@@ -156,7 +159,7 @@ def manage_masiv(driver, selectors):
             driver=driver, 
             selectors=selectors
         )
-        asyncio.run(apis.post_masiv(pk=response.get("pk", ""), estado=('FINALIZADO' if not r else 'ERROR')))
+        asyncio.run(apis.post_masiv(pk=response.get("pk", ""), estado=('ERROR' if r == "ERROR" else 'FINALIZADO')))
     else:
         if bot.SHOW_EX_PRINTS:
             print("Sin campañas pendientes")

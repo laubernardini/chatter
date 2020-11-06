@@ -24,20 +24,21 @@ profile.set_preference("browser.download.useDownloadDir", True)
 profile.set_preference("browser.download.viewableInternally.enabledTypes", "")
 profile.set_preference("browser.helperApps.neverAsk.saveToDisk", bot.MIME_TYPES)
 profile.set_preference("pdfjs.disabled", True)
-driver = webdriver.Firefox(profile)
+options = webdriver.firefox.options.Options()
+options.headless = True
+driver = webdriver.Firefox(profile, options=options)
 driver.get("https://web.whatsapp.com/")
 with open('selectores.json', 'rb') as selectors:
     selectors = json.load(selectors)
-
 # Registrar inicio
 bot.START_DATE = datetime.now()
 print("inicio: ", str(bot.START_DATE))
-
+driver.save_screenshot('qr.png')
 # Proximo reload
 bot.NEXT_RELOAD = bot.START_DATE + timedelta(seconds=30)
 print("next: ", str(bot.NEXT_RELOAD))
-
-while True:
+r = None
+while r == True:
     try:
         print("ahora: ", str(datetime.now()))
         if datetime.now() >= bot.NEXT_RELOAD:

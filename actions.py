@@ -171,7 +171,7 @@ def send_message(mensaje="", archivo="", celular="", driver=None, selectors=None
             if bot.SHOW_EX_PRINTS:
                 print("Contacto no encontrado")
             clear_elem(driver, selectors, "search")
-            return True
+            return "ERROR"
     except Exception as e:
         if bot.SHOW_ERRORS:
             print("Error enviando mensaje")
@@ -180,7 +180,7 @@ def send_message(mensaje="", archivo="", celular="", driver=None, selectors=None
             print(repr(e))
             print(e.args)
         bot.STATE = "ERROR"
-        return True
+        return "ERROR"
 
 def notification_clicker(driver, selectors):
     try:
