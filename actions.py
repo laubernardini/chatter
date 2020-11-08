@@ -90,12 +90,18 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                 except:
                     time.sleep(1)
 
-            # Preparar mensaje
-            mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
+            # Revisar mensajes nuevos en el chat
+            check_current_chat(driver, selectors)
 
-            if celular in bot.LAST_MSG_CACHE:
-                # Revisar en el chat
-                check_current_chat(driver, selectors)
+            # Obtener último y guardarlo en caché
+            if not(celular in bot.LAST_MSG_CACHE):
+                try:
+                    bot.LAST_MSG_CACHE = driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id")
+                except:
+                    pass
+
+            # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
+            mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
 
             attach_type = None
             if archivo != "":
@@ -145,19 +151,27 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                         except:
                             time.sleep(1)
 
-            # "Teclear" mensaje
-            for letra in mensaje:
-                if letra != '`':
-                    message.send_keys(letra)
-                else:
+            # Escribir mensaje
+            if masive:
+                # "Teclear" mensaje
+                for letra in mensaje:
+                    if letra != '`':
+                        message.send_keys(letra)
+                    else:
+                        message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
+                    time.sleep(0.02)
+            else:
+                # Pegar mensaje
+                mensaje = mensaje.split("`")
+                for m in mensaje:
+                    message.send_keys(m)
                     message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
-                time.sleep(0.02)
+                message.send_keys(Keys.BACKSPACE)
 
 
             if archivo == "":
-                if celular in bot.LAST_MSG_CACHE:
-                    # Revisar en el chat
-                    check_current_chat(driver, selectors)
+                # Revisar en el chat
+                check_current_chat(driver, selectors)
             
             # Enviar mensaje
             message.send_keys(Keys.ENTER)

@@ -46,10 +46,12 @@ def start():
         check_status()
         bot.STATE = "OK"
         manage_inbounds(driver, selectors)
-        if bot.RESPONDE == "SI":
+        if bot.RESPONDE == "SI" or bot.AUTO == "SI":
             manage_response(driver=driver, selectors=selectors)
+            time.sleep(1)
         if bot.MASIVO == "SI":
             manage_masiv(driver=driver, selectors=selectors)
+            time.sleep(1)
         actions.clear_cache()
         manage_inbounds(driver, selectors)
         time.sleep(1)
@@ -117,8 +119,6 @@ def sync(driver, selectors):
 
 # Managers
 def manage_response(driver, selectors):
-    done = None
-    counter = 5 # Para no enviar mas de 5 respuestas sin revisar entrantes
     if bot.AUTO == "SI":
         print(bot.AUTO_RESPONSES)
         for auto in bot.AUTO_RESPONSES:
@@ -135,26 +135,28 @@ def manage_response(driver, selectors):
                 archivo = ""
             asyncio.run(apis.post_auto_response(celular=auto.get("celular", ""), mensaje=auto.get("mensaje", ""), archivo=archivo))
         bot.AUTO_RESPONSES = []
+    if bot.RESPONDE == "SI":
+        done = None
+        counter = 5 # Para no enviar mas de 5 respuestas sin revisar entrantes
+        while not done and counter > 0:
+            response = apis.get_response()
+            if response.get("pk", "") != "":
+                r = actions.send_message(
+                    mensaje=response.get("mensaje", ""), 
+                    celular=response.get("celular", ""), 
+                    archivo=response.get("archivo", ""),
+                    driver=driver, 
+                    selectors=selectors
+                )
+                asyncio.run(apis.post_response(response.get("pk", ""), estado=('ENVIADO' if not r else 'ERROR')))
 
-    while not done and counter > 0:
-        response = apis.get_response()
-        if response.get("pk", "") != "":
-            r = actions.send_message(
-                mensaje=response.get("mensaje", ""), 
-                celular=response.get("celular", ""), 
-                archivo=response.get("archivo", ""),
-                driver=driver, 
-                selectors=selectors
-            )
-            asyncio.run(apis.post_response(response.get("pk", ""), estado=('ENVIADO' if not r else 'ERROR')))
-
-            # Revisar entrantes
-            actions.check_current_chat(driver, selectors)
-        else:
-            if bot.SHOW_EX_PRINTS:
-                print("Sin respuestas pendientes")
-            done = True
-        counter -= 1
+                # Revisar entrantes
+                actions.check_current_chat(driver, selectors)
+            else:
+                if bot.SHOW_EX_PRINTS:
+                    print("Sin respuestas pendientes")
+                done = True
+            counter -= 1
 
 def manage_masiv(driver, selectors):
     response = apis.get_masiv()
