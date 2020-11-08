@@ -54,7 +54,6 @@ def start():
             time.sleep(1)
         actions.clear_cache()
         manage_inbounds(driver, selectors)
-        time.sleep(1)
         if datetime.now() >= bot.NEXT_RELOAD:
             if bot.SHOW_EX_PRINTS:
                 print("Recargando...")
@@ -120,7 +119,6 @@ def sync(driver, selectors):
 # Managers
 def manage_response(driver, selectors):
     if bot.AUTO == "SI":
-        print(bot.AUTO_RESPONSES)
         for auto in bot.AUTO_RESPONSES:
             r = actions.send_message(
                 mensaje=auto.get("mensaje", ""), 
