@@ -90,15 +90,15 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                 except:
                     time.sleep(1)
 
-            # Revisar mensajes nuevos en el chat
-            check_current_chat(driver, selectors)
-
             # Obtener último y guardarlo en caché
             if not(celular in bot.LAST_MSG_CACHE):
                 try:
                     bot.LAST_MSG_CACHE = driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id")
                 except:
                     pass
+            else:
+                # Revisar mensajes nuevos en el chat
+                check_current_chat(driver, selectors)
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
             mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
