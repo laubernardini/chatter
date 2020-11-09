@@ -170,10 +170,12 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
 
             # Enviar mensaje
             message.send_keys(Keys.ENTER)
-
-            if driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id") != bot.LAST_MSG_CACHE:
-                # Revisar en el chat
-                check_current_chat(driver, selectors)
+            try:
+                if driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id") != bot.LAST_MSG_CACHE:
+                    # Revisar en el chat
+                    check_current_chat(driver, selectors)
+            except:
+                pass
             
             time.sleep(2)
 
