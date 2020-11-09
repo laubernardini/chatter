@@ -24,7 +24,7 @@ RELOAD_FRECUENCY = 5 # En minutos
 # Log
 SHOW_ERRORS = True
 SHOW_API_RESPONSES = False
-SHOW_EX_PRINTS = True
+SHOW_EX_PRINTS = False
 
 # Cache
 LAST_FILE = ""

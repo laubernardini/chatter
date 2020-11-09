@@ -55,8 +55,8 @@ def start():
         actions.clear_cache()
         manage_inbounds(driver, selectors)
         if datetime.now() >= bot.NEXT_RELOAD:
-            if bot.SHOW_EX_PRINTS:
-                print("Recargando...")
+            #if bot.SHOW_EX_PRINTS:
+            print("Recargando...")
             driver.refresh()
 
             # Sincronización
@@ -64,8 +64,8 @@ def start():
 
             bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FRECUENCY)
 
-            if bot.SHOW_EX_PRINTS:
-                print("Próximo reload: ", str(bot.NEXT_RELOAD))
+            #if bot.SHOW_EX_PRINTS:
+            print("Próximo reload: ", str(bot.NEXT_RELOAD))
 
 # Funciones de inicio  
 def driver_connect(url=""):
@@ -98,8 +98,8 @@ def check_status():
     asyncio.run(apis.status())
 
 def sync(driver, selectors):
-    if bot.SHOW_EX_PRINTS:
-        print("WhatsApp abierto, esperando sincronización")
+    #if bot.SHOW_EX_PRINTS:
+    print("WhatsApp abierto, esperando sincronización")
     
     # Sincronización
     done = None
@@ -113,8 +113,8 @@ def sync(driver, selectors):
             if bot.SHOW_EX_PRINTS:
                 print('.')
     
-    if bot.SHOW_EX_PRINTS:
-        print("\nSincronizado!")
+    #if bot.SHOW_EX_PRINTS:
+    print("\nSincronizado!")
 
 # Managers
 def manage_response(driver, selectors):
