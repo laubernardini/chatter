@@ -22,6 +22,7 @@
     "audio_status": ".//span[@data-testid='ptt-status']",
     "audio_icon": ".//span[@data-testid='audio-file']",
     "video_button": ".//span[@data-testid='media-play']",
+    "missed_call": ".//span[@data-testid='miss']",
     "thumbnail": ".//img[@class='_39rvu _20GbR']",
     "emogi_container": ".//span[@class='jaTrn']",
     "message_text": ".//span[@class='_3Whw5 selectable-text invisible-space copyable-text']/span[1]",
