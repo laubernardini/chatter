@@ -321,11 +321,7 @@ def make_inbound_messages(driver, selectors, messages):
                     m.find_element_by_xpath(selectors["video_button"]).click()
                     is_video = True
                 except:
-                    try:
-                        m.find_element_by_xpath(selectors["missed_call"])
-                        is_call = True
-                    except:
-                        pass
+                    pass
 
         if is_image or is_audio:
             time.sleep(2)
@@ -355,8 +351,6 @@ def make_inbound_messages(driver, selectors, messages):
 
         elif selectors["attach_inbound_class"] in m.get_attribute("class"):
             m.find_element_by_xpath(selectors["attach_inbound_download"]).click()
-        elif is_call:
-
  
         if is_video or is_audio or is_image or (selectors["attach_inbound_class"] in m.get_attribute("class")):
             if bot.SHOW_EX_PRINTS:
