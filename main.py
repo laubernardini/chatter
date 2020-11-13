@@ -183,6 +183,11 @@ def manage_inbounds(driver, selectors):
     e = actions.notification_clicker(driver, selectors)
     if not e:
         actions.check_current_chat(driver, selectors)
+
+    # Revisar si hay chats leidos sin abrir
+    e = actions.readed_chat_clicker(driver, selectors)
+    if not e:
+        actions.check_current_chat(driver, selectors)
     
     # Revisar en el chat
     actions.check_current_chat(driver, selectors)

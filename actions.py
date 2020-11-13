@@ -210,6 +210,17 @@ def notification_clicker(driver, selectors):
             print("No hay notificaciones")
         return True
 
+def readed_chat_clicker(driver, selectors):
+    try:
+        r = driver.find_elements_by_xpath(selectors["readed_chat"])[0]
+        time.sleep(2)
+        r.click()
+        return None
+    except:
+        if bot.SHOW_EX_PRINTS:
+            print("No hay notificaciones")
+        return True
+
 def check_current_chat(driver, selectors, archive_chat=True):
     # Revisar en el chat
     try:

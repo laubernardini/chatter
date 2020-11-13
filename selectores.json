@@ -28,5 +28,6 @@
     "thumbnail": ".//img[@class='_39rvu _20GbR']",
     "emogi_container": ".//span[@class='jaTrn']",
     "message_text": ".//span[@class='_3Whw5 selectable-text invisible-space copyable-text']/span[1]",
-    "notification": "//div[@class='ZKn2B']"
+    "notification": "//div[@class='ZKn2B']",
+    "readed_chat": "//div[@class='_210SC']"
 }
