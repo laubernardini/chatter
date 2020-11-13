@@ -254,7 +254,8 @@ def get_inbounds(driver, selectors):
             print(first_msg.get_attribute("class"))
             first_msg = driver.switch_to.active_element
             while not first_msg.get_attribute("data-id"):
-                first_msg = driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+                driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+                first_msg = driver.switch_to.active_element
         print(first_msg.get_attribute("data-id"))
         if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE and (selectors["message_in_class"] in first_msg.get_attribute('class')):
             messages.append(first_msg)
