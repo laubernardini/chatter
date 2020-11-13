@@ -295,7 +295,6 @@ def make_inbound_messages(driver, selectors, messages):
     result = []
     celular = get_cel_by_data_id(messages[0].get_attribute("data-id"))
     for m in messages:
-        print('Class del mensaje: ',m.get_attribute('class'))
         archivo = ""
         is_audio = False
         is_image = False
@@ -309,7 +308,6 @@ def make_inbound_messages(driver, selectors, messages):
             is_audio = True
         except:
             try:
-                print("buscando thumbnail")
                 m.find_element_by_xpath(selectors["thumbnail"])
                 done = None
                 while not done:
@@ -317,8 +315,8 @@ def make_inbound_messages(driver, selectors, messages):
                     if selectors["attach_inbound_class"] in m.get_attribute('class'):
                         done = True
                     else:
+                        m = driver.find_element_by_xpath('.//div[@data-id="' + m.get_attribute('data-id') + '"]')
                         time.sleep(1)
-                print("es img")
                 is_image = True
             except:
                 try:
