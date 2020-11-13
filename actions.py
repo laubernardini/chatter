@@ -312,7 +312,7 @@ def make_inbound_messages(driver, selectors, messages):
                 if not(selectors["attach_inbound_class"] in m.get_attribute('class')):
                     done = None
                     while not done:
-                        print("cambiando elemento")
+                        print("cambiando elemento, data-id:", m.get_attribute('data-id'))
                         elem = driver.find_element_by_xpath('.//div[@data-id="' + m.get_attribute('data-id') + '"]')
                         print("esperando attach_inbound_class en ", elem.get_attribute('class'))
                         if selectors["attach_inbound_class"] in elem.get_attribute('class'):
