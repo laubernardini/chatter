@@ -169,8 +169,6 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                     message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
                 message.send_keys(Keys.BACKSPACE)
 
-            # Enviar mensaje
-            message.send_keys(Keys.ENTER)
             try:
                 if driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id") != bot.LAST_MSG_CACHE:
                     # Revisar en el chat
@@ -178,6 +176,9 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
             except:
                 pass
             
+            # Enviar mensaje
+            message.send_keys(Keys.ENTER)
+
             time.sleep(2)
 
             # Archivar el chat
@@ -273,6 +274,7 @@ def get_inbounds(driver, selectors):
             try:
                 first_msg.find_element_by_xpath(selectors["missed_call"])
                 if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE:
+                    print("Generando respuesta a llamada para ", get_cel_by_data_id(first_msg.get_attribute("data-id")))
                     bot.LAST_MSG_CACHE = first_msg.get_attribute("data-id")
                     bot.AUTO_RESPONSES.append({
                         "celular": get_cel_by_data_id(first_msg.get_attribute("data-id")),
@@ -296,6 +298,7 @@ def get_inbounds(driver, selectors):
                     else:
                         try:
                             next_msg.find_element_by_xpath(selectors["missed_call"])
+                            print("Generando respuesta a llamada para ", get_cel_by_data_id(next_msg.get_attribute("data-id")))
                             bot.LAST_MSG_CACHE = next_msg.get_attribute("data-id")
                             bot.AUTO_RESPONSES.append({
                                 "celular": get_cel_by_data_id(next_msg.get_attribute("data-id")),
