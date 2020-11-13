@@ -1,7 +1,7 @@
 import os
 
 # Datos del bot
-BOT_PK = "4"
+BOT_PK = "7"
 THREAD = "1"
 STATE = "INICIANDO"
 RESPONDE = "NO"
@@ -24,8 +24,8 @@ CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así 
 
 # Log
 SHOW_ERRORS = True
-SHOW_API_RESPONSES = True
-SHOW_EX_PRINTS = True
+SHOW_API_RESPONSES = False
+SHOW_EX_PRINTS = False
 
 # Cache
 LAST_FILE = ""

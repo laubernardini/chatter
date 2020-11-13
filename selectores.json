@@ -23,6 +23,7 @@
     "audio_icon": ".//span[@data-testid='audio-file']",
     "video_button": ".//span[@data-testid='media-play']",
     "no_file_ok_button": "//div[@class='S7_rT FV2Qy'][@role='button']",
+    "missed_call_container": "//div[@class='_2hqOq _2qhWD focusable-list-item']",
     "missed_call": ".//span[@data-testid='miss']",
     "thumbnail": ".//img[@class='_39rvu _20GbR']",
     "emogi_container": ".//span[@class='jaTrn']",

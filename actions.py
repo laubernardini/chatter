@@ -235,7 +235,6 @@ def get_inbounds(driver, selectors):
                 driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
         except:
             try:
-                driver.find_element_by_xpath(selectors["unread"]).click()
                 driver.find_element_by_xpath(selectors["unread"]).send_keys(Keys.ARROW_DOWN)
             except:
                 try:
@@ -244,20 +243,31 @@ def get_inbounds(driver, selectors):
                     try:
                         first_msg = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
                     except:
-                        done = True
+                        try:
+                            first_msg = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
+                        except:
+                            done = True
         
-        if not(selectors["message_in_class"] in driver.switch_to.active_element.get_attribute("class")) and not (selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class")):
-            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-
         if not first_msg and not done: 
             first_msg = driver.switch_to.active_element
+            while not first_msg.get_attribute("data-id"):
+                first_msg = driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
         
         if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE and (selectors["message_in_class"] in first_msg.get_attribute('class')):
             messages.append(first_msg)
             last_msg = first_msg
             bot.LAST_MSG_CACHE = last_msg.get_attribute("data-id")
         else:
-            done = True
+            try:
+                first_msg.find_element_by_xpath(selectors["missed_call"])
+                bot.AUTO_RESPONSES.append({
+                    "celular": get_cel_by_data_id(first_msg.get_attribute("data-id")),
+                    "mensaje": bot.CALL_RESPONSE, 
+                    "archivo": ""
+                })
+                last_msg = first_msg
+            except:
+                done = True
 
         while not done:
             try:
