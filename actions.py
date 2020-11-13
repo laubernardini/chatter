@@ -248,14 +248,12 @@ def get_inbounds(driver, selectors):
                         except:
                             done = True
         
-        print(not first_msg and not done)
-        print(driver.switch_to.active_element.get_attribute('data-id'))
         if not first_msg and not done:
             first_msg = driver.switch_to.active_element
             while not first_msg.get_attribute("data-id"):
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
-        print(first_msg.get_attribute("data-id"))
+
         if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE and (selectors["message_in_class"] in first_msg.get_attribute('class')):
             messages.append(first_msg)
             last_msg = first_msg
@@ -263,12 +261,16 @@ def get_inbounds(driver, selectors):
         else:
             try:
                 first_msg.find_element_by_xpath(selectors["missed_call"])
-                bot.AUTO_RESPONSES.append({
-                    "celular": get_cel_by_data_id(first_msg.get_attribute("data-id")),
-                    "mensaje": bot.CALL_RESPONSE, 
-                    "archivo": ""
-                })
-                last_msg = first_msg
+                if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE:
+                    bot.LAST_MSG_CACHE = first_msg.get_attribute("data-id")
+                    bot.AUTO_RESPONSES.append({
+                        "celular": get_cel_by_data_id(first_msg.get_attribute("data-id")),
+                        "mensaje": bot.CALL_RESPONSE, 
+                        "archivo": ""
+                    })
+                    last_msg = first_msg
+                else:
+                    done = True
             except:
                 done = True
 
@@ -283,6 +285,7 @@ def get_inbounds(driver, selectors):
                     else:
                         try:
                             next_msg.find_element_by_xpath(selectors["missed_call"])
+                            bot.LAST_MSG_CACHE = next_msg.get_attribute("data-id")
                             bot.AUTO_RESPONSES.append({
                                 "celular": get_cel_by_data_id(next_msg.get_attribute("data-id")),
                                 "mensaje": bot.CALL_RESPONSE, 
