@@ -6,6 +6,7 @@ import bot
 import apis
 import time
 import asyncio
+from datetime import datetime, timedelta
 
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -310,15 +311,24 @@ def make_inbound_messages(driver, selectors, messages):
             try:
                 m.find_element_by_xpath(selectors["thumbnail"])
                 if not(selectors["attach_inbound_class"] in m.get_attribute('class')):
+                    wait_time = datetime.now() + timedelta(seconds=10)
                     done = None
                     while not done:
-                        print("cambiando elemento, data-id:", m.get_attribute('data-id'))
-                        elem = driver.find_element_by_xpath('.//div[@data-id="' + m.get_attribute('data-id') + '"]')
-                        print("esperando attach_inbound_class en ", elem.get_attribute('class'))
-                        if selectors["attach_inbound_class"] in elem.get_attribute('class'):
-                            done = True
+                        if datetime.now() < wait_time:
+                            if selectors["attach_inbound_class"] in m.get_attribute('class'):
+                                done = True
+                            else:
+                                time.sleep(1)
                         else:
-                            time.sleep(1)
+                            # Revisar si es que el archivo ya no está disponible
+                            m.find_element_by_xpath(selectors["thumbnail"]).click()
+                            time.sleep(2)
+                            try:
+                                driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                                continue # Continuar con el siguiente elemento
+                            except:
+                                driver.find_element_by_xpath(selectors["close_media"]).click()
+                                wait_time = datetime.now() + timedelta(seconds=10)
                 is_image = True
             except:
                 try:
@@ -375,6 +385,10 @@ def make_inbound_messages(driver, selectors, messages):
                 if bot.SHOW_ERRORS:
                     print(e)
         text = " " if text == '' else text
+
+        # Omitir mensaje vacío
+        if archivo == '' and text == ' ':
+            continue
 
         result.append({
             "data-id": m.get_attribute("data-id"),
