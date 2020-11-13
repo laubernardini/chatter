@@ -309,14 +309,16 @@ def make_inbound_messages(driver, selectors, messages):
         except:
             try:
                 m.find_element_by_xpath(selectors["thumbnail"])
-                done = None
-                while not done:
-                    print("esperando attach_inbound_class en ", m.get_attribute('class'))
-                    if selectors["attach_inbound_class"] in m.get_attribute('class'):
-                        done = True
-                    else:
-                        m = driver.find_element_by_xpath('.//div[@data-id="' + m.get_attribute('data-id') + '"]')
-                        time.sleep(1)
+                if not(selectors["attach_inbound_class"] in m.get_attribute('class')):
+                    done = None
+                    while not done:
+                        print("cambiando elemento")
+                        elem = driver.find_element_by_xpath('.//div[@data-id="' + m.get_attribute('data-id') + '"]')
+                        print("esperando attach_inbound_class en ", elem.get_attribute('class'))
+                        if selectors["attach_inbound_class"] in elem.get_attribute('class'):
+                            done = True
+                        else:
+                            time.sleep(1)
                 is_image = True
             except:
                 try:
