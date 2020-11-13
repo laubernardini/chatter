@@ -98,7 +98,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                     pass
             else:
                 # Revisar mensajes nuevos en el chat
-                check_current_chat(driver, selectors)
+                check_current_chat(driver=driver, selectors=selectors, archive_chat=False)
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
             mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
@@ -209,14 +209,15 @@ def notification_clicker(driver, selectors):
             print("No hay notificaciones")
         return True
 
-def check_current_chat(driver, selectors):
+def check_current_chat(driver, selectors, archive_chat=True):
     # Revisar en el chat
     try:
         driver.find_element_by_xpath(selectors["message"])
         messages = get_inbounds(driver, selectors)
         if messages != []:
             messages = make_inbound_messages(driver, selectors, messages)
-            archive(driver, selectors, messages[0]["celular"])
+            if archive_chat:
+                archive(driver, selectors, messages[0]["celular"])
             asyncio.run(apis.send_inbounds(messages))
     except Exception as e:
         if bot.SHOW_EX_PRINTS:
@@ -294,6 +295,7 @@ def make_inbound_messages(driver, selectors, messages):
     result = []
     celular = get_cel_by_data_id(messages[0].get_attribute("data-id"))
     for m in messages:
+        print('Class del mensaje: ',m.get_attribute('class'))
         archivo = ""
         is_audio = False
         is_image = False
@@ -307,17 +309,19 @@ def make_inbound_messages(driver, selectors, messages):
             is_audio = True
         except:
             try:
-                thumb = m.find_element_by_xpath(selectors["thumbnail"])
+                print("buscando thumbnail")
+                m.find_element_by_xpath(selectors["thumbnail"])
                 done = None
                 while not done:
+                    print("esperando attach_inbound_class en ", m.get_attribute('class'))
                     if selectors["attach_inbound_class"] in m.get_attribute('class'):
                         done = True
                     else:
                         time.sleep(1)
+                print("es img")
                 is_image = True
             except:
                 try:
-                    done = None
                     m.find_element_by_xpath(selectors["video_button"]).click()
                     is_video = True
                 except:
