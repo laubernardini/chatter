@@ -272,9 +272,9 @@ def get_inbounds(driver, selectors):
             bot.LAST_MSG_CACHE = last_msg.get_attribute("data-id")
         else:
             try:
+                # Si es una llamada perdida, generar respuesta automática
                 first_msg.find_element_by_xpath(selectors["missed_call"])
                 if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE:
-                    print("Generando respuesta a llamada para ", get_cel_by_data_id(first_msg.get_attribute("data-id")))
                     bot.LAST_MSG_CACHE = first_msg.get_attribute("data-id")
                     bot.AUTO_RESPONSES.append({
                         "celular": get_cel_by_data_id(first_msg.get_attribute("data-id")),
@@ -298,7 +298,7 @@ def get_inbounds(driver, selectors):
                     else:
                         try:
                             next_msg.find_element_by_xpath(selectors["missed_call"])
-                            print("Generando respuesta a llamada para ", get_cel_by_data_id(next_msg.get_attribute("data-id")))
+                            # Si es una llamada perdida, generar respuesta automática
                             bot.LAST_MSG_CACHE = next_msg.get_attribute("data-id")
                             bot.AUTO_RESPONSES.append({
                                 "celular": get_cel_by_data_id(next_msg.get_attribute("data-id")),
