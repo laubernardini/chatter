@@ -247,27 +247,36 @@ def get_inbounds(driver, selectors):
                 driver.find_elements_by_xpath(selectors["missed_call_container"])[-1].send_keys(Keys.ARROW_DOWN)
             if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
                 driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
+            print("mensaje en caché ", bot.LAST_MSG_CACHE)
         except:
             try:
                 driver.find_element_by_xpath(selectors["unread"]).send_keys(Keys.ARROW_DOWN)
+                print("hay mensaje no leido")
             except:
                 try:
                     driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
+                    print("navegando a primer mensaje desde ultimo mensaje saliente")
                 except:
                     try:
                         first_msg = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
+                        print("obteniendo primer mensaje entrante del chat")
                     except:
                         try:
                             first_msg = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
+                            print("obteniendo llamada perdida")
                         except:
                             done = True
         
         if not first_msg and not done:
+            print("buscando primer mensaje")
             first_msg = driver.switch_to.active_element
+            print("class: ", first_msg.get_attribute('class'), " data-id: ", first_msg.get_attribute("data-id"))
             while not first_msg.get_attribute("data-id"):
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
-
+                print("class: ", first_msg.get_attribute('class'), " data-id: ", first_msg.get_attribute("data-id"))
+        
+        print("primer mensaje obtenido")
         if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE and (selectors["message_in_class"] in first_msg.get_attribute('class')):
             messages.append(first_msg)
             last_msg = first_msg
