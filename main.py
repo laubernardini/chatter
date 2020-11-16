@@ -185,6 +185,7 @@ def manage_inbounds(driver, selectors):
         e = actions.notification_clicker(driver, selectors)
         if not e:
             actions.check_current_chat(driver, selectors)
+            time.sleep(1)
         else:
             done = True
 
@@ -194,8 +195,10 @@ def manage_inbounds(driver, selectors):
         e = actions.readed_chat_clicker(driver, selectors)
         if not e:
             actions.check_current_chat(driver, selectors)
+            time.sleep(1)
         else:
             done = True
     
     # Revisar en el chat
     actions.check_current_chat(driver, selectors)
+    time.sleep(1)
