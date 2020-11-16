@@ -298,6 +298,7 @@ def get_inbounds(driver, selectors):
                         "mensaje": bot.CALL_RESPONSE, 
                         "archivo": ""
                     })
+                    print("respuesta generada", bot.AUTO_RESPONSES)
                     last_msg = first_msg
                 else:
                     done = True
