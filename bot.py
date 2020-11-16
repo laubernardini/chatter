@@ -19,7 +19,7 @@ DOWNLOAD_PATH = os.getcwd() + OS_SLASH + 'inbound_file_cache' + OS_SLASH
 MIME_TYPES = "" # Los tipos incluidos se descargarán sin confirmación
 MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime'] # Estos archivos se envían por el botón "galería"
 START_DATE = None
-RELOAD_FREQUENCY = 20 # En minutos
+RELOAD_FREQUENCY = 5 # En minutos
 CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
 
 # Log
