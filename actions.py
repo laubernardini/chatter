@@ -247,37 +247,40 @@ def get_inbounds(driver, selectors):
                 driver.find_elements_by_xpath(selectors["missed_call_container"])[-1].send_keys(Keys.ARROW_DOWN)
             if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
                 driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
-            print("mensaje en caché ", bot.LAST_MSG_CACHE)
+            if bot.SHOW_EX_PRINTS:
+                print("Mensaje en caché ", bot.LAST_MSG_CACHE)
         except:
             try:
                 driver.find_element_by_xpath(selectors["unread"]).click()
                 driver.find_element_by_xpath(selectors["unread"]).send_keys(Keys.ARROW_DOWN)
-                print("hay mensaje no leido")
+                if bot.SHOW_EX_PRINTS:
+                    print("Hay mensajes no leidos")
             except:
                 try:
                     driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
-                    print("navegando a primer mensaje desde ultimo mensaje saliente")
+                    if bot.SHOW_EX_PRINTS:
+                        print("Navegando a primer mensaje desde ultimo mensaje saliente")
                 except:
                     try:
                         first_msg = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
-                        print("obteniendo primer mensaje entrante del chat")
+                        if bot.SHOW_EX_PRINTS:
+                            print("Obteniendo primer mensaje entrante del chat")
                     except:
                         try:
                             first_msg = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
-                            print("obteniendo llamada perdida")
+                            if bot.SHOW_EX_PRINTS:
+                                print("Obteniendo llamada perdida")
                         except:
                             done = True
         
         if not first_msg and not done:
-            print("buscando primer mensaje")
             first_msg = driver.switch_to.active_element
-            print("class: ", first_msg.get_attribute('class'), " data-id: ", first_msg.get_attribute("data-id"))
             while not first_msg.get_attribute("data-id"):
+                if bot.SHOW_EX_PRINTS:
+                    print("Obteniendo primer mensaje")
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
-                print("class: ", first_msg.get_attribute('class'), " data-id: ", first_msg.get_attribute("data-id"))
         
-        print("primer mensaje obtenido")
         if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE and (selectors["message_in_class"] in first_msg.get_attribute('class')):
             messages.append(first_msg)
             last_msg = first_msg
@@ -286,7 +289,8 @@ def get_inbounds(driver, selectors):
             try:
                 # Si es una llamada perdida, generar respuesta automática
                 first_msg.find_element_by_xpath(selectors["missed_call"])
-                print("llamada perdida, generando respuesta")
+                if bot.SHOW_EX_PRINTS:
+                    print("Llamada perdida, generando respuesta")
                 if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE:
                     bot.LAST_MSG_CACHE = first_msg.get_attribute("data-id")
                     bot.AUTO_RESPONSES.append({
@@ -294,7 +298,6 @@ def get_inbounds(driver, selectors):
                         "mensaje": bot.CALL_RESPONSE, 
                         "archivo": ""
                     })
-                    print("respuesta generada", bot.AUTO_RESPONSES)
                     last_msg = first_msg
                 else:
                     done = True
@@ -313,6 +316,8 @@ def get_inbounds(driver, selectors):
                         try:
                             next_msg.find_element_by_xpath(selectors["missed_call"])
                             # Si es una llamada perdida, generar respuesta automática
+                            if bot.SHOW_EX_PRINTS:
+                                print("Llamada perdida, generando respuesta")
                             bot.LAST_MSG_CACHE = next_msg.get_attribute("data-id")
                             bot.AUTO_RESPONSES.append({
                                 "celular": get_cel_by_data_id(next_msg.get_attribute("data-id")),
