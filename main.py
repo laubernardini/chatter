@@ -118,8 +118,11 @@ def sync(driver, selectors):
 
 # Managers
 def manage_response(driver, selectors):
+    print("mr")
     if bot.AUTO == "SI":
+        print("buscando r-auto")
         for auto in bot.AUTO_RESPONSES:
+            print("enviando: ", auto.get("mensaje", ""))
             r = actions.send_message(
                 mensaje=auto.get("mensaje", ""), 
                 celular=auto.get("celular", ""), 
