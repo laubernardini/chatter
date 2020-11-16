@@ -37,7 +37,7 @@ def start():
     bot.START_DATE = datetime.now()
 
     # Proximo reload
-    bot.NEXT_RELOAD = bot.START_DATE + timedelta(minutes=bot.RELOAD_FRECUENCY)
+    bot.NEXT_RELOAD = bot.START_DATE + timedelta(minutes=bot.RELOAD_FREQUENCY)
     if bot.SHOW_EX_PRINTS:
         print("Próximo reload: ", str(bot.NEXT_RELOAD))
 
@@ -62,7 +62,7 @@ def start():
             # Sincronización
             sync(driver, selectors)
 
-            bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FRECUENCY)
+            bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FREQUENCY)
 
             #if bot.SHOW_EX_PRINTS:
             print("Próximo reload: ", str(bot.NEXT_RELOAD))
@@ -180,19 +180,22 @@ def manage_inbounds(driver, selectors):
     actions.check_current_chat(driver, selectors)
 
     # Obtener mensajes desde notificación
-    e = actions.notification_clicker(driver, selectors)
-    if not e:
-        actions.check_current_chat(driver, selectors)
+    done = None
+    while not done:
+        e = actions.notification_clicker(driver, selectors)
+        if not e:
+            actions.check_current_chat(driver, selectors)
+        else:
+            done = True
 
     # Revisar si hay chats leidos sin abrir
-    e = actions.readed_chat_clicker(driver, selectors)
-    if not e:
-        actions.check_current_chat(driver, selectors)
+    done = None
+    while not done:
+        e = actions.readed_chat_clicker(driver, selectors)
+        if not e:
+            actions.check_current_chat(driver, selectors)
+        else:
+            done = True
     
     # Revisar en el chat
     actions.check_current_chat(driver, selectors)
-
-
-
-
-

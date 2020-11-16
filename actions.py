@@ -243,6 +243,8 @@ def get_inbounds(driver, selectors):
         messages = []
         try:
             driver.find_element_by_xpath('//div[@data-id="' + bot.LAST_MSG_CACHE + '"]').send_keys(Keys.ARROW_DOWN)
+            if selectors["chat_separator_class"] in driver.switch_to.active_element.get_attribute("class"):
+                driver.find_elements_by_xpath(selectors["missed_call_container"])[-1].send_keys(Keys.ARROW_DOWN)
             if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
                 driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
         except:
