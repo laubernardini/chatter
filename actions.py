@@ -242,6 +242,7 @@ def get_inbounds(driver, selectors):
         first_msg = None
         messages = []
         try:
+            driver.find_element_by_xpath('//div[@data-id="' + bot.LAST_MSG_CACHE + '"]').click()
             driver.find_element_by_xpath('//div[@data-id="' + bot.LAST_MSG_CACHE + '"]').send_keys(Keys.ARROW_DOWN)
             if selectors["chat_separator_class"] in driver.switch_to.active_element.get_attribute("class"):
                 driver.find_elements_by_xpath(selectors["missed_call_container"])[-1].send_keys(Keys.ARROW_DOWN)
@@ -250,10 +251,12 @@ def get_inbounds(driver, selectors):
             print("mensaje en caché ", bot.LAST_MSG_CACHE)
         except:
             try:
+                driver.find_element_by_xpath(selectors["unread"]).click()
                 driver.find_element_by_xpath(selectors["unread"]).send_keys(Keys.ARROW_DOWN)
                 print("hay mensaje no leido")
             except:
                 try:
+                    driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].click()
                     driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
                     print("navegando a primer mensaje desde ultimo mensaje saliente")
                 except:
