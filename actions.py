@@ -288,6 +288,7 @@ def get_inbounds(driver, selectors):
             try:
                 # Si es una llamada perdida, generar respuesta automática
                 first_msg.find_element_by_xpath(selectors["missed_call"])
+                print("llamada perdida, generando respuesta")
                 if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE:
                     bot.LAST_MSG_CACHE = first_msg.get_attribute("data-id")
                     bot.AUTO_RESPONSES.append({
