@@ -27,8 +27,6 @@ def start():
     # Abrir WhatsApp
     while bot.STATE != "OK":
         driver = driver_connect("https://web.whatsapp.com")
-    if bot.SHOW_EX_PRINTS:
-        print("WhatsApp abierto, esperando sincronización")
     
     # Sincronización
     sync(driver, selectors)

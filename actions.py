@@ -141,9 +141,9 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                             message = driver.find_element_by_xpath(selectors["message_attached"])
                             e = True
                         except:
+                            time.sleep(1)
                             driver.find_element_by_xpath(selectors["search"]).click()
                             driver.find_element_by_xpath(selectors["preview"]).click()
-                            time.sleep(2)
                 else:
                     # Enviar archivo
                     e = None
