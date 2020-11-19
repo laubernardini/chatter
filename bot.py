@@ -1,7 +1,7 @@
 import os
 
 # Datos del bot
-BOT_PK = "9"
+BOT_PK = "16"
 THREAD = "1"
 STATE = "INICIANDO"
 RESPONDE = "NO"
@@ -27,7 +27,7 @@ DEFAULT_SEARCH = "search"
 # Log
 SHOW_ERRORS = True
 SHOW_API_RESPONSES = False
-SHOW_EX_PRINTS = True
+SHOW_EX_PRINTS = False
 
 # Cache
 LAST_FILE = ""
