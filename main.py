@@ -52,7 +52,7 @@ def start():
             time.sleep(1)
         actions.clear_cache()
         manage_inbounds(driver, selectors)
-        if datetime.now() >= bot.NEXT_RELOAD:
+        if False:#datetime.now() >= bot.NEXT_RELOAD:
             #if bot.SHOW_EX_PRINTS:
             print("Recargando...")
             driver.refresh()
