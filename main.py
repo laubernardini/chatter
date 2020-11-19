@@ -103,18 +103,13 @@ def sync(driver, selectors):
     done = None
     while not done:
         try:
-            driver.find_element_by_xpath(selectors[bot.DEFAULT_SEARCH])
+            driver.find_element_by_xpath(selectors["search"])
             done = True
         except:
-            try:
-                actions.change_default_search()
-                driver.find_element_by_xpath(selectors[bot.DEFAULT_SEARCH])
-                done = True
-            except:
-                time.sleep(2)
-                # driver.save_screenshot("qr.png")
-                if bot.SHOW_EX_PRINTS:
-                    print('.')
+            time.sleep(2)
+            # driver.save_screenshot("qr.png")
+            if bot.SHOW_EX_PRINTS:
+                print('.')
     #if bot.SHOW_EX_PRINTS:
     print("\nSincronizado!")
 

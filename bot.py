@@ -21,7 +21,6 @@ MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime'
 START_DATE = None
 RELOAD_FREQUENCY = 5 # En minutos
 CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
-DEFAULT_SEARCH = "search"
 
 
 # Log
