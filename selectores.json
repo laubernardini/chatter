@@ -1,6 +1,7 @@
 {
     "search": "//div[@class='_3FRCZ copyable-text selectable-text'][@data-tab='3']",
-    "search_1": "//div[@class='_1awRl copyable-text selectable-text'][@data-tab='3']",
+    "search_1": "//div[@class='_3FRCZ copyable-text selectable-text'][@data-tab='3']",
+    "search_bu": "_1awRl",
     "message": "//div[@class='_3FRCZ copyable-text selectable-text'][@data-tab='6']",
     "input_class": "_3FRCZ copyable-text selectable-text",
     "message_attached": "//div[@class='_2FVVk _3WjMU _1C-hz']/div[2]",
