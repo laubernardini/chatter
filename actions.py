@@ -15,14 +15,17 @@ from selenium.webdriver.common.by import By
 def change_default_search():
     if bot.SHOW_EX_PRINTS:
         print("Cambiando search")
-        
-    if DEFAULT_SEARCH == 'search':
-        DEFAULT_SEARCH = 'search_1'
-    else:
-        DEFAULT_SEARCH = 'search'
-
+    try:
+        if DEFAULT_SEARCH == 'search':
+            DEFAULT_SEARCH = 'search_1'
+        else:
+            DEFAULT_SEARCH = 'search'
+    except Exception as e:
+        if bot.SHOW_ERRORS:
+            print(e)
     if bot.SHOW_EX_PRINTS:
         print(DEFAULT_SEARCH)
+    
 def get_cel_by_data_id(data):
     return (data.split("false_", 1)[1]).split("@", 1)[0]
 
