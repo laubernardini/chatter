@@ -12,17 +12,31 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
 # Acciones
+def change_default_search():
+    if bot.SHOW_EX_PRINTS:
+        print("Cambiando search")
+        
+    if DEFAULT_SEARCH == 'search':
+        DEFAULT_SEARCH = 'search_1'
+    else:
+        DEFAULT_SEARCH = 'search'
+
+    if bot.SHOW_EX_PRINTS:
+        print(DEFAULT_SEARCH)
 def get_cel_by_data_id(data):
     return (data.split("false_", 1)[1]).split("@", 1)[0]
 
 def clear_elem(driver, selectors, id):
-    driver.find_element_by_xpath(selectors["search"]).clear()
-    driver.find_element_by_xpath(selectors["search"]).send_keys(Keys.ESCAPE)
+    driver.find_element_by_xpath(selectors[id]).clear()
+    driver.find_element_by_xpath(selectors[id]).send_keys(Keys.ESCAPE)
 
 def search(driver, selectors, text):
     # Obtener input de búsqueda
-    elem = driver.find_element_by_xpath(selectors["search"])
-
+    try:
+        elem = driver.find_element_by_xpath(selectors[DEFAULT_SEARCH])
+    except:
+        change_default_search()
+        elem = driver.find_element_by_xpath(selectors[DEFAULT_SEARCH])
     # Buscar
     elem.send_keys(text)
     time.sleep(2)
@@ -55,10 +69,10 @@ def archive(driver, selectors, text):
     else:
         if bot.SHOW_EX_PRINTS:
             print("No se encontro el contacto")
-        clear_elem(driver, selectors, "search")
+        clear_elem(driver, selectors, DEFAULT_SEARCH)
         return True
 
-    clear_elem(driver, selectors, "search")
+    clear_elem(driver, selectors, DEFAULT_SEARCH)
 
 def get_inbound_file():
     loaded = None
@@ -130,7 +144,12 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                 time.sleep(1)
 
                 # Actualizar elementos html para adjuntar
-                driver.find_element_by_xpath(selectors["search"]).click()
+                try:
+                    driver.find_element_by_xpath(selectors[DEFAULT_SEARCH]).click()
+                except:
+                    change_default_search()
+                    driver.find_element_by_xpath(selectors[DEFAULT_SEARCH]).click()
+
                 driver.find_element_by_xpath(selectors["preview"]).click()
                 
                 if attach_type == 'multimedia':
@@ -142,7 +161,11 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                             e = True
                         except:
                             time.sleep(1)
-                            driver.find_element_by_xpath(selectors["search"]).click()
+                            try:
+                                driver.find_element_by_xpath(selectors[DEFAULT_SEARCH]).click()
+                            except:
+                                change_default_search()
+                                driver.find_element_by_xpath(selectors[DEFAULT_SEARCH]).click()
                             driver.find_element_by_xpath(selectors["preview"]).click()
                 else:
                     # Enviar archivo
@@ -190,7 +213,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
         else:
             if bot.SHOW_EX_PRINTS:
                 print("Contacto no encontrado")
-            clear_elem(driver, selectors, "search")
+            clear_elem(driver, selectors, DEFAULT_SEARCH)
             return "ERROR"
     except Exception as e:
         if bot.SHOW_ERRORS:
