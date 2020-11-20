@@ -1,7 +1,7 @@
 import os
 
 # Datos del bot
-BOT_PK = "14"
+BOT_PK = "3"
 THREAD = "1"
 STATE = "INICIANDO"
 RESPONDE = "NO"
@@ -19,7 +19,7 @@ DOWNLOAD_PATH = os.getcwd() + OS_SLASH + 'inbound_file_cache' + OS_SLASH
 MIME_TYPES = "" # Los tipos incluidos se descargarán sin confirmación
 MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime'] # Estos archivos se envían por el botón "galería"
 START_DATE = None
-RELOAD_FREQUENCY = 5 # En minutos
+FORCED_ACTIVITY_FREQUENCY = 5 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
 
 
@@ -32,5 +32,5 @@ SHOW_EX_PRINTS = False
 LAST_FILE = ""
 LAST_MSG_CACHE = ""
 AUTO_RESPONSES = []
-NEXT_RELOAD = None
+NEXT_FORCED_ACTIVITY = None
 

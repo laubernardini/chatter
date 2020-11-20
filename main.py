@@ -35,9 +35,9 @@ def start():
     bot.START_DATE = datetime.now()
 
     # Proximo reload
-    bot.NEXT_RELOAD = bot.START_DATE + timedelta(minutes=bot.RELOAD_FREQUENCY)
+    bot.NEXT_FORCED_ACTIVITY = bot.START_DATE + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
     if bot.SHOW_EX_PRINTS:
-        print("Próximo reload: ", str(bot.NEXT_RELOAD))
+        print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
 
     # Loop principal
     while True:
@@ -52,18 +52,21 @@ def start():
             time.sleep(1)
         actions.clear_cache()
         manage_inbounds(driver, selectors)
-        if False:#datetime.now() >= bot.NEXT_RELOAD:
+        if datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
             #if bot.SHOW_EX_PRINTS:
-            print("Recargando...")
-            driver.refresh()
+            print("Forzando actividad...")
+            #driver.refresh()
 
             # Sincronización
-            sync(driver, selectors)
+            #sync(driver, selectors)
 
-            bot.NEXT_RELOAD = datetime.now() + timedelta(minutes=bot.RELOAD_FREQUENCY)
+            # Actividad forzada
+            driver.find_element_by_xpath(selectors["search"]).click()
+
+            bot.NEXT_FORCED_ACTIVITY = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
 
             #if bot.SHOW_EX_PRINTS:
-            print("Próximo reload: ", str(bot.NEXT_RELOAD))
+            print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
 
 # Funciones de inicio  
 def driver_connect(url=""):

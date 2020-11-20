@@ -281,14 +281,28 @@ def get_inbounds(driver, selectors):
             if driver.switch_to.active_element.get_attribute("class") == selectors["input_class"]:
                 driver.switch_to.active_element.send_keys(Keys.TAB)
             first_msg = driver.switch_to.active_element
+            try:
+                first_msg.find_element_by_xpath(selectors["encrypted_chat"]) # Comprobar si es el mensaje de "este chat está cifrado"
+                first_msg.send_keys(Keys.ARROW_DOWN)
+                first_msg = driver.switch_to.active_element
+            except:
+                pass
+
             while not first_msg.get_attribute("data-id"):
                 if first_msg.get_attribute("class") == selectors["input_class"]:
                     first_msg.send_keys(Keys.TAB)
                     first_msg = driver.switch_to.active_element
                 if bot.SHOW_EX_PRINTS:
                     print("Obteniendo primer mensaje")
+                
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
+                try:
+                    first_msg.find_element_by_xpath(selectors["encrypted_chat"]) # Comprobar si es el mensaje de "este chat está cifrado"
+                    first_msg.send_keys(Keys.ARROW_DOWN)
+                    first_msg = driver.switch_to.active_element
+                except:
+                    pass
         
         if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE and (selectors["message_in_class"] in first_msg.get_attribute('class')):
             messages.append(first_msg)

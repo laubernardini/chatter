@@ -19,6 +19,7 @@
     "message_out_class": "message-out",
     "attach_inbound_class": "_2FNAC",
     "attach_inbound_download": ".//a[@class='_4NdIu']",
+    "encrypted_chat": ".//span[@data-testid='lock-small']",
     "audio_button": ".//span[@data-testid='audio-play']",
     "audio_status": ".//span[@data-testid='ptt-status']",
     "audio_icon": ".//span[@data-testid='audio-file']",
