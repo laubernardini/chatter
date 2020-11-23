@@ -55,13 +55,13 @@ def start():
         if datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
             #if bot.SHOW_EX_PRINTS:
             print("Forzando actividad...")
-            #driver.refresh()
+            driver.refresh()
 
             # Sincronización
-            #sync(driver, selectors)
+            sync(driver, selectors)
 
             # Actividad forzada
-            driver.find_element_by_xpath(selectors["search"]).click()
+            #driver.find_element_by_xpath(selectors["search"]).click()
 
             bot.NEXT_FORCED_ACTIVITY = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
 
