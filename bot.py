@@ -36,15 +36,15 @@ NEXT_FORCED_ACTIVITY = None
 
 # Funciones
 def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
-    
+
     print(responde, masivo, auto, thread)
 
-    RESPONDE = responde
-    MASIVO = masivo
-    AUTO = auto
-    THREAD = thread
+    global RESPONDE = responde
+    global MASIVO = masivo
+    global AUTO = auto
+    global THREAD = thread
 
 def set_error():
-    STATE = 'ERROR'
+    global STATE = 'ERROR'
     set_config(thread=THREAD)
 
