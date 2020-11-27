@@ -45,7 +45,7 @@ class bot:
         bot.AUTO = auto
         bot.THREAD = thread
 
-    def set_error(bot):
-        bot.STATE = 'ERROR'
-        set_config(bot, thread=THREAD)
+    def set_error(self):
+        self.STATE = 'ERROR'
+        self.set_config(thread=THREAD)
 
