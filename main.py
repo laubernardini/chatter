@@ -40,17 +40,16 @@ def start():
 
     # Loop principal
     while True:
-        print(bot.RESPONDE, bot.MASIVO, bot.AUTO, bot.STATE)
         check_status()
         bot.STATE = "OK"
 
         manage_inbounds(driver, selectors)
 
-        if bot.RESPONDE == "SI" or bot.AUTO == "SI":
+        if (bot.RESPONDE == "SI" or bot.AUTO == "SI") and bot.STATE != 'ERROR':
             manage_response(driver=driver, selectors=selectors)
             time.sleep(1)
         
-        if bot.MASIVO == "SI":
+        if bot.MASIVO == "SI" and bot.STATE != 'ERROR':
             manage_masiv(driver=driver, selectors=selectors)
             time.sleep(1)
         

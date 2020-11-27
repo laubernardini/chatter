@@ -9,7 +9,7 @@ MASIVO = "NO"
 AUTO = "NO"
 
 # Datos del server
-SERVER_URL = "https://apicloud.com.ar/thread-"
+SERVER_URL = "https://apicloud.com.ar/threa-"
 FILE_SERVER = "http://apicloud.com.ar:8080"
 FILE_SERVER_2 = "https://apicloud.com.ar"
 
@@ -37,8 +37,6 @@ NEXT_FORCED_ACTIVITY = None
 # Funciones
 def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
     global RESPONDE, MASIVO, AUTO, THREAD
-
-    print(responde, masivo, auto, thread)
     
     RESPONDE = responde
     MASIVO = masivo
