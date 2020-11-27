@@ -40,6 +40,7 @@ def start():
 
     # Loop principal
     while True:
+        print(bot.RESPONDE, bot.MASIVO, bot.AUTO, bot.STATE)
         check_status()
         bot.STATE = "OK"
 
