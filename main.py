@@ -193,14 +193,19 @@ def manage_inbounds(driver, selectors):
         actions.check_current_chat(driver, selectors)
 
     # Obtener mensajes desde notificación
-    done = None
-    while not done and bot.STATE != 'ERROR':
-        e = actions.notification_clicker(driver, selectors)
-        if not e:
-            actions.check_current_chat(driver, selectors)
-            time.sleep(1)
-        else:
-            done = True
+    if bot.STATE != 'ERROR':
+        done = None
+        while not done:
+            e = actions.notification_clicker(driver, selectors)
+            if not e:
+                actions.check_current_chat(driver, selectors)
+
+                if bot.STATE == 'ERROR':
+                    done = True
+                
+                time.sleep(1)
+            else:
+                done = True
 
     # Revisar si hay chats leidos sin abrir
     if bot.STATE != 'ERROR':
