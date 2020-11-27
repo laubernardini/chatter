@@ -2,7 +2,7 @@ import os
 import shutil
 import re
 
-from bot import bot
+import bot
 import apis
 import time
 import asyncio

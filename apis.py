@@ -6,7 +6,7 @@ import json
 import asyncio
 import time
 
-from bot import bot
+import bot
 
 # Reporte
 async def status():
@@ -35,9 +35,9 @@ async def status():
             content = json.loads(r.content)
             content = content[0]
 
-            bot.set_error(bot)
+            bot.set_error()
 
-            bot.set_config(bot, responde = content["responde"], masivo = content["masivo"], auto = content["auto"], thread = content["thread"])
+            bot.set_config(responde = content["responde"], masivo = content["masivo"], auto = content["auto"], thread = content["thread"])
         else:
             if bot.SHOW_ERRORS:
                 print("Error enviando estado")

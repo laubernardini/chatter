@@ -10,7 +10,7 @@ import time
 import asyncio
 from datetime import datetime, timedelta
 
-from bot import bot
+import bot
 import apis
 import actions
 
