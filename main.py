@@ -41,9 +41,13 @@ def start():
     # Loop principal
     while True:
         check_status()
-        bot.STATE = "OK"
+        if bot.STATE == 'ERROR':
+            time.sleep(3)
+            bot.STATE = "OK"
+            check_status()
 
-        manage_inbounds(driver, selectors)
+        if bot.STATE != 'ERROR':
+            manage_inbounds(driver, selectors)
 
         if (bot.RESPONDE == "SI" or bot.AUTO == "SI") and bot.STATE != 'ERROR':
             manage_response(driver=driver, selectors=selectors)
