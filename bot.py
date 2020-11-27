@@ -1,7 +1,7 @@
 import os
 
 # Datos del bot
-BOT_PK = "16"
+BOT_PK = "9"
 THREAD = "1"
 STATE = "INICIANDO"
 RESPONDE = "NO"
@@ -33,4 +33,15 @@ LAST_FILE = ""
 LAST_MSG_CACHE = ""
 AUTO_RESPONSES = []
 NEXT_FORCED_ACTIVITY = None
+
+# Funciones
+def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
+    RESPONDE = responde
+    MASIVO = masivo
+    AUTO = auto
+    THREAD = thread
+
+def set_error():
+    STATE = 'ERROR'
+    set_config(thread=THREAD)
 

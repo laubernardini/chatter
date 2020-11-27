@@ -16,7 +16,6 @@ import actions
 
 
 def start():
-
     # Obtener selectores
     with open('selectores.json', 'rb') as selectors:
         selectors = json.load(selectors)
@@ -43,15 +42,22 @@ def start():
     while True:
         check_status()
         bot.STATE = "OK"
+
         manage_inbounds(driver, selectors)
+
         if bot.RESPONDE == "SI" or bot.AUTO == "SI":
             manage_response(driver=driver, selectors=selectors)
             time.sleep(1)
+        
         if bot.MASIVO == "SI":
             manage_masiv(driver=driver, selectors=selectors)
             time.sleep(1)
+        
         actions.clear_cache()
-        manage_inbounds(driver, selectors)
+
+        if bot.STATE != 'ERROR':
+            manage_inbounds(driver, selectors)
+
         if datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
             #if bot.SHOW_EX_PRINTS:
             print("Forzando actividad...")
@@ -122,6 +128,7 @@ def manage_response(driver, selectors):
         for auto in bot.AUTO_RESPONSES:
             if bot.SHOW_EX_PRINTS:
                 print("Enviando respuesta automática: '", auto.get("mensaje", ""), "'")
+            
             r = actions.send_message(
                 mensaje=auto.get("mensaje", ""), 
                 celular=auto.get("celular", ""), 
@@ -134,11 +141,13 @@ def manage_response(driver, selectors):
             else:
                 archivo = ""
             asyncio.run(apis.post_auto_response(celular=auto.get("celular", ""), mensaje=auto.get("mensaje", ""), archivo=archivo))
+
         bot.AUTO_RESPONSES = []
     if bot.RESPONDE == "SI":
+
         done = None
         counter = 5 # Para no enviar mas de 5 respuestas sin revisar entrantes
-        while not done and counter > 0:
+        while not done and counter > 0 and bot.RESPONDE == "SI":
             response = apis.get_response()
             if response.get("pk", "") != "":
                 r = actions.send_message(
@@ -155,6 +164,7 @@ def manage_response(driver, selectors):
             else:
                 if bot.SHOW_EX_PRINTS:
                     print("Sin respuestas pendientes")
+                
                 done = True
             counter -= 1
 
@@ -179,11 +189,12 @@ def manage_masiv(driver, selectors):
 
 def manage_inbounds(driver, selectors):
     # Revisar en el chat
-    actions.check_current_chat(driver, selectors)
+    if bot.STATE != 'ERROR':
+        actions.check_current_chat(driver, selectors)
 
     # Obtener mensajes desde notificación
     done = None
-    while not done:
+    while not done and bot.STATE != 'ERROR':
         e = actions.notification_clicker(driver, selectors)
         if not e:
             actions.check_current_chat(driver, selectors)
@@ -192,11 +203,13 @@ def manage_inbounds(driver, selectors):
             done = True
 
     # Revisar si hay chats leidos sin abrir
-    e = actions.readed_chat_clicker(driver, selectors)
-    if not e:
-        actions.check_current_chat(driver, selectors)
-        time.sleep(1)
+    if bot.STATE != 'ERROR':
+        e = actions.readed_chat_clicker(driver, selectors)
+        if not e:
+            actions.check_current_chat(driver, selectors)
+            time.sleep(1)
     
     # Revisar en el chat
-    actions.check_current_chat(driver, selectors)
+    if bot.STATE != 'ERROR':
+        actions.check_current_chat(driver, selectors)
     time.sleep(1)
