@@ -6,7 +6,7 @@ import json
 import asyncio
 import time
 
-import bot
+from bot import bot
 
 # Reporte
 async def status():
