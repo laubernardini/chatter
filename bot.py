@@ -36,6 +36,9 @@ NEXT_FORCED_ACTIVITY = None
 
 # Funciones
 def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
+    
+    print(responde, masivo, auto, thread)
+
     RESPONDE = responde
     MASIVO = masivo
     AUTO = auto
