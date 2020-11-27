@@ -36,7 +36,7 @@ class bot:
     NEXT_FORCED_ACTIVITY = None
 
     # Funciones
-    def set_config(bot, responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
+    def set_config(bot=self, responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
 
         print(responde, masivo, auto, thread)
 
