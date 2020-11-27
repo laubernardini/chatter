@@ -35,6 +35,8 @@ async def status():
             content = json.loads(r.content)
             content = content[0]
 
+            bot.set_error(bot)
+
             bot.set_config(bot, responde = content["responde"], masivo = content["masivo"], auto = content["auto"], thread = content["thread"])
         else:
             if bot.SHOW_ERRORS:

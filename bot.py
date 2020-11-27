@@ -36,16 +36,16 @@ class bot:
     NEXT_FORCED_ACTIVITY = None
 
     # Funciones
-    def set_config(self, responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
+    def set_config(bot, responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
 
         print(responde, masivo, auto, thread)
 
-        self.RESPONDE = responde
-        self.MASIVO = masivo
-        self.AUTO = auto
-        self.THREAD = thread
+        bot.RESPONDE = responde
+        bot.MASIVO = masivo
+        bot.AUTO = auto
+        bot.THREAD = thread
 
-    def set_error(self):
-        self.STATE = 'ERROR'
-        set_config(thread=THREAD)
+    def set_error(bot):
+        bot.STATE = 'ERROR'
+        set_config(bot, thread=THREAD)
 
