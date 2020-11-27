@@ -47,5 +47,5 @@ class bot:
 
     def set_error(self):
         self.STATE = 'ERROR'
-        self.set_config(thread=THREAD)
+        self.set_config(thread=self.THREAD)
 
