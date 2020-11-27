@@ -26,7 +26,7 @@ CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así 
 # Log
 SHOW_ERRORS = True
 SHOW_API_RESPONSES = False
-SHOW_EX_PRINTS = True
+SHOW_EX_PRINTS = False
 
 # Cache
 LAST_FILE = ""
