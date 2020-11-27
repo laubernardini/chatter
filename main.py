@@ -42,7 +42,7 @@ def start():
     while True:
         check_status()
         if bot.STATE == 'ERROR':
-            time.sleep(3)
+            time.sleep(5)
             bot.STATE = "OK"
             check_status()
 

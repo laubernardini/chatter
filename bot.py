@@ -9,7 +9,7 @@ MASIVO = "NO"
 AUTO = "NO"
 
 # Datos del server
-SERVER_URL = "https://apicloud.com.ar/threa-"
+SERVER_URL = "https://apicloud.com.ar/thread-"
 FILE_SERVER = "http://apicloud.com.ar:8080"
 FILE_SERVER_2 = "https://apicloud.com.ar"
 
