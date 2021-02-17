@@ -38,13 +38,15 @@ def start():
             # Revisar desincronización
             try:
                 driver.find_element_by_xpath(selectors["qr"])
-                send_report()
                 sync(driver, selectors)
             except:
-                pass
-            time.sleep(5)
-            bot.STATE = "OK"
-            send_report()
+                try:
+                    driver.find_element_by_xpath(selectors["search"])
+                except:
+                    sync(driver, selectors)
+                    time.sleep(2)
+                    bot.STATE = "OK"
+                    send_report()
 
         if bot.STATE != 'ERROR':
             manage_inbounds(driver, selectors)

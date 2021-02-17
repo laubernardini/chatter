@@ -6890,4 +6890,22 @@ JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1
 
 ###!!! [Parent][RunMessage] Error: Channel error: cannot send/recv
 
-1613575821289	Marionette	INFO	Stopped listening on port 49521613575824374	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local
+1613575821289	Marionette	INFO	Stopped listening on port 49521613575824374	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileys58ev"
+Can't find symbol 'eglSwapBuffersWithDamageEXT'.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1613575828678	Marionette	INFO	Listening on port 49856
+1613575829203	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
