@@ -1,7 +1,7 @@
 import os
 
 # Datos del bot
-BOT_PK = "4"
+BOT_PK = "10"
 THREAD = "1"
 STATE = "INICIANDO"
 RESPONDE = "NO"
@@ -9,9 +9,9 @@ MASIVO = "NO"
 AUTO = "NO"
 
 # Datos del server
-SERVER_URL = "https://apicloud.com.ar/thread-"
-FILE_SERVER = "http://apicloud.com.ar:8080"
-FILE_SERVER_2 = "https://apicloud.com.ar"
+SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"#
+FILE_SERVER = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
+FILE_SERVER_2 = "https://apicloud.com.ar"#"http://localhost:8000"#
 
 # Variables de ejecución
 OS_SLASH = "/" # / -> linux \\ -> windows
@@ -25,14 +25,16 @@ CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así 
 
 # Log
 SHOW_ERRORS = True
-SHOW_API_RESPONSES = False
-SHOW_EX_PRINTS = False
+SHOW_API_RESPONSES = True
+SHOW_EX_PRINTS = True
 
 # Cache
 LAST_FILE = ""
+CURRENT_CHAT = {}
 LAST_MSG_CACHE = ""
 AUTO_RESPONSES = []
 NEXT_FORCED_ACTIVITY = None
+CHATS = []
 
 # Funciones
 def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1"):

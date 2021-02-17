@@ -12,9 +12,63 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
 # Acciones
+def get_chat_by_chat_name(chat_name): # Usar 'celular' para los chats privados
+    chat = None
+    for c in bot.CHATS:
+        if c["nombre"] == chat_name:
+            chat = c
+            break
+        else:
+            try:
+                if c["celular"] == chat_name:
+                    chat = c
+                    break
+            except:
+                pass
     
+    return chat
+  
 def get_cel_by_data_id(data):
     return (data.split("false_", 1)[1]).split("@", 1)[0]
+
+def create_chat(driver, selectors):
+    # Navegar a la info del contacto
+    driver.find_element_by_xpath(selectors["chat_name"]).click()
+    time.sleep(2)
+    info = driver.find_elements_by_xpath(selectors["chat_info"])
+
+    # Obtener celular
+    for i in info:
+        if "+" in i.text:
+            celular = i.text
+            break
+    
+    # Obtener nombre
+    try:
+        nombre = driver.find_element_by_xpath(selectors["contact_name"]).text
+    except:
+        try:
+            nombre = driver.find_element_by_xpath(selectors["contact_name1"]).text
+        except:
+            try:
+                nombre = driver.find_element_by_xpath(selectors["agended_contact_name"]).text
+            except:
+                nombre = driver.find_element_by_xpath(selectors["agended_contact_name1"]).text
+
+    new_chat = {
+        "nombre": nombre,
+        "celular": celular,
+        "last_msg": None
+    }
+
+    # Guardar chat
+    bot.CHATS.append(new_chat)
+
+    # Cerrar info del contacto
+    driver.find_element_by_xpath(selectors["chat_info_close"]).click()
+
+    return get_chat_by_chat_name(celular) 
+
 
 def clear_elem(driver, selectors, id):
     driver.find_element_by_xpath(selectors[id]).clear()
@@ -32,9 +86,11 @@ def search(driver, selectors, text):
     elem.send_keys(Keys.ARROW_DOWN)
 
     if driver.switch_to.active_element == elem: # Revisa si hubo resultados, sino devuelve None
-        return None
-    else:
-        return elem
+        elem.send_keys(Keys.TAB)
+        if driver.switch_to.active_element == elem:
+            return None
+    
+    return driver.switch_to.active_element
 
 def archive(driver, selectors, text):
     r = search(driver, selectors, text)
@@ -75,14 +131,18 @@ def get_inbound_file():
             time.sleep(2)
     return archivo
 
-def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, selectors=None):
+def send_message(mensaje="", archivo="", celular="", chat="", masive=False, driver=None, selectors=None):
     try:
         # Obtener chat
         elem = search(driver, selectors, celular)
         if elem:
             # Abrir chat (si es un chat vacío)
-            elem.send_keys(Keys.ENTER)
+            try:
+                elem.send_keys(Keys.ENTER)
+            except:
+                pass
 
+            clear_elem(driver, selectors, "search")
             # Obtener input de mensaje
             done = None
             while not done:
@@ -91,22 +151,18 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                     done = True
                 except:
                     time.sleep(1)
+            #print("Conversación lista")
 
-            # Obtener último y guardarlo en caché
-            if not(celular in bot.LAST_MSG_CACHE):
-                try:
-                    bot.LAST_MSG_CACHE = driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id")
-                except:
-                    pass
-            else:
-                # Revisar mensajes nuevos en el chat
-                check_current_chat(driver=driver, selectors=selectors, archive_chat=False)
+            # Revisar mensajes nuevos en el chat
+            check_current_chat(driver=driver, selectors=selectors, archive_chat=False)
+            #print("Mensajes pendientes listos")
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
-            mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
+            mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("-_", "_").replace("_-", "_").replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
+            #print("Mensaje preparado")
 
             attach_type = None
-            if archivo != "":
+            if archivo:
                 # Resolver tipo de archivo
                 attach_type = 'doc'
                 for ext in bot.MULTIMEDIA_EXT:
@@ -114,7 +170,12 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                         attach_type = 'multimedia'
                 
                 # Descargar archivo temporalmente y obtener path
-                file_path = apis.get_file(archivo)
+                try:
+                    # Obtener archivo si ya ha sido descargado
+                    f = open('file_cache' + bot.OS_SLASH + archivo)
+                    file_path = os.path.abspath('file_cache' + bot.OS_SLASH + archivo)
+                except:
+                    file_path = apis.get_file(archivo)
 
                 # Click en "Adjuntar"
                 driver.find_element_by_xpath(selectors["attachments"]).click()
@@ -155,6 +216,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
                             e = True
                         except:
                             time.sleep(1)
+            #print("Archivo listo")
 
             # Escribir mensaje
             if masive:
@@ -168,32 +230,59 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
             else:
                 # Pegar mensaje
                 mensaje = mensaje.split("`")
+                print('\n', mensaje, '\n')
                 for m in mensaje:
                     message.send_keys(m)
                     message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
                 message.send_keys(Keys.BACKSPACE)
 
+            # Enviar mensaje
+            message.send_keys(Keys.ENTER)
+            time.sleep(2)
+            #print("Mensaje enviado")
+
+            # Revisar si hay algún mensaje sin leer
             try:
-                if driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id") != bot.LAST_MSG_CACHE:
+                if driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"]:
                     # Revisar en el chat
                     check_current_chat(driver, selectors)
             except:
                 pass
-            
-            # Enviar mensaje
-            message.send_keys(Keys.ENTER)
-
-            time.sleep(2)
-
+            #print("Revisando pendientes")
             # Archivar el chat
-            archive(driver, selectors, celular)
-            if archivo != "":
-                return file_path
-        else:
+            #archive(driver, selectors, celular)
+            
             if bot.SHOW_EX_PRINTS:
-                print("Contacto no encontrado")
+                print("Buscando wa_id de mensaje enviado")
+            last_send = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+            done = None
+            while not done:
+                if last_send.get_attribute("data-id"):
+                    wa_id = last_send.get_attribute("data-id")
+                    done = True
+                else:
+                    time.sleep(1)
+            
+            result = {
+                "estado": "ENVIADO", 
+                "wa_id": wa_id
+            }
+
+            # Actualizar último mensaje del chat
+            bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
+
+            bot.CURRENT_CHAT["last_msg"] = wa_id
+            
+            return result
+        else:
+            if bot.SHOW_ERRORS:
+                print("Chat no encontrado")
             clear_elem(driver, selectors, "search")
-            return "ERROR"
+            result = {
+                "estado": "ERROR", 
+                "wa_id": None
+            }
+            return result
     except Exception as e:
         if bot.SHOW_ERRORS:
             print("Error enviando mensaje")
@@ -201,16 +290,64 @@ def send_message(mensaje="", archivo="", celular="", masive=False, driver=None, 
             print(e)
             print(repr(e))
             print(e.args)
-        bot.STATE = "ERROR"
-        return "ERROR"
+        result = {
+            "estado": "ERROR", 
+            "wa_id": None
+        }
+        return result
 
 def notification_clicker(driver, selectors):
     try:
-        n = driver.find_elements_by_xpath(selectors["notification"])[0]
+        notifications = driver.find_elements_by_xpath(selectors["notification"])
+        for n in notifications:
+            if n.get_attribute("aria-label") == None:
+                parent = n.find_element_by_xpath('.//..//..//..//..')
+                
+                # Si es chat de grupo, continuar con la siguiente notificación
+                is_group = False
+                try:
+                    parent.find_element_by_xpath(selectors["sender_name"])
+                    is_group = True
+                except:
+                    try:
+                        writing = parent.find_element_by_xpath(selectors["writing"])
+                        if ' escribiendo' in (writing.get_attribute("title")):
+                            is_group = True
+                    except:
+                        try:
+                            done = None
+                            while not done:
+                                try:
+                                    event = parent.find_element_by_xpath(selectors["group_event"])
+                                    e_title = event.get_attribute("title")
+                                    if e_title != '':
+                                        if (' unió a' in e_title) or (' añadió a' in e_title) or (' salió del grupo' in e_title):
+                                            is_group = True
+                                        done = True
+                                except:
+                                    pass
+                        except:
+                            pass
+
+                if is_group:
+                    continue
+
+                chat_name = parent.find_element_by_xpath(selectors["chat_name_notification"]).text
+                chat = get_chat_by_chat_name(chat_name)
+                n.click()
+                if chat:
+                    bot.CURRENT_CHAT = chat
+                else:
+                    # Si no existe chat, crear uno nuevo y seleccionarlo
+                    bot.CURRENT_CHAT = create_chat(driver, selectors)
+                
+                return None
+                break
+
         time.sleep(2)
-        n.click()
-        return None
-    except:
+        return True
+    except Exception as e:
+        print(e)
         if bot.SHOW_EX_PRINTS:
             print("No hay notificaciones")
         return True
@@ -226,17 +363,25 @@ def readed_chat_clicker(driver, selectors):
             print("No hay notificaciones")
         return True
 
-def check_current_chat(driver, selectors, archive_chat=True):
+def check_current_chat(driver, selectors, archive_chat=False):
     # Revisar en el chat
     try:
         driver.find_element_by_xpath(selectors["message"])
-        messages = get_inbounds(driver, selectors)
-        if messages != []:
-            messages = make_inbound_messages(driver, selectors, messages)
-            if archive_chat:
-                archive(driver, selectors, messages[0]["celular"])
-            asyncio.run(apis.send_inbounds(messages))
-    except Exception as e:
+        if not bot.CURRENT_CHAT:
+            chat_name = driver.find_element_by_xpath(selectors["chat_name"]).find_element_by_xpath(selectors["chat_name_notification"]).text
+            bot.CURRENT_CHAT = get_chat_by_chat_name(chat_name)
+        
+        if bot.CURRENT_CHAT:
+            messages = get_inbounds(driver, selectors)
+            if messages != []:
+                messages = make_inbound_messages(driver, selectors, messages)
+                if archive_chat:
+                    archive(driver, selectors, messages[0]["celular"])
+                if bot.SHOW_EX_PRINTS:
+                    print("Subiendo mensajes entrantes")
+                #apis.send_inbounds(messages)
+                asyncio.run(apis.send_inbounds(messages))
+    except:
         if bot.SHOW_EX_PRINTS:
             print("No hay mensajes nuevos en este chat")
 
@@ -245,14 +390,16 @@ def get_inbounds(driver, selectors):
         done = None
         first_msg = None
         messages = []
+
+        # Localizar elemento de mensaje
         try:
-            driver.find_element_by_xpath('//div[@data-id="' + bot.LAST_MSG_CACHE + '"]').send_keys(Keys.ARROW_DOWN)
+            driver.find_element_by_xpath('//div[@data-id="' + bot.CURRENT_CHAT["last_msg"] + '"]').send_keys(Keys.ARROW_DOWN)
             if selectors["chat_separator_class"] in driver.switch_to.active_element.get_attribute("class"):
                 driver.find_elements_by_xpath(selectors["missed_call_container"])[-1].send_keys(Keys.ARROW_DOWN)
             if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
                 driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
             if bot.SHOW_EX_PRINTS:
-                print("Mensaje en caché ", bot.LAST_MSG_CACHE)
+                print("Mensaje en caché ", bot.CURRENT_CHAT["last_msg"])
         except:
             try:
                 driver.find_element_by_xpath(selectors["unread"]).click()
@@ -304,18 +451,18 @@ def get_inbounds(driver, selectors):
                 except:
                     pass
         
-        if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE and (selectors["message_in_class"] in first_msg.get_attribute('class')):
-            messages.append(first_msg)
+        # Guardando primer mensaje
+        if first_msg.get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"] and (selectors["message_in_class"] in first_msg.get_attribute('class')):
+            messages.append(first_msg.get_attribute("data-id"))
             last_msg = first_msg
-            bot.LAST_MSG_CACHE = last_msg.get_attribute("data-id")
         else:
             try:
                 # Si es una llamada perdida, generar respuesta automática
                 first_msg.find_element_by_xpath(selectors["missed_call"])
                 if bot.SHOW_EX_PRINTS:
                     print("Llamada perdida, generando respuesta")
-                if first_msg.get_attribute("data-id") != bot.LAST_MSG_CACHE:
-                    bot.LAST_MSG_CACHE = first_msg.get_attribute("data-id")
+                if first_msg.get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"]:
+                    bot.CURRENT_CHAT["last_msg"] = first_msg.get_attribute("data-id")
                     bot.AUTO_RESPONSES.append({
                         "celular": get_cel_by_data_id(first_msg.get_attribute("data-id")),
                         "mensaje": bot.CALL_RESPONSE, 
@@ -333,15 +480,13 @@ def get_inbounds(driver, selectors):
                 next_msg = driver.switch_to.active_element
                 if last_msg != next_msg:
                     if (selectors["message_in_class"] in next_msg.get_attribute('class')):
-                        messages.append(next_msg)
-                        bot.LAST_MSG_CACHE = next_msg.get_attribute("data-id")
+                        messages.append(next_msg.get_attribute("data-id"))
                     else:
                         try:
                             next_msg.find_element_by_xpath(selectors["missed_call"])
                             # Si es una llamada perdida, generar respuesta automática
                             if bot.SHOW_EX_PRINTS:
                                 print("Llamada perdida, generando respuesta")
-                            bot.LAST_MSG_CACHE = next_msg.get_attribute("data-id")
                             bot.AUTO_RESPONSES.append({
                                 "celular": get_cel_by_data_id(next_msg.get_attribute("data-id")),
                                 "mensaje": bot.CALL_RESPONSE, 
@@ -365,119 +510,235 @@ def get_inbounds(driver, selectors):
         return []
 
 def make_inbound_messages(driver, selectors, messages):
+    time.sleep(2)
     result = []
-    celular = get_cel_by_data_id(messages[0].get_attribute("data-id"))
     for m in messages:
-        archivo = ""
-        is_audio = False
-        is_image = False
-        is_video = False
-        is_call = False
         try:
-            try:
-                m.find_element_by_xpath(selectors["audio_icon"])
-            except:
-                m.find_element_by_xpath(selectors["audio_status"])
-            is_audio = True
-        except:
-            try:
-                m.find_element_by_xpath(selectors["thumbnail"])
-                if not(selectors["attach_inbound_class"] in m.get_attribute('class')):
-                    wait_time = datetime.now() + timedelta(seconds=10)
-                    done = None
-                    while not done:
-                        if datetime.now() < wait_time:
-                            if selectors["attach_inbound_class"] in m.get_attribute('class'):
-                                done = True
-                            else:
-                                time.sleep(1)
-                        else:
-                            # Revisar si es que el archivo ya no está disponible
-                            m.find_element_by_xpath(selectors["thumbnail"]).click()
-                            time.sleep(2)
-                            try:
-                                driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
-                                continue # Continuar con el siguiente elemento
-                            except:
-                                driver.find_element_by_xpath(selectors["close_media"]).click()
-                                wait_time = datetime.now() + timedelta(seconds=10)
-                is_image = True
-            except:
+            wa_id = m
+            nombre = ""
+            done = None
+
+            # Instanciar mensaje
+            while not done:
                 try:
-                    m.find_element_by_xpath(selectors["video_button"]).click()
-                    is_video = True
+                    m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
+                    done = True
                 except:
-                    pass
+                    driver.find_element_by_xpath(selectors["message_in_container"]).send_keys(Keys.ARROW_UP)
 
-        if is_image or is_audio:
-            time.sleep(2)
-            m.send_keys(Keys.ARROW_RIGHT)
-            downl = None
-            loaded = None
+            nombre = bot.CURRENT_CHAT["nombre"]
+            celular = bot.CURRENT_CHAT["celular"]
 
-            while not loaded:
+            archivo = ""
+            is_audio = False
+            is_image = False
+            is_video = False
+            is_call = False
+            is_link = False
+
+            # Buscar archivo
+            try:
                 try:
-                    downl = driver.find_element_by_xpath(selectors["download"])
-                    loaded = True
+                    m.find_element_by_xpath(selectors["audio_icon"])
+                except:
+                    m.find_element_by_xpath(selectors["audio_status"])
+                is_audio = True
+            except:
+                try:
+                    m.find_element_by_xpath(selectors["thumbnail"])
+                    if not(selectors["attach_inbound_class"] in m.get_attribute('class')):
+                        wait_time = datetime.now() + timedelta(seconds=10)
+                        done = None
+                        while not done:
+                            if datetime.now() < wait_time:
+                                if selectors["attach_inbound_class"] in m.get_attribute('class'):
+                                    done = True
+                                else:
+                                    time.sleep(1)
+                            else:
+                                # Revisar si es que el archivo ya no está disponible
+                                m.find_element_by_xpath(selectors["thumbnail"]).click()
+                                time.sleep(2)
+                                try:
+                                    driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                                    continue # Continuar con el siguiente elemento
+                                except:
+                                    driver.find_element_by_xpath(selectors["close_media"]).click()
+                                    wait_time = datetime.now() + timedelta(seconds=10)
+                    is_image = True
+                except:
+                    try:
+                        try:
+                            # Revisando si es un video a partir de un enlace
+                            try:
+                                html = m.find_element_by_xpath(selectors["message_text"]).get_attribute("innerHTML")
+                            except:
+                                html = m.find_element_by_xpath(selectors["message_text1"]).get_attribute("innerHTML")
+                            if '<a' in html:
+                                is_link = True
+                        except:
+                            pass
+                        
+                        if not is_link:
+                            m.find_element_by_xpath(selectors["video_button"]).click()
+                            is_video = True
+                    except:
+                        pass
+            
+            if is_image or is_audio:
+                time.sleep(2)
+                m.send_keys(Keys.ARROW_RIGHT)
+                downl = None
+                loaded = None
+
+                while not loaded:
+                    try:
+                        downl = driver.find_element_by_xpath(selectors["download"])
+                        loaded = True
+                    except:
+                        pass
+                
+                if downl:
+                    downl.click()
+
+            elif is_video:
+                done = None
+                while not done:
+                    if driver.find_element_by_xpath(selectors["download_media"]).get_attribute("aria-disabled") == 'false':
+                        driver.find_element_by_xpath(selectors["download_media"]).click()
+                        driver.find_element_by_xpath(selectors["close_media"]).click()
+                        done = True
+                    else:
+                        time.sleep(2)
+
+            elif selectors["attach_inbound_class"] in m.get_attribute("class"):
+                try:
+                    m.find_element_by_xpath(selectors["attach_inbound_download"]).click()
+                except:
+                    is_link = True
+
+            if (is_video or is_audio or is_image or (selectors["attach_inbound_class"] in m.get_attribute("class"))) and not(is_link):
+                if bot.SHOW_EX_PRINTS:
+                    print("Descargando...")
+                archivo = get_inbound_file()
+
+
+            # Obtener texto
+            try:
+                try:
+                    text = m.find_element_by_xpath(selectors["message_text"])
+                except:
+                    text = m.find_element_by_xpath(selectors["message_text1"])
+                
+                html = text.get_attribute("innerHTML")
+                print(html)
+                # Obtener emogis
+                text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL).replace('">', '')
+                # Formatear negrita
+                text = text.replace('<strong class="_1VzZY selectable-text invisible-space copyable-text" data-app-text-template="*${appText}*', '-*').replace('</strong>', '*-')
+                # Formatear cursiva
+                text = text.replace('<em class="_1VzZY selectable-text invisible-space copyable-text" data-app-text-template="_${appText}_', '-_').replace('</em>', '_-')
+                # Eliminar link
+                text = re.sub('<a.*?copyable-text','',text, flags=re.DOTALL).replace('</a>', '')
+                text = re.sub('<a.*?">','',text, flags=re.DOTALL).replace('</a>', '')
+            except:
+                try:
+                    emogis = m.find_elements_by_xpath(selectors["emogi_container"])
+                    text = ''
+                    for ec in emogis:
+                        text += ec.find_element_by_xpath(".//img").get_attribute("data-plain-text")
                 except:
                     pass
             
-            if downl:
-                downl.click()
-
-        elif is_video:
-            done = None
-            while not done:
-                if driver.find_element_by_xpath(selectors["download_media"]).get_attribute("aria-disabled") == 'false':
-                    driver.find_element_by_xpath(selectors["download_media"]).click()
-                    driver.find_element_by_xpath(selectors["close_media"]).click()
-                    done = True
-                else:
-                    time.sleep(2)
-
-        elif selectors["attach_inbound_class"] in m.get_attribute("class"):
-            m.find_element_by_xpath(selectors["attach_inbound_download"]).click()
- 
-        if is_video or is_audio or is_image or (selectors["attach_inbound_class"] in m.get_attribute("class")):
-            if bot.SHOW_EX_PRINTS:
-                print("Descargando...")
-            archivo = get_inbound_file()
-
-        try:
-            text = m.find_element_by_xpath(selectors["message_text"])
-            html = text.get_attribute("innerHTML")
-            text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL).replace('">', '')
-        except:
+            # Obtener contacto compartido
             try:
-                emogis = m.find_elements_by_xpath(selectors["emogi_container"])
-                text = ''
-                for ec in emogis:
-                    text += ec.find_element_by_xpath(".//img").get_attribute("data-plain-text")
-            except Exception as e:
-                if bot.SHOW_ERRORS:
-                    print(e)
-        text = " " if text == '' else text
+                m.find_element_by_xpath(selectors["shared_contact_button"]).click()
+                time.sleep(2)
+                shared_contact_name = ''
+                shared_contact_phone = ''
+                try:
+                    shared_contact_name = driver.find_element_by_xpath(selectors["shared_contact_name"]).text
+                except:
+                    try:
+                        shared_contact_name = driver.find_element_by_xpath(selectors["shared_contact_name1"]).text
+                    except:
+                        pass
 
-        # Omitir mensaje vacío
-        if archivo == '' and text == ' ':
-            continue
+                try:
+                    shared_contact_phone = driver.find_element_by_xpath(selectors["shared_contact_phone"]).text
+                except Exception as e:
+                    try:
+                        shared_contact_phone = driver.find_element_by_xpath(selectors["shared_contact_phone1"]).text
+                    except:
+                        pass
 
-        result.append({
-            "data-id": m.get_attribute("data-id"),
-            "celular": celular,
-            "mensaje": text,
-            "archivo": archivo
-        })
+                m.find_element_by_xpath(selectors["chat_info_close"]).click()
+                time.sleep(2)
+                
+                if shared_contact_phone != '': 
+                    text = "-*Contacto*-\n-_Nombre:_- " + shared_contact_name + "\n-_Celular:_- " + shared_contact_phone
+            except:
+                pass
+
+            text = " " if text == '' else text
+
+            # Omitir mensaje vacío (eliminado)
+            if archivo == '' and text == ' ':
+                # Actualizar último mensaje del chat
+                bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
+
+                bot.CURRENT_CHAT["last_msg"] = wa_id
+                continue
+
+            # Obtener 'en respuesta a...'
+            in_response = {}
+            try:
+                # Obtener grupo
+                group_elem = m.find_element_by_css_selector(selectors["in_response_group_class"])
+                in_response_group = group_elem.find_element_by_xpath(".//span[1]").text.replace("Tú · ", "")
+
+                # Obtener mensaje
+                in_response_text = m.find_element_by_xpath(selectors["in_response_text"]).text
+
+                in_response = {
+                    "grupo": in_response_group,
+                    "mensaje": in_response_text 
+                }
+            except:
+                pass
+
+            result.append({
+                "wa_id": wa_id,
+                "nombre": nombre,
+                "celular": celular,
+                "mensaje": text,
+                "archivo": archivo,
+                "respuesta": in_response
+            })
+            
+            # Actualizar último mensaje del chat
+            bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
+
+            bot.CURRENT_CHAT["last_msg"] = wa_id
+        except Exception as e:
+            print(e)
 
     return result
 
 def clear_cache():
     try:
         shutil.rmtree('inbound_file_cache')
+        if bot.SHOW_EX_PRINTS:
+            print("Caché limpiado")
+    except Exception as e:
+        if bot.SHOW_EX_PRINTS:
+            print("El caché entrante no se puede limpiar/ya está limpio")
+
+    try:
         shutil.rmtree('file_cache')
         if bot.SHOW_EX_PRINTS:
             print("Caché limpiado")
     except Exception as e:
         if bot.SHOW_EX_PRINTS:
-            print("El caché no se puede limpiar/ya está limpio")
+            print("El caché saliente no se puede limpiar/ya está limpio")
 

@@ -1,19 +1,13 @@
-import os
-
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
-
-import json
-import time
-import asyncio
+# Packages
+import os, sys, json, time, asyncio
 from datetime import datetime, timedelta
 
-import bot
-import apis
-import actions
+# Webdriver
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
+# Application
+import bot, apis, actions
 
 def start():
     # Obtener selectores
@@ -35,23 +29,28 @@ def start():
 
     # Proximo reload
     bot.NEXT_FORCED_ACTIVITY = bot.START_DATE + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
-    if bot.SHOW_EX_PRINTS:
-        print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
+    print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
 
     # Loop principal
     while True:
-        check_status()
+        send_report()
         if bot.STATE == 'ERROR':
+            # Revisar desincronización
+            try:
+                driver.find_element_by_xpath(selectors["qr"])
+                send_report()
+                sync(driver, selectors)
+            except:
+                pass
             time.sleep(5)
             bot.STATE = "OK"
-            check_status()
+            send_report()
 
         if bot.STATE != 'ERROR':
             manage_inbounds(driver, selectors)
 
         if (bot.RESPONDE == "SI" or bot.AUTO == "SI") and bot.STATE != 'ERROR':
             manage_response(driver=driver, selectors=selectors)
-            time.sleep(1)
         
         if bot.MASIVO == "SI" and bot.STATE != 'ERROR':
             manage_masiv(driver=driver, selectors=selectors)
@@ -78,6 +77,12 @@ def start():
             #if bot.SHOW_EX_PRINTS:
             print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
 
+        # Revisar si hay que sincronizar
+        try:
+            driver.find_element_by_xpath(selectors["search"])
+        except:
+            bot.STATE = "ERROR"
+        
 # Funciones de inicio  
 def driver_connect(url=""):
     profile = webdriver.FirefoxProfile()
@@ -105,66 +110,112 @@ def driver_connect(url=""):
 
     return driver
 
-def check_status():
+def send_report():
     asyncio.run(apis.status())
 
 def sync(driver, selectors):
     #if bot.SHOW_EX_PRINTS:
-    print("WhatsApp abierto, esperando sincronización")
+    print("\nWhatsApp abierto")
     
     # Sincronización
+    try:
+        driver.find_element_by_xpath(selectors["search"])
+        done = True
+    except:
+        print('\nEsperando escaneo de QR')
+        done = None
+    
+    while not done:
+        time.sleep(2)
+        try:
+            driver.find_element_by_xpath(selectors["qr"])
+            sys.stdout.write(".")
+            sys.stdout.flush()
+        except:
+            try:
+                time.sleep(0.5)
+                driver.find_element_by_xpath(selectors["refresh_qr"]).click()
+            except:
+                done = True
+    
+    print('\nEsperando a WhatsApp')
+
     done = None
     while not done:
         try:
             driver.find_element_by_xpath(selectors["search"])
             done = True
         except:
+            sys.stdout.write(".")
+            sys.stdout.flush()
             time.sleep(2)
-            # driver.save_screenshot("qr.png")
-            if bot.SHOW_EX_PRINTS:
-                print('.')
+    
     #if bot.SHOW_EX_PRINTS:
-    print("\nSincronizado!")
+    print("\nSincronización completada!")
+    send_report()
+    apis.get_chats()
+
+def get_chats():
+    apis.get_chats()
 
 # Managers
 def manage_response(driver, selectors):
     if bot.AUTO == "SI":
-        for auto in bot.AUTO_RESPONSES:
+        # Respuestas automáticas
+        for r in bot.AUTO_RESPONSES:
             if bot.SHOW_EX_PRINTS:
-                print("Enviando respuesta automática: '", auto.get("mensaje", ""), "'")
+                print("Enviando respuesta automática: '", r.get("mensaje", ""), "'")
             
-            r = actions.send_message(
-                mensaje=auto.get("mensaje", ""), 
-                celular=auto.get("celular", ""), 
-                archivo=auto.get("archivo", ""),
-                driver=driver, 
-                selectors=selectors
-            )
-            if r:
-                archivo = r
-            else:
-                archivo = ""
-            asyncio.run(apis.post_auto_response(celular=auto.get("celular", ""), mensaje=auto.get("mensaje", ""), archivo=archivo))
-
-        bot.AUTO_RESPONSES = []
-    if bot.RESPONDE == "SI":
-
-        done = None
-        counter = 5 # Para no enviar mas de 5 respuestas sin revisar entrantes
-        while not done and counter > 0 and bot.RESPONDE == "SI":
-            response = apis.get_response()
-            if response.get("pk", "") != "":
-                r = actions.send_message(
-                    mensaje=response.get("mensaje", ""), 
-                    celular=response.get("celular", ""), 
-                    archivo=response.get("archivo", ""),
+            chat = actions.get_chat_by_chat_name(r["celular"])
+            if chat:
+                bot.CURRENT_CHAT = chat
+                result = actions.send_message(
+                    chat=chat["celular"],
+                    mensaje=r.get("mensaje", ""), 
+                    celular=r.get("celular", ""), 
+                    archivo=r.get("archivo", ""),
                     driver=driver, 
                     selectors=selectors
                 )
-                asyncio.run(apis.post_response(response.get("pk", ""), estado=('ENVIADO' if not r else 'ERROR')))
+            else:
+                result = actions.send_message(
+                    chat=r.get("celular", ""),
+                    mensaje=r.get("mensaje", ""), 
+                    celular=r.get("celular", ""), 
+                    archivo=r.get("archivo", ""),
+                    driver=driver, 
+                    selectors=selectors
+                )
+            
+            if result["estado"] != "ERROR":
+                asyncio.run(apis.post_auto_response(celular=r.get("celular", ""), tipo=r.get("tipo", ""), wa_id=result.get("wa_id", ""), pk=r.get("pk", "")))
 
-                # Revisar entrantes
-                actions.check_current_chat(driver, selectors)
+        bot.AUTO_RESPONSES = []
+    if bot.RESPONDE == "SI":
+        done = None
+        counter = 5 # Para no enviar mas de 5 respuestas sin revisar entrantes
+        while not done and counter > 0 and bot.RESPONDE == "SI":
+            r = apis.get_response()
+            if r:
+                chat = actions.get_chat_by_chat_name(r["nombre"])
+                if chat:
+                    bot.CURRENT_CHAT = chat
+                    result = actions.send_message(
+                        chat=chat["celular"],
+                        mensaje=r.get("mensaje", ""), 
+                        celular=r.get("celular", ""), 
+                        archivo=r.get("archivo", ""),
+                        driver=driver, 
+                        selectors=selectors
+                    )
+                    asyncio.run(apis.post_response(pk=r.get("pk", ""), estado=result["estado"], wa_id=result["wa_id"]))
+
+                    # Revisar entrantes
+                    #actions.check_current_chat(driver, selectors)
+                else:
+                    asyncio.run(apis.post_response(pk=r.get("pk", ""), estado='ERROR', wa_id=None))
+                    if bot.SHOW_EX_PRINTS:
+                        print("No existe chat para este mensaje")
             else:
                 if bot.SHOW_EX_PRINTS:
                     print("Sin respuestas pendientes")
@@ -173,20 +224,24 @@ def manage_response(driver, selectors):
             counter -= 1
 
 def manage_masiv(driver, selectors):
-    response = apis.get_masiv()
-    if response.get("pk", "") != "":
-        # Preparar mensaje masivo
-        mensaje = response.get("mensaje", "").replace("@apin", response.get("nombre", "")).replace("@apic", response.get("celular", "")).replace("@apivu", response.get("v_uni", ""))
+    r = apis.get_masiv()
+    if r:
+        chat = actions.get_chat_by_chat_name(r["nombre"])
+        if chat:
+            bot.CURRENT_CHAT = chat
+            # Preparar mensaje masivo
+            mensaje = r.get("mensaje", "").replace("@apin", r.get("nombre", "")).replace("@apic", r.get("celular", "")).replace("@apivu", r.get("v_uni", ""))
 
-        r = actions.send_message(
-            mensaje=mensaje, 
-            celular=response.get("celular", ""), 
-            archivo=response.get("archivo", ""),
-            driver=driver, 
-            selectors=selectors,
-            masive=True,
-        )
-        asyncio.run(apis.post_masiv(pk=response.get("pk", ""), estado=('ERROR' if r == "ERROR" else 'FINALIZADO')))
+            result = actions.send_message(
+                chat=chat["celular"],
+                mensaje=mensaje, 
+                celular=r.get("celular", ""), 
+                archivo=r.get("archivo", ""),
+                driver=driver, 
+                selectors=selectors,
+                masive=True,
+            )
+            asyncio.run(apis.post_masiv(pk=r.get("pk", ""), wa_id=r.get("wa_id", ""), estado=('ERROR' if result["estado"] == "ERROR" else 'FINALIZADO')))
     else:
         if bot.SHOW_EX_PRINTS:
             print("Sin campañas pendientes")
@@ -210,15 +265,5 @@ def manage_inbounds(driver, selectors):
                 time.sleep(1)
             else:
                 done = True
-
-    # Revisar si hay chats leidos sin abrir
-    if bot.STATE != 'ERROR':
-        e = actions.readed_chat_clicker(driver, selectors)
-        if not e:
-            actions.check_current_chat(driver, selectors)
-            time.sleep(1)
     
-    # Revisar en el chat
-    if bot.STATE != 'ERROR':
-        actions.check_current_chat(driver, selectors)
     time.sleep(1)
