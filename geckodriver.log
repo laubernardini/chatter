@@ -6960,3 +6960,41 @@ JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1
 
 ###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
 
+1613682058037	geckodriver	INFO	Listening on 127.0.0.1:56553
+1613682061240	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofile6V1Xmz"
+Can't find symbol 'eglSwapBuffersWithDamageEXT'.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1613682066715	Marionette	INFO	Listening on port 56561
+1613682067112	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 697: Error: Phase "Sqlite.jsm: wait until all connections are closed" is finished, it is too late to register completion condition "protections.sqlite#0: waiting for shutdown"
+1613683519609	Marionette	INFO	Stopped listening on port 56561
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
+
+, new profile?" (new Error("", "(unknown module)"))
+1613683438083	Marionette	INFO	Listening on port 56713
+1613683438139	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+1613683520598	Marionette	INFO	Stopped listening on port 56711613683521772	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofilepI8mGh"
+Can't find symbol 'eglSwapBuffersWithDamageEXT'.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1613683526012	Marionette	INFO	Listening on port 56787
+1613683526108	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+
+###!!! [Parent][RunMessage] Error: Channel error: cannot send/recv
+
+
+###!!! [Parent][RunMessage] Error: Channel error: cannot send/recv
+
+1613683695529	Marionette	INFO	Stopped listening on port 56781613683695677	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local

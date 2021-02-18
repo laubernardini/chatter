@@ -180,6 +180,7 @@ def manage_response(driver, selectors):
                     selectors=selectors
                 )
             else:
+                bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["nombre"], celular=r["celular"], last_msg=None)
                 result = actions.send_message(
                     chat=r.get("celular", ""),
                     mensaje=r.get("mensaje", ""), 
@@ -202,22 +203,19 @@ def manage_response(driver, selectors):
                 chat = actions.get_chat_by_chat_name(r["nombre"])
                 if chat:
                     bot.CURRENT_CHAT = chat
-                    result = actions.send_message(
-                        chat=chat["celular"],
-                        mensaje=r.get("mensaje", ""), 
-                        celular=r.get("celular", ""), 
-                        archivo=r.get("archivo", ""),
-                        driver=driver, 
-                        selectors=selectors
-                    )
-                    asyncio.run(apis.post_response(pk=r.get("pk", ""), estado=result["estado"], wa_id=result["wa_id"]))
-
-                    # Revisar entrantes
-                    #actions.check_current_chat(driver, selectors)
                 else:
-                    asyncio.run(apis.post_response(pk=r.get("pk", ""), estado='ERROR', wa_id=None))
-                    if bot.SHOW_EX_PRINTS:
-                        print("No existe chat para este mensaje")
+                    bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["nombre"], celular=r["celular"], last_msg=None)
+                
+                result = actions.send_message(
+                    chat=bot.CURRENT_CHAT["celular"],
+                    mensaje=r.get("mensaje", ""), 
+                    celular=r.get("celular", ""), 
+                    archivo=r.get("archivo", ""),
+                    driver=driver, 
+                    selectors=selectors
+                )
+            
+                asyncio.run(apis.post_response(pk=r.get("pk", ""), estado=result["estado"], wa_id=result["wa_id"]))
             else:
                 if bot.SHOW_EX_PRINTS:
                     print("Sin respuestas pendientes")
@@ -228,22 +226,26 @@ def manage_response(driver, selectors):
 def manage_masiv(driver, selectors):
     r = apis.get_masiv()
     if r:
-        chat = actions.get_chat_by_chat_name(r["nombre"])
+        chat = actions.get_chat_by_chat_name(r["celular"])
+        print(chat)
         if chat:
             bot.CURRENT_CHAT = chat
-            # Preparar mensaje masivo
-            mensaje = r.get("mensaje", "").replace("@apin", r.get("nombre", "")).replace("@apic", r.get("celular", "")).replace("@apivu", r.get("v_uni", ""))
+        else:
+            bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["nombre"], celular=r["celular"], last_msg=None)
 
-            result = actions.send_message(
-                chat=chat["celular"],
-                mensaje=mensaje, 
-                celular=r.get("celular", ""), 
-                archivo=r.get("archivo", ""),
-                driver=driver, 
-                selectors=selectors,
-                masive=True,
-            )
-            asyncio.run(apis.post_masiv(pk=r.get("pk", ""), wa_id=r.get("wa_id", ""), estado=('ERROR' if result["estado"] == "ERROR" else 'FINALIZADO')))
+        # Preparar mensaje masivo
+        mensaje = r.get("mensaje", "").replace("@apin", r.get("nombre", "")).replace("@apic", r.get("celular", "")).replace("@apivu", r.get("v_uni", ""))
+
+        result = actions.send_message(
+            chat=chat["celular"],
+            mensaje=mensaje, 
+            celular=r.get("celular", ""), 
+            archivo=r.get("archivo", ""),
+            driver=driver, 
+            selectors=selectors,
+            masive=True,
+        )
+        asyncio.run(apis.post_masiv(pk=r.get("pk", ""), wa_id=r.get("wa_id", ""), estado=('ERROR' if result["estado"] == "ERROR" else 'FINALIZADO')))
     else:
         if bot.SHOW_EX_PRINTS:
             print("Sin campañas pendientes")

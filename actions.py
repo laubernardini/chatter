@@ -69,6 +69,17 @@ def create_chat(driver, selectors):
 
     return get_chat_by_chat_name(celular) 
 
+def create_chat_by_data(nombre, celular, last_msg):
+    new_chat = {
+        "nombre": nombre,
+        "celular": celular,
+        "last_msg": last_msg
+    }
+
+    # Guardar chat
+    bot.CHATS.append(new_chat)
+
+    return get_chat_by_chat_name(celular) 
 
 def clear_elem(driver, selectors, id):
     driver.find_element_by_xpath(selectors[id]).clear()
