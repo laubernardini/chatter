@@ -44,9 +44,10 @@ def start():
                     driver.find_element_by_xpath(selectors["search"])
                 except:
                     sync(driver, selectors)
-                    time.sleep(2)
-                    bot.STATE = "OK"
-                    send_report()
+                    
+        time.sleep(2)
+        bot.STATE = "OK"
+        send_report()
 
         if bot.STATE != 'ERROR':
             manage_inbounds(driver, selectors)
