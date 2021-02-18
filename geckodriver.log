@@ -7005,3 +7005,4 @@ console.warn: SearchSettings: "get: No settings file exists, new profile?" (new 
 1613683699920	Marionette	WARN	TLS certificate errors will be ignored for this session
 JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
 JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
