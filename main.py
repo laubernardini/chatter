@@ -237,7 +237,7 @@ def manage_masiv(driver, selectors):
         mensaje = r.get("mensaje", "").replace("@apin", r.get("nombre", "")).replace("@apic", r.get("celular", "")).replace("@apivu", r.get("v_uni", ""))
 
         result = actions.send_message(
-            chat=chat["celular"],
+            chat=bot.CURRENT_CHAT["celular"],
             mensaje=mensaje, 
             celular=r.get("celular", ""), 
             archivo=r.get("archivo", ""),
