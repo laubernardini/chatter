@@ -44,7 +44,7 @@ def start():
                     driver.find_element_by_xpath(selectors["search"])
                 except:
                     sync(driver, selectors)
-                    
+
         time.sleep(2)
         bot.STATE = "OK"
         send_report()
@@ -156,9 +156,9 @@ def sync(driver, selectors):
     #if bot.SHOW_EX_PRINTS:
     print("\nSincronización completada!")
     send_report()
-    apis.get_chats()
 
 def get_chats():
+    bot.CHATS = []
     apis.get_chats()
 
 # Managers
@@ -181,7 +181,7 @@ def manage_response(driver, selectors):
                     selectors=selectors
                 )
             else:
-                bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["nombre"], celular=r["celular"], last_msg=None)
+                bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["celular"], celular=r["celular"], last_msg=None)
                 result = actions.send_message(
                     chat=r.get("celular", ""),
                     mensaje=r.get("mensaje", ""), 
@@ -205,7 +205,7 @@ def manage_response(driver, selectors):
                 if chat:
                     bot.CURRENT_CHAT = chat
                 else:
-                    bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["nombre"], celular=r["celular"], last_msg=None)
+                    bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["celular"], celular=r["celular"], last_msg=None)
                 
                 result = actions.send_message(
                     chat=bot.CURRENT_CHAT["celular"],
@@ -228,11 +228,10 @@ def manage_masiv(driver, selectors):
     r = apis.get_masiv()
     if r:
         chat = actions.get_chat_by_chat_name(r["celular"])
-        print(chat)
         if chat:
             bot.CURRENT_CHAT = chat
         else:
-            bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["nombre"], celular=r["celular"], last_msg=None)
+            bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["celular"], celular=r["celular"], last_msg=None)
 
         # Preparar mensaje masivo
         mensaje = r.get("mensaje", "").replace("@apin", r.get("nombre", "")).replace("@apic", r.get("celular", "")).replace("@apivu", r.get("v_uni", ""))
