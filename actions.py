@@ -649,7 +649,6 @@ def make_inbound_messages(driver, selectors, messages):
                     text = m.find_element_by_xpath(selectors["message_text1"])
                 
                 html = text.get_attribute("innerHTML")
-                print(html)
                 # Obtener emogis
                 text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL).replace('">', '')
                 # Formatear negrita
@@ -684,7 +683,7 @@ def make_inbound_messages(driver, selectors, messages):
 
                 try:
                     shared_contact_phone = driver.find_element_by_xpath(selectors["shared_contact_phone"]).text
-                except Exception as e:
+                except:
                     try:
                         shared_contact_phone = driver.find_element_by_xpath(selectors["shared_contact_phone1"]).text
                     except:
