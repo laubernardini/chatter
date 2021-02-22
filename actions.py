@@ -20,7 +20,10 @@ def get_chat_by_chat_name(chat_name): # Usar 'celular' para los chats privados
             break
         else:
             try:
-                if c["celular"] == chat_name:
+                cel = None
+                if '+' in chat_name:
+                    cel = cel_formatter(chat_name) 
+                if c["celular"] == (cel if cel else chat_name):
                     chat = c
                     break
             except:
@@ -28,8 +31,12 @@ def get_chat_by_chat_name(chat_name): # Usar 'celular' para los chats privados
     
     return chat
   
-def get_cel_by_data_id(data):
-    return (data.split("false_", 1)[1]).split("@", 1)[0]
+def cel_formatter(celular): # Formatear celular
+    chars_to_delete = [' ', '+', '-', '(', ')']
+    for c in chars_to_delete:
+        celular = celular.replace(c, '')
+
+    return celular
 
 def create_chat(driver, selectors):
     # Navegar a la info del contacto
@@ -57,7 +64,7 @@ def create_chat(driver, selectors):
 
     new_chat = {
         "nombre": nombre,
-        "celular": celular,
+        "celular": cel_formatter(celular),
         "last_msg": None
     }
 
@@ -67,19 +74,19 @@ def create_chat(driver, selectors):
     # Cerrar info del contacto
     driver.find_element_by_xpath(selectors["chat_info_close"]).click()
 
-    return get_chat_by_chat_name(celular) 
+    return get_chat_by_chat_name(new_chat["celular"]) 
 
 def create_chat_by_data(nombre, celular, last_msg):
     new_chat = {
         "nombre": nombre,
-        "celular": celular,
+        "celular": cel_formatter(celular),
         "last_msg": last_msg
     }
 
     # Guardar chat
     bot.CHATS.append(new_chat)
 
-    return get_chat_by_chat_name(celular) 
+    return get_chat_by_chat_name(new_chat["celular"]) 
 
 def clear_elem(driver, selectors, id):
     driver.find_element_by_xpath(selectors[id]).clear()
