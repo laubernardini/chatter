@@ -33,6 +33,7 @@ def start():
 
     # Loop principal
     while True:
+        # Reporte de estado
         send_report()
         if bot.STATE == 'ERROR':
             # Revisar desincronización
@@ -45,25 +46,27 @@ def start():
                 except:
                     sync(driver, selectors)
 
-        time.sleep(2)
-        bot.STATE = "OK"
-        send_report()
+            time.sleep(2)
+            bot.STATE = "OK"
+            send_report()
 
+        # Inbounds
         if bot.STATE != 'ERROR':
             manage_inbounds(driver, selectors)
 
+        # Outbounds
         if (bot.RESPONDE == "SI" or bot.AUTO == "SI") and bot.STATE != 'ERROR':
             manage_response(driver=driver, selectors=selectors)
         
+        # Masive
         if bot.MASIVO == "SI" and bot.STATE != 'ERROR':
             manage_masiv(driver=driver, selectors=selectors)
             time.sleep(1)
         
+        # Limpiar caché
         actions.clear_cache()
 
-        if bot.STATE != 'ERROR':
-            manage_inbounds(driver, selectors)
-
+        # Actividad forzada
         if datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
             #if bot.SHOW_EX_PRINTS:
             print("Forzando actividad...")
@@ -80,7 +83,7 @@ def start():
             #if bot.SHOW_EX_PRINTS:
             print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
 
-        # Revisar si hay que sincronizar
+        # Check sync
         try:
             driver.find_element_by_xpath(selectors["search"])
         except:
@@ -157,9 +160,8 @@ def sync(driver, selectors):
     print("\nSincronización completada!")
     send_report()
 
-def get_chats():
+    # Restablecer chats
     bot.CHATS = []
-    apis.get_chats()
 
 # Managers
 def manage_response(driver, selectors):
@@ -169,30 +171,16 @@ def manage_response(driver, selectors):
             if bot.SHOW_EX_PRINTS:
                 print("Enviando respuesta automática: '", r.get("mensaje", ""), "'")
             
-            chat = actions.get_chat_by_chat_name(r["celular"])
-            if chat:
-                bot.CURRENT_CHAT = chat
-                result = actions.send_message(
-                    chat=chat["celular"],
-                    mensaje=r.get("mensaje", ""), 
-                    celular=r.get("celular", ""), 
-                    archivo=r.get("archivo", ""),
-                    driver=driver, 
-                    selectors=selectors
-                )
-            else:
-                bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["celular"], celular=r["celular"], last_msg=None)
-                result = actions.send_message(
-                    chat=r.get("celular", ""),
-                    mensaje=r.get("mensaje", ""), 
-                    celular=r.get("celular", ""), 
-                    archivo=r.get("archivo", ""),
-                    driver=driver, 
-                    selectors=selectors
-                )
+            result = actions.send_message(
+                mensaje=r.get("mensaje", ""), 
+                celular=r.get("celular", ""), 
+                archivo=r.get("archivo", ""),
+                driver=driver, 
+                selectors=selectors
+            )
             
             if result["estado"] != "ERROR":
-                asyncio.run(apis.post_auto_response(celular=r.get("celular", ""), tipo=r.get("tipo", ""), wa_id=result.get("wa_id", ""), pk=r.get("pk", "")))
+                asyncio.run(apis.post_auto_response(mensaje=r.get("mensaje", "") if r.get("tipo", "") == "missed_call" else None, celular=r.get("celular", ""), tipo=r.get("tipo", ""), wa_id=result.get("wa_id", ""), pk=r.get("pk", "")))
 
         bot.AUTO_RESPONSES = []
     if bot.RESPONDE == "SI":
@@ -201,17 +189,11 @@ def manage_response(driver, selectors):
         while not done and counter > 0 and bot.RESPONDE == "SI":
             r = apis.get_response()
             if r:
-                chat = actions.get_chat_by_chat_name(r["nombre"])
-                if chat:
-                    bot.CURRENT_CHAT = chat
-                else:
-                    bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["celular"], celular=r["celular"], last_msg=None)
-                
                 result = actions.send_message(
-                    chat=bot.CURRENT_CHAT["celular"],
                     mensaje=r.get("mensaje", ""), 
                     celular=r.get("celular", ""), 
-                    archivo=r.get("archivo", ""),
+                    archivo=r.get("archivo", ""), 
+                    last_msg=r.get("last_msg", ""),
                     driver=driver, 
                     selectors=selectors
                 )
@@ -237,10 +219,10 @@ def manage_masiv(driver, selectors):
         mensaje = r.get("mensaje", "").replace("@apin", r.get("nombre", "")).replace("@apic", r.get("celular", "")).replace("@apivu", r.get("v_uni", ""))
 
         result = actions.send_message(
-            chat=bot.CURRENT_CHAT["celular"],
             mensaje=mensaje, 
             celular=r.get("celular", ""), 
             archivo=r.get("archivo", ""),
+            last_msg=r.get("last_msg", ""),
             driver=driver, 
             selectors=selectors,
             masive=True,
@@ -253,14 +235,14 @@ def manage_masiv(driver, selectors):
 def manage_inbounds(driver, selectors):
     # Revisar en el chat
     if bot.STATE != 'ERROR':
-        actions.check_current_chat(driver, selectors)
+        actions.check_current_chat(driver, selectors, chat=bot.CURRENT_CHAT)
 
     # Obtener mensajes desde notificación
     if bot.STATE != 'ERROR':
         done = None
         while not done:
-            e = actions.notification_clicker(driver, selectors)
-            if not e:
+            n = actions.notification_clicker(driver, selectors)
+            if n:
                 actions.check_current_chat(driver, selectors)
 
                 if bot.STATE == 'ERROR':

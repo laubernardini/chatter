@@ -12,22 +12,20 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
 # Acciones
-def get_chat_by_chat_name(chat_name): # Usar 'celular' para los chats privados
+
+# Manejo de chats
+def get_chat_by_chat_name(chat_name): # Usar 'celular' UNICAMENTE
     chat = None
     for c in bot.CHATS:
-        if c["nombre"] == chat_name:
-            chat = c
-            break
-        else:
-            try:
-                cel = None
-                if '+' in chat_name:
-                    cel = cel_formatter(chat_name) 
-                if c["celular"] == (cel if cel else chat_name):
-                    chat = c
-                    break
-            except:
-                pass
+        try:
+            cel = None
+            if '+' in chat_name:
+                cel = cel_formatter(chat_name) 
+            if c["celular"] == (cel if cel else chat_name):
+                chat = c
+                break
+        except:
+            pass
     
     return chat
   
@@ -38,7 +36,19 @@ def cel_formatter(celular): # Formatear celular
 
     return celular
 
-def create_chat(driver, selectors):
+def create_chat_by_data(nombre, celular, last_msg):
+    new_chat = {
+        "nombre": nombre,
+        "celular": cel_formatter(celular),
+        "last_msg": last_msg
+    }
+
+    # Guardar chat
+    bot.CHATS.append(new_chat)
+
+    return get_chat_by_chat_name(new_chat["celular"]) 
+
+def get_data_by_chat_info(driver, selectors):
     # Navegar a la info del contacto
     driver.find_element_by_xpath(selectors["chat_name"]).click()
     time.sleep(2)
@@ -62,32 +72,17 @@ def create_chat(driver, selectors):
             except:
                 nombre = driver.find_element_by_xpath(selectors["agended_contact_name1"]).text
 
-    new_chat = {
+    result = {
         "nombre": nombre,
         "celular": cel_formatter(celular),
-        "last_msg": None
     }
-
-    # Guardar chat
-    bot.CHATS.append(new_chat)
 
     # Cerrar info del contacto
     driver.find_element_by_xpath(selectors["chat_info_close"]).click()
 
-    return get_chat_by_chat_name(new_chat["celular"]) 
+    return result
 
-def create_chat_by_data(nombre, celular, last_msg):
-    new_chat = {
-        "nombre": nombre,
-        "celular": cel_formatter(celular),
-        "last_msg": last_msg
-    }
-
-    # Guardar chat
-    bot.CHATS.append(new_chat)
-
-    return get_chat_by_chat_name(new_chat["celular"]) 
-
+# Búsqueda
 def clear_elem(driver, selectors, id):
     driver.find_element_by_xpath(selectors[id]).clear()
     driver.find_element_by_xpath(selectors[id]).send_keys(Keys.ESCAPE)
@@ -149,7 +144,7 @@ def get_inbound_file():
             time.sleep(2)
     return archivo
 
-def send_message(mensaje="", archivo="", celular="", chat="", masive=False, driver=None, selectors=None):
+def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
     try:
         # Obtener chat
         elem = search(driver, selectors, celular)
@@ -161,6 +156,10 @@ def send_message(mensaje="", archivo="", celular="", chat="", masive=False, driv
                 pass
 
             clear_elem(driver, selectors, "search")
+
+            # Actualizar chat en ejecución
+            update_current_chat(driver, selectors, celular=celular, last_msg=last_msg)
+
             # Obtener input de mensaje
             done = None
             while not done:
@@ -172,7 +171,7 @@ def send_message(mensaje="", archivo="", celular="", chat="", masive=False, driv
             #print("Conversación lista")
 
             # Revisar mensajes nuevos en el chat
-            check_current_chat(driver=driver, selectors=selectors, archive_chat=False)
+            check_current_chat(driver=driver, selectors=selectors, chat=bot.CURRENT_CHAT)
             #print("Mensajes pendientes listos")
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
@@ -263,7 +262,7 @@ def send_message(mensaje="", archivo="", celular="", chat="", masive=False, driv
             try:
                 if driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"]:
                     # Revisar en el chat
-                    check_current_chat(driver, selectors)
+                    check_current_chat(driver, selectors, chat=bot.CURRENT_CHAT)
             except:
                 pass
             #print("Revisando pendientes")
@@ -314,7 +313,27 @@ def send_message(mensaje="", archivo="", celular="", chat="", masive=False, driv
         }
         return result
 
+def update_current_chat(driver, selectors, last_msg=None, celular=None):
+    if not celular:
+        chat_info = get_data_by_chat_info(driver, selectors)
+    else:
+        chat_info = {
+            "nombre": celular,
+            "celular": celular
+        }
+    chat = get_chat_by_chat_name(chat_info["celular"])
+    if not chat:
+        # Pedir último mensaje
+        if not last_msg:
+            last_msg = apis.get_last_msg(celular=chat_info["celular"])
+
+        chat = create_chat_by_data(nombre=chat_info["nombre"], celular=chat_info["celular"], last_msg=last_msg)
+    
+    # Indicar chat en ejecución
+    bot.CURRENT_CHAT = get_chat_by_chat_name(chat["celular"])
+
 def notification_clicker(driver, selectors):
+    done = None
     try:
         notifications = driver.find_elements_by_xpath(selectors["notification"])
         for n in notifications:
@@ -349,27 +368,24 @@ def notification_clicker(driver, selectors):
 
                 if is_group:
                     continue
-
-                chat_name = parent.find_element_by_xpath(selectors["chat_name_notification"]).text
-                chat = get_chat_by_chat_name(chat_name)
-                n.click()
-                if chat:
-                    bot.CURRENT_CHAT = chat
-                else:
-                    # Si no existe chat, crear uno nuevo y seleccionarlo
-                    bot.CURRENT_CHAT = create_chat(driver, selectors)
                 
-                return None
-                break
+                # Ingresar al chat
+                bot.CURRENT_CHAT = {}
+                n.click()
 
-        time.sleep(2)
-        return True
+                time.sleep(2)
+                done = True
+                if done:
+                    break
+
     except Exception as e:
         print(e)
         if bot.SHOW_EX_PRINTS:
             print("No hay notificaciones")
-        return True
+            
+    return done
 
+# Función en desuso
 def readed_chat_clicker(driver, selectors):
     try:
         r = driver.find_elements_by_xpath(selectors["readed_chat"])[0]
@@ -381,33 +397,50 @@ def readed_chat_clicker(driver, selectors):
             print("No hay notificaciones")
         return True
 
-def check_current_chat(driver, selectors, archive_chat=False):
-    # Revisar en el chat
+def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes nuevos
     try:
+        # Comprobar chat abierto
         driver.find_element_by_xpath(selectors["message"])
-        if not bot.CURRENT_CHAT:
-            chat_name = driver.find_element_by_xpath(selectors["chat_name"]).find_element_by_xpath(selectors["chat_name_notification"]).text
-            bot.CURRENT_CHAT = get_chat_by_chat_name(chat_name)
+        if bot.SHOW_EX_PRINTS:
+            print("Buscando mensajes nuevos")
         
-        if bot.CURRENT_CHAT:
+        # Definir sobre qué chat se trabaja
+        if not chat:
+            update_current_chat(driver, selectors)
+        
+        # Obtener id's de mensajes nuevos
+        messages = []
+        try:
             messages = get_inbounds(driver, selectors)
-            if messages != []:
+        except Exception as e:
+            if bot.SHOW_ERRORS:
+                print("Error al obtener mensajes nuevos")
+                print(e)
+
+        # Formatear y subir mensajes
+        if messages != []:
+            try:
                 messages = make_inbound_messages(driver, selectors, messages)
-                if archive_chat:
-                    archive(driver, selectors, messages[0]["celular"])
                 if bot.SHOW_EX_PRINTS:
-                    print("Subiendo mensajes entrantes")
-                #apis.send_inbounds(messages)
+                    print("Subiendo mensajes nuevos")
+                
                 asyncio.run(apis.send_inbounds(messages))
+            except Exception as e:
+                if bot.SHOW_ERRORS:
+                    print("Error al obtener mensajes nuevos")
+                    print(e)
+        else:
+            if bot.SHOW_EX_PRINTS:
+                print("No hay mensajes nuevos en este chat")
     except:
         if bot.SHOW_EX_PRINTS:
-            print("No hay mensajes nuevos en este chat")
+            print("No hay chat abierto")
 
 def get_inbounds(driver, selectors):
+    messages = []
     try:
         done = None
         first_msg = None
-        messages = []
 
         # Localizar elemento de mensaje
         try:
@@ -469,91 +502,80 @@ def get_inbounds(driver, selectors):
                 except:
                     pass
         
+        # Condiciones
+        different_data_id = (first_msg.get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"])
+        not_msg_out = not(selectors["message_out_class"] in first_msg.get_attribute('class'))
+
         # Guardando primer mensaje
-        if first_msg.get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"] and (selectors["message_in_class"] in first_msg.get_attribute('class')):
+        if different_data_id and not_msg_out:
             messages.append(first_msg.get_attribute("data-id"))
             last_msg = first_msg
         else:
-            try:
-                # Si es una llamada perdida, generar respuesta automática
-                first_msg.find_element_by_xpath(selectors["missed_call"])
-                if bot.SHOW_EX_PRINTS:
-                    print("Llamada perdida, generando respuesta")
-                if first_msg.get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"]:
-                    bot.CURRENT_CHAT["last_msg"] = first_msg.get_attribute("data-id")
-                    bot.AUTO_RESPONSES.append({
-                        "celular": get_cel_by_data_id(first_msg.get_attribute("data-id")),
-                        "mensaje": bot.CALL_RESPONSE, 
-                        "archivo": ""
-                    })
-                    last_msg = first_msg
-                else:
-                    done = True
-            except:
-                done = True
+            done = True
 
         while not done:
             try:
                 last_msg.send_keys(Keys.ARROW_DOWN)
                 next_msg = driver.switch_to.active_element
                 if last_msg != next_msg:
-                    if (selectors["message_in_class"] in next_msg.get_attribute('class')):
+                    # Condiciones
+                    not_msg_out = not(selectors["message_out_class"] in next_msg.get_attribute('class'))
+
+                    if not_msg_out:
                         messages.append(next_msg.get_attribute("data-id"))
-                    else:
-                        try:
-                            next_msg.find_element_by_xpath(selectors["missed_call"])
-                            # Si es una llamada perdida, generar respuesta automática
-                            if bot.SHOW_EX_PRINTS:
-                                print("Llamada perdida, generando respuesta")
-                            bot.AUTO_RESPONSES.append({
-                                "celular": get_cel_by_data_id(next_msg.get_attribute("data-id")),
-                                "mensaje": bot.CALL_RESPONSE, 
-                                "archivo": ""
-                            })
-                        except:
-                            pass
+                    
                     last_msg = next_msg
                 else:
                     done = True
             except:
                 done = True
 
-        return messages
-        
-    except Exception as e:
+    except:
         if bot.SHOW_EX_PRINTS:
             print("No hay mensajes no leidos")
-        if bot.SHOW_ERRORS:
-            print(e)
-        return []
+    
+    return messages
 
 def make_inbound_messages(driver, selectors, messages):
-    time.sleep(2)
+    time.sleep(1)
     result = []
     for m in messages:
+        wa_id = m
+        nombre = ""
+        done = None
+
+        # Instanciar mensaje
+        while not done:
+            try:
+                m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
+                done = True
+            except:
+                driver.find_element_by_xpath(selectors["message_in_container"]).send_keys(Keys.ARROW_UP)
+
+        # Variables de ejecución
+        nombre = bot.CURRENT_CHAT["nombre"]
+        celular = bot.CURRENT_CHAT["celular"]
+        in_response = {}
+
+        archivo = ""
+        is_audio = False
+        is_image = False
+        is_video = False
+        is_call = False
+        is_link = False
+        
+        # Revisar si es llamada perdida
         try:
-            wa_id = m
-            nombre = ""
-            done = None
-
-            # Instanciar mensaje
-            while not done:
-                try:
-                    m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
-                    done = True
-                except:
-                    driver.find_element_by_xpath(selectors["message_in_container"]).send_keys(Keys.ARROW_UP)
-
-            nombre = bot.CURRENT_CHAT["nombre"]
-            celular = bot.CURRENT_CHAT["celular"]
-
-            archivo = ""
-            is_audio = False
-            is_image = False
-            is_video = False
-            is_call = False
-            is_link = False
-
+            m.find_element_by_xpath(selectors["missed_call"])
+            is_call = True
+        except:
+            try:
+                m.find_element_by_xpath(selectors["missed_video_call"])
+                is_call = True
+            except:
+                pass
+        
+        if not is_call:
             # Buscar archivo
             try:
                 try:
@@ -708,7 +730,6 @@ def make_inbound_messages(driver, selectors, messages):
                 continue
 
             # Obtener 'en respuesta a...'
-            in_response = {}
             try:
                 # Obtener grupo
                 group_elem = m.find_element_by_css_selector(selectors["in_response_group_class"])
@@ -723,22 +744,30 @@ def make_inbound_messages(driver, selectors, messages):
                 }
             except:
                 pass
+        else:
+            text = "-*" + m.find_element_by_xpath(selectors["missed_call_text"]).text + "*-"
 
-            result.append({
-                "wa_id": wa_id,
-                "nombre": nombre,
-                "celular": celular,
-                "mensaje": text,
-                "archivo": archivo,
-                "respuesta": in_response
+            # Generar respuesta automática a llamada pedida
+            bot.AUTO_RESPONSES.append({
+                "celular": bot.CURRENT_CHAT["celular"],
+                "mensaje": bot.CALL_RESPONSE, 
+                "archivo": "",
+                "tipo": "missed_call"
             })
-            
-            # Actualizar último mensaje del chat
-            bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
+        
+        result.append({
+            "wa_id": wa_id,
+            "nombre": nombre,
+            "celular": celular,
+            "mensaje": text,
+            "archivo": archivo,
+            "respuesta": in_response
+        })
+        
+        # Actualizar último mensaje del chat
+        bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
 
-            bot.CURRENT_CHAT["last_msg"] = wa_id
-        except Exception as e:
-            print(e)
+        bot.CURRENT_CHAT["last_msg"] = wa_id
 
     return result
 

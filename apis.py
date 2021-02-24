@@ -40,9 +40,9 @@ async def status():
 
             bot.set_error()
 
-def get_chats():
+def get_last_msg(celular):
     try:
-        r = urlfetch.get(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/get-chats?token=" + str(bot.BOT_PK), validate_certificate=False)
+        r = urlfetch.get(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/get-last-msg?token=" + str(bot.BOT_PK) + "&celular=" + str(celular), validate_certificate=False)
     except Exception as e:
         if bot.SHOW_ERRORS:
             print("Error obteniendo chats")
@@ -54,6 +54,7 @@ def get_chats():
         r = e
         bot.set_error()
 
+    result = None
     if type(r) != urlfetch.UrlfetchException:
         if bot.SHOW_API_RESPONSES:
             print("API get_chats: " + str(r.status_code))
@@ -65,8 +66,7 @@ def get_chats():
             content = json.loads(r.content)
             if content["request_status"] == 'success':
                 if content["detail"]:
-                    for c in content["detail"]:
-                        bot.CHATS.append(c)
+                    result = content["detail"]
             else:
                 if bot.SHOW_ERRORS:
                     print("Error obteniendo chats")
@@ -82,6 +82,8 @@ def get_chats():
                 print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
             
             bot.set_error()
+
+    return result
 
 # Obtener archivo
 def get_file(url):
@@ -211,7 +213,7 @@ async def post_response(pk, estado, wa_id):
             bot.set_error()
 
 # Respuestas automáticas
-async def post_auto_response(pk, celular, wa_id, tipo):
+async def post_auto_response(pk, celular, wa_id, tipo, mensaje=None):
     try:
         files = {}
         fields = {
@@ -219,7 +221,8 @@ async def post_auto_response(pk, celular, wa_id, tipo):
             "pk": pk,
             "celular": celular,
             "wa_id": wa_id,
-            "tipo": tipo
+            "tipo": tipo,
+            "mensaje": mensaje
         }
         r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/r-auto", data=fields, validate_certificate=False)
     except Exception as e:

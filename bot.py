@@ -1,7 +1,7 @@
 import os
 
 # Datos del bot
-BOT_PK = "4"
+BOT_PK = "10"
 THREAD = "1"
 STATE = "INICIANDO"
 RESPONDE = "NO"
@@ -9,7 +9,7 @@ MASIVO = "NO"
 AUTO = "NO"
 
 # Datos del server
-SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"#
+SERVER_URL ="https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"# 
 FILE_SERVER = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
 FILE_SERVER_2 = "https://apicloud.com.ar"#"http://localhost:8000"#
 
@@ -20,7 +20,7 @@ MIME_TYPES = "" # Los tipos incluidos se descargarán sin confirmación
 MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime'] # Estos archivos se envían por el botón "galería"
 START_DATE = None
 FORCED_ACTIVITY_FREQUENCY = 10 # En minutos. Click para marcar al navegador como "activo" frente al SO 
-CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
+CALL_RESPONSE = "-*IMPORTANTE*-\nEn este número -*no recibimos llamadas*-. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
 
 
 # Log
