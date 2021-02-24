@@ -209,12 +209,6 @@ def manage_response(driver, selectors):
 def manage_masiv(driver, selectors):
     r = apis.get_masiv()
     if r:
-        chat = actions.get_chat_by_chat_name(r["celular"])
-        if chat:
-            bot.CURRENT_CHAT = chat
-        else:
-            bot.CURRENT_CHAT = actions.create_chat_by_data(nombre=r["celular"], celular=r["celular"], last_msg=None)
-
         # Preparar mensaje masivo
         mensaje = r.get("mensaje", "").replace("@apin", r.get("nombre", "")).replace("@apic", r.get("celular", "")).replace("@apivu", r.get("v_uni", ""))
 
