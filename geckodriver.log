@@ -7422,3 +7422,135 @@ JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1
 
 ###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
 
+1614176520610	geckodriver	INFO	Listening on 127.0.0.1:59528
+1614176523722	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileTNQeDG"
+Can't find symbol 'eglSwapBuffersWithDamageEXT'.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1614176528279	Marionette	INFO	Listening on port 59536
+1614176528635	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+Handler function threw an exception: [Exception... "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannelInternal.remoteAddress]"  nsresult: "0x80040111 (NS_ERROR_NOT_AVAILABLE)"  location: "JS frame :: resource://devtools/server/actors/network-monitor/network-observer.js :: _onResponseHeader :: line 1086"  data: no]
+Stack: _onResponseHeader@resource://devtools/server/actors/network-monitor/network-observer.js:1086:5
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:581:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:662:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1086, column: 0
+console.error: ({})
+Handler function threw an exception: TypeError: undefined has no properties
+Stack: _getWaitTiming@resource://devtools/server/actors/network-monitor/network-observer.js:1185:1
+_setupHarTimings@resource://devtools/server/actors/network-monitor/network-observer.js:1410:28
+_onTransactionClose@resource://devtools/server/actors/network-monitor/network-observer.js:1133:27
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:584:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:662:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1185, column: 1
+console.error: (new TypeError("undefined has no properties", "resource://devtools/server/actors/network-monitor/network-observer.js", 1185))
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+Handler function threw an exception: [Exception... "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannelInternal.remoteAddress]"  nsresult: "0x80040111 (NS_ERROR_NOT_AVAILABLE)"  location: "JS frame :: resource://devtools/server/actors/network-monitor/network-observer.js :: _onResponseHeader :: line 1086"  data: no]
+Stack: _onResponseHeader@resource://devtools/server/actors/network-monitor/network-observer.js:1086:5
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:581:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:662:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1086, column: 0
+console.error: ({})
+Handler function threw an exception: TypeError: undefined has no properties
+Stack: _getWaitTiming@resource://devtools/server/actors/network-monitor/network-observer.js:1185:1
+_setupHarTimings@resource://devtools/server/actors/network-monitor/network-observer.js:1410:28
+_onTransactionClose@resource://devtools/server/actors/network-monitor/network-observer.js:1133:27
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:584:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:662:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1185, column: 1
+console.error: (new TypeError("undefined has no properties", "resource://devtools/server/actors/network-monitor/network-observer.js", 1185))
+console.error: "Panel inspector:" (new TypeError("event is undefined", "resource://devtools/client/shared/telemetry.js", 697))
+JavaScript error: chrome://marionette/content/navigate.js, line 213: TypeError: driver.dialogObserver is null
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1614179951203	Marionette	INFO	Stopped listening on port 59536
+
+###!!! [Child][MessageChannel::SendAndWait] Error: Channconsole.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1614179953619	Marionette	INFO	Listening on port 59773
+1614179953911	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+1614180276136	Marionette	INFO	Stopped listening on port 59773
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
+
+1614180279650	geckodriver	INFO	Listening on 127.0.0.1:60131
+1614180282733	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofile6PvBcW"
+Can't find symbol 'eglSwapBuffersWithDamageEXT'.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1614180287996	Marionette	INFO	Listening on port 60139
+1614180288117	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1: unreachable code after return statement
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1614180492118	Marionette	INFO	Stopped listening on port 60139
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
+

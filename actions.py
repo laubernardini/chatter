@@ -89,21 +89,40 @@ def clear_elem(driver, selectors, id):
 
 def search(driver, selectors, text):
     # Obtener input de búsqueda
+    result = None
+    no_result = False    
     elem = driver.find_element_by_xpath(selectors["search"])
     
     # Buscar
     elem.send_keys(text)
     time.sleep(2)
 
-    # Seleccionar la primera opción
-    elem.send_keys(Keys.ARROW_DOWN)
+    done = None
+    while not done:
+        try:
+            searching = driver.find_element_by_xpath(selectors["searching"])
+            try:
+                search_result = searching.find_element_by_xpath(selectors["search_result_text"]).text
+                if 'No se encontró' in search_result:
+                    no_result = True
+                    done = True
+            except:
+                pass
+        except:
+            done = True
 
-    if driver.switch_to.active_element == elem: # Revisa si hubo resultados, sino devuelve None
-        elem.send_keys(Keys.TAB)
-        if driver.switch_to.active_element == elem:
-            return None
+    if not no_result:
+        # Seleccionar la primera opción
+        elem.send_keys(Keys.ARROW_DOWN)
+
+        if driver.switch_to.active_element == elem: # Revisa si hubo resultados, sino devuelve None
+            elem.send_keys(Keys.TAB) # Prueba con TAB en caso de que no funcione ARROW_DOWN
+            if driver.switch_to.active_element != elem:
+                result = driver.switch_to.active_element
+        else:
+            result = driver.switch_to.active_element
     
-    return driver.switch_to.active_element
+    return result
 
 def archive(driver, selectors, text):
     r = search(driver, selectors, text)

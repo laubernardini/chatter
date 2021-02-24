@@ -3,6 +3,8 @@
     "refresh_qr": "//div[@class='n9gYh']",
 
     "search": "//div[@class='_1awRl copyable-text selectable-text'][@data-tab='3']",
+    "searching": "//div[@class='_1ivy5']",
+    "search_result_text": ".//span[@class='_1VzZY']",
 
     "chat_name": "//div[@class='_2aNms'][@role='button']",
     "contact_name":"//span[@class='OXGxe _1VzZY selectable-text copyable-text']",
