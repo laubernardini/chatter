@@ -601,6 +601,21 @@ def make_inbound_messages(driver, selectors, messages):
                     m.find_element_by_xpath(selectors["audio_icon"])
                 except:
                     m.find_element_by_xpath(selectors["audio_status"])
+
+                try:
+                    m.find_element_by_xpath(selectors["audio_status"]).find_element_by_xpath('.//').click()
+                    if bot.SHOW_EX_PRINTS:
+                        print("Forzando descarga de audio")
+                    done = None
+                    while not done:
+                        try:
+                            m.find_element_by_xpath(selectors["audio_button"])
+                            done = True
+                        except:
+                            time.sleep(1)
+                except:
+                    pass
+                
                 is_audio = True
             except:
                 try:

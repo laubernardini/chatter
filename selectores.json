@@ -8,9 +8,10 @@
 
     "chat_name": "//div[@class='_2uaUb'][@role='button']",
     "contact_name":"//span[@class='_3e1tx _3-8er selectable-text copyable-text']",
-    "contact_name1":"//span[@class='_3e1tx _3-8er selectable-text invisible-space copyable-text']",
+    "contact_name1":"//span[@class='_3e1tx _3-8er selectable-text invisible-space copyable-text']", 
     "agended_contact_name": "//span[@class='_1adfa _3-8er selectable-text invisible-space copyable-text']",
     "agended_contact_name1": "//span[@class='_1adfa _3-8er selectable-text copyable-text']",
+    "group_name": "//div[@class='_1JAUF YOG23']/div[1]",
 
     "message": "//div[@class='_2_1wd copyable-text selectable-text'][@data-tab='6']",
     "input_class": "_2_1wd copyable-text selectable-text",
@@ -32,8 +33,8 @@
     "message_in_class": "message-in",
     "message_out_container": "div.GDTQm.message-out",
     "message_out_class": "message-out",
+    "chat_separator_class": "GDTQm _397qe focusable-list-item",
     "attach_inbound_class": "_1B_Jc",
-    "attach_inbound_download": ".//button[@class='_1UTQ6 _1s_fV']",
     "encrypted_chat": ".//span[@data-testid='lock-small']",
 
     "chat_info": "//span[@class='_1Kn3o _3O1wx']",
@@ -48,26 +49,32 @@
     "shared_contact_name1": "//span[@class='_35k-1 _3-8er selectable-text invisible-space copyable-text']",
     "shared_contact_phone": "//div[@class='grnZt _3-8er selectable-text copyable-text']/span[1]",
     "shared_contact_phone1": "//div[@class='grnZt _3-8er selectable-text invisible-space copyable-text']/span[1]",
+
     "audio_button": ".//span[@data-testid='audio-play']",
     "audio_status": ".//span[@data-testid='ptt-status']",
     "audio_icon": ".//span[@data-testid='audio-file']",
-    "video_button": ".//span[@data-testid='media-play']",
-    "no_file_ok_button": "//div[@class='_1dwBj _3xWLK'][@role='button']",
+    "audio_download": ".//span[@data-testid='audio-download']",
+
     "missed_call_container": "//div[@class='GDTQm _397qe focusable-list-item']",
-    "chat_separator_class": "GDTQm _397qe focusable-list-item",
     "missed_call": ".//span[@data-testid='miss']",
     "missed_video_call": ".//span[@data-testid='miss_video']",
     "missed_call_text": ".//span[@class='_3-8er'][@dir='ltr']",
+
+    "video_button": ".//span[@data-testid='media-play']",
     "thumbnail": ".//img[@class='_1-59F _3Oxpo']",
+
+    "attach_inbound_download": ".//button[@class='_1UTQ6 _1s_fV']",
+    "no_file_ok_button": "//div[@class='_1dwBj _3xWLK'][@role='button']",
+
     "emogi_container": ".//span[@class='gejrB']",
     "message_text": ".//span[@class='_3-8er selectable-text invisible-space copyable-text']/span[1]",
     "message_text1": ".//span[@class='_3-8er selectable-text copyable-text']/span[1]",
 
     "notification": "//div[@class='_2TiQe']",
-    "chat_name_notification": ".//span[@class='_35k-1 _1adfa _3-8er']",
     "sender_name": ".//span[@class='_1adfa _3-8er']",
     "writing": ".//span[@class='_1JCRe _35k-1 _3-8er']",
     "group_event": ".//span[@class='_1DB2K']",
+    "chat_name_notification": ".//span[@class='_35k-1 _1adfa _3-8er']",
 
     "readed_chat": "//div[@class='_2aBzC']"
 }
