@@ -7554,3 +7554,202 @@ JavaScript warning: https://web.whatsapp.com/app.a79a2f5a495277a2f586.js, line 1
 
 ###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
 
+1614262527902	geckodriver	INFO	Listening on 127.0.0.1:63686
+1614262531109	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileMe9Pod"
+1614262553680	geckodriver	INFO	Listening on 127.0.0.1:63742
+1614262556794	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofilet22Quw"
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1614262560778	Marionette	INFO	Listening on port 63750
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1614262561009	Marionette	WARN	TLS certificate errors will be ignored for this session
+1614262561033	Marionette	ERROR	[21] No reply from Marionette:Register
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+console.error: "Error while calling actor 'pagestyle's method 'getLayout'" "node is null"
+console.error: "getLayout@resource://devtools/server/actors/page-style.js:1003:5\nhandler@resource://devtools/shared/protocol/Actor.js:172:37\nonPacket@resource://devtools/server/devtools-server-connection.js:379:58\nreceiveMessage@resource://devtools/shared/transport/child-transport.js:68:16\n"
+console.error: (new TypeError("parent is null", "resource://devtools/client/inspector/shared/style-change-tracker.js", 67))
+TypeError: parent is null: canMutationImpactCurrentStyles@resource://devtools/client/inspector/shared/style-change-tracker.js:67:24
+onMutations@resource://devtools/client/inspector/shared/style-change-tracker.js:84:41
+_emit@resource://devtools/shared/event-emitter.js:226:34
+emit@resource://devtools/shared/event-emitter.js:172:18
+emit@resource://devtools/shared/event-emitter.js:324:18
+getMutations@resource://devtools/client/fronts/walker.js:358:10
+
+console.error: (new TypeError("container.node.targetFront is null", "resource://devtools/client/inspector/markup/markup.js", 2241))
+console.error: (new TypeError("container.node.targetFront is null", "resource://devtools/client/inspector/markup/markup.js", 2241))
+console.error: (new Error("Protocol error (TypeError): node is null from: server0.conn0.child3/pagestyle26 (resource://devtools/server/actors/page-style.js:1003:5)", "resource://devtools/shared/protocol/Front.js", 361))
+Handler function threw an exception: [Exception... "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannelInternal.remoteAddress]"  nsresult: "0x80040111 (NS_ERROR_NOT_AVAILABLE)"  location: "JS frame :: resource://devtools/server/actors/network-monitor/network-observer.js :: _onResponseHeader :: line 1163"  data: no]
+Stack: _onResponseHeader@resource://devtools/server/actors/network-monitor/network-observer.js:1163:5
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:629:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:738:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1163, column: 0
+console.error: ({})
+Handler function threw an exception: TypeError: undefined has no properties
+Stack: _getWaitTiming@resource://devtools/server/actors/network-monitor/network-observer.js:1262:1
+_setupHarTimings@resource://devtools/server/actors/network-monitor/network-observer.js:1487:28
+_onTransactionClose@resource://devtools/server/actors/network-monitor/network-observer.js:1210:27
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:632:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:738:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1262, column: 1
+console.error: (new TypeError("undefined has no properties", "resource://devtools/server/actors/network-monitor/network-observer.js", 1262))
+1614263765208	Marionette	INFO	Stopped listening on port 63750
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1614263813337	geckodriver	INFO	Listening on 127.0.0.1:64474
+1614263816400	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofile1NhkrP"
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1614263820566	Marionette	INFO	Listening on port 64482
+1614263820630	Marionette	WARN	TLS certificate errors will be ignored for this session
+1614263820654	Marionette	ERROR	[18] No reply from Marionette:Register
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+console.error: (new TypeError("container.node.targetFront is null", "resource://devtools/client/inspector/markup/markup.js", 2241))
+console.error: (new TypeError("parent is null", "resource://devtools/client/inspector/shared/style-change-tracker.js", 67))
+TypeError: parent is null: canMutationImpactCurrentStyles@resource://devtools/client/inspector/shared/style-change-tracker.js:67:24
+onMutations@resource://devtools/client/inspector/shared/style-change-tracker.js:84:41
+_emit@resource://devtools/shared/event-emitter.js:226:34
+emit@resource://devtools/shared/event-emitter.js:172:18
+emit@resource://devtools/shared/event-emitter.js:324:18
+getMutations@resource://devtools/client/fronts/walker.js:358:10
+
+console.error: (new TypeError("container.node.targetFront is null", "resource://devtools/client/inspector/markup/markup.js", 2241))
+console.error: (new TypeError("parent is null", "resource://devtools/client/inspector/shared/style-change-tracker.js", 67))
+TypeError: parent is null: canMutationImpactCurrentStyles@resource://devtools/client/inspector/shared/style-change-tracker.js:67:24
+onMutations@resource://devtools/client/inspector/shared/style-change-tracker.js:84:41
+_emit@resource://devtools/shared/event-emitter.js:226:34
+emit@resource://devtools/shared/event-emitter.js:172:18
+emit@resource://devtools/shared/event-emitter.js:324:18
+getMutations@resource://devtools/client/fronts/walker.js:358:10
+
+console.error: "Panel inspector:" (new TypeError("event is undefined", "resource://devtools/client/shared/telemetry.js", 697))
+console.warn: "Async method failed in safeAsyncMethod" (new Error("Connection closed, pending request to server0.conn0.child3/customhighlighter89, type hide failed\n\nRequest stack:\nrequest@resource://devtools/shared/protocol/Front.js:288:14\ngenerateRequestMethods/</frontProto[name]@resource://devtools/shared/protocol/Front/FrontClassWithSpec.js:46:19\nhide@resource://devtools/client/fronts/highlighters.js:32:18\nexports.safeAsyncMethod/<@resource://devtools/shared/async-utils.js:57:25\nhideHighlighterType@resource://devtools/client/inspector/shared/highlighters-overlay.js:469:23\nexports.safeAsyncMethod/<@resource://devtools/shared/async-utils.js:57:25\nscheduleAutoHideHighlighterType/timer<@resource://devtools/client/inspector/shared/highlighters-overlay.js:441:18\nnotify@resource://gre/modules/Timer.jsm:62:17\npermitUnload@chrome://global/content/elements/browser-custom-element.js:1690:21\nCanCloseWindow@chrome://browser/content/browser.js:7869:36\nWindowIsClosing@chrome://browser/content/browser.js:7886:7\nBrowserTryToCloseWindow@chrome://browser/content/browser.js:3131:7\noncommand@chrome://browser/content/browser.xhtml:1:1\n", "resource://devtools/shared/protocol/Front.js", 99))
+1614264084257	Marionette	INFO	Stopped listening on port 64482
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1614264088789	geckodriver	INFO	Listening on 127.0.0.1:64578
+1614264091920	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofilezwwU4f"
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1614264096037	Marionette	INFO	Listening on port 64586
+1614264096157	Marionette	WARN	TLS certificate errors will be ignored for this session
+1614264096206	Marionette	ERROR	[18] No reply from Marionette:Register
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+JavaScript error: , line 0: NetworkError: FetchEvent.respondWith() Promise rejected
+JavaScript error: , line 0: NetworkError: FetchEvent.respondWith() Promise rejected
+JavaScript error: , line 0: NetworkError: FetchEvent.respondWith() Promise rejected
+JavaScript error: , line 0: NetworkError: FetchEvent.respondWith() Promise rejected
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+Handler function threw an exception: [Exception... "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannelInternal.remoteAddress]"  nsresult: "0x80040111 (NS_ERROR_NOT_AVAILABLE)"  location: "JS frame :: resource://devtools/server/actors/network-monitor/network-observer.js :: _onResponseHeader :: line 1163"  data: no]
+Stack: _onResponseHeader@resource://devtools/server/actors/network-monitor/network-observer.js:1163:5
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:629:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:738:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1163, column: 0
+console.error: ({})
+Handler function threw an exception: TypeError: undefined has no properties
+Stack: _getWaitTiming@resource://devtools/server/actors/network-monitor/network-observer.js:1262:1
+_setupHarTimings@resource://devtools/server/actors/network-monitor/network-observer.js:1487:28
+_onTransactionClose@resource://devtools/server/actors/network-monitor/network-observer.js:1210:27
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:632:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:738:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1262, column: 1
+console.error: (new TypeError("undefined has no properties", "resource://devtools/server/actors/network-monitor/network-observer.js", 1262))
+1614265010796	Marionette	INFO	Stopped listening on port 64586
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1614265012881	geckodriver	INFO	Listening on 127.0.0.1:49256
+1614265015987	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofilet2xygX"
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1614265020217	Marionette	INFO	Listening on port 49264
+1614265020330	Marionette	WARN	TLS certificate errors will be ignored for this session
+1614265020357	Marionette	ERROR	[21] No reply from Marionette:Register
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+console.error: "Panel inspector:" (new TypeError("event is undefined", "resource://devtools/client/shared/telemetry.js", 697))
+1614265429898	Marionette	INFO	Stopped listening on port 49264
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1614265430162	geckodriver	INFO	Listening on 127.0.0.1:49457
+1614265433283	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileugkVzn"
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1614265437801	Marionette	INFO	Listening on port 49465
+1614265438232	Marionette	WARN	TLS certificate errors will be ignored for this session
+1614265438313	Marionette	ERROR	[18] No reply from Marionette:Register
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+1614265577866	Marionette	ERROR	[38] No reply from Marionette:Register
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.513916447b41999e9e9b.js, line 1: unreachable code after return statement
+Handler function threw an exception: [Exception... "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsIHttpChannelInternal.remoteAddress]"  nsresult: "0x80040111 (NS_ERROR_NOT_AVAILABLE)"  location: "JS frame :: resource://devtools/server/actors/network-monitor/network-observer.js :: _onResponseHeader :: line 1163"  data: no]
+Stack: _onResponseHeader@resource://devtools/server/actors/network-monitor/network-observer.js:1163:5
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:629:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:738:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1163, column: 0
+console.error: ({})
+Handler function threw an exception: TypeError: undefined has no properties
+Stack: _getWaitTiming@resource://devtools/server/actors/network-monitor/network-observer.js:1262:1
+_setupHarTimings@resource://devtools/server/actors/network-monitor/network-observer.js:1487:28
+_onTransactionClose@resource://devtools/server/actors/network-monitor/network-observer.js:1210:27
+_dispatchActivity@resource://devtools/server/actors/network-monitor/network-observer.js:632:14
+NetworkObserver.prototype.observeActivity<@resource://devtools/server/actors/network-monitor/network-observer.js:738:12
+exports.makeInfallible/<@resource://devtools/shared/ThreadSafeDevToolsUtils.js:103:22
+Line: 1262, column: 1
+console.error: (new TypeError("undefined has no properties", "resource://devtools/server/actors/network-monitor/network-observer.js", 1262))
+console.error: (new TypeError("parent is null", "resource://devtools/client/inspector/shared/style-change-tracker.js", 67))
+TypeError: parent is null: canMutationImpactCurrentStyles@resource://devtools/client/inspector/shared/style-change-tracker.js:67:24
+onMutations@resource://devtools/client/inspector/shared/style-change-tracker.js:84:41
+_emit@resource://devtools/shared/event-emitter.js:226:34
+emit@resource://devtools/shared/event-emitter.js:172:18
+emit@resource://devtools/shared/event-emitter.js:324:18
+getMutations@resource://devtools/client/fronts/walker.js:358:10
+
+console.error: "Error while calling actor 'pagestyle's method 'getLayout'" "node is null"
+console.error: "getLayout@resource://devtools/server/actors/page-style.js:1003:5\nhandler@resource://devtools/shared/protocol/Actor.js:172:37\nonPacket@resource://devtools/server/devtools-server-connection.js:379:58\nreceiveMessage@resource://devtools/shared/transport/child-transport.js:68:16\n"
+console.error: (new TypeError("container.node.targetFront is null", "resource://devtools/client/inspector/markup/markup.js", 2241))
+console.error: (new TypeError("container.node.targetFront is null", "resource://devtools/client/inspector/markup/markup.js", 2241))
+console.error: (new TypeError("container.node.targetFront is null", "resource://devtools/client/inspector/markup/markup.js", 2241))
+console.error: (new Error("Protocol error (TypeError): node is null from: server0.conn0.child3/pagestyle26 (resource://devtools/server/actors/page-style.js:1003:5)", "resource://devtools/shared/protocol/Front.js", 361))
+1614265688268	Marionette	INFO	Stopped listening on port 49465
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+

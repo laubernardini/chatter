@@ -645,6 +645,7 @@ def make_inbound_messages(driver, selectors, messages):
                         pass
             
             if is_image or is_audio:
+                print("Intentando descargar imagen")
                 time.sleep(2)
                 m.send_keys(Keys.ARROW_RIGHT)
                 downl = None
@@ -654,7 +655,8 @@ def make_inbound_messages(driver, selectors, messages):
                     try:
                         downl = driver.find_element_by_xpath(selectors["download"])
                         loaded = True
-                    except:
+                    except Exception as e:
+                        print(e)
                         pass
                 
                 if downl:
