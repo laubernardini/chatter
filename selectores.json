@@ -53,7 +53,7 @@
     "audio_button": ".//span[@data-testid='audio-play']",
     "audio_status": ".//span[@data-testid='ptt-status']",
     "audio_icon": ".//span[@data-testid='audio-file']",
-    "audio_download": ".//span[@data-testid='audio-download']",
+    "audio_download": ".//button[@class='_28Dfr']",
 
     "missed_call_container": "//div[@class='GDTQm _397qe focusable-list-item']",
     "missed_call": ".//span[@data-testid='miss']",
