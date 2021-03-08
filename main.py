@@ -162,6 +162,7 @@ def sync(driver, selectors):
 
     # Restablecer chats
     bot.CHATS = []
+    bot.CURRENT_CHAT = {}
 
 # Managers
 def manage_response(driver, selectors):
