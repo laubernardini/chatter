@@ -37,9 +37,9 @@
     "attach_inbound_class": "_1B_Jc",
     "encrypted_chat": ".//span[@data-testid='lock-small']",
 
-    "chat_info": "//span[@class='_1Kn3o _3O1wx']",
+    "chat_info": "//span[@class='_1Kn3o _1AJnI _29Iga']",
     "chat_info_close": "//button[@class='_27F2N']",
-    "chat_info_elements": "//span[@class='_3weD7 _3O1wx']",
+    "chat_info_elements": "//span[@class='_3weD7 _1AJnI _29Iga']",
 
     "in_response_group_class": "div._26iqs", 
     "in_response_text": ".//span[@class='quoted-mention _3-8er']",
