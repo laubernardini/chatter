@@ -371,15 +371,15 @@ def notification_clicker(driver, selectors):
                             is_group = True
                     except:
                         try:
-                            done = None
-                            while not done:
+                            done_1 = None
+                            while not done_1:
                                 try:
                                     event = parent.find_element_by_xpath(selectors["group_event"])
                                     e_title = event.get_attribute("title")
                                     if e_title != '':
                                         if (' unió a' in e_title) or (' añadió a' in e_title) or (' salió del grupo' in e_title):
                                             is_group = True
-                                        done = True
+                                        done_1 = True
                                 except:
                                     pass
                         except:
