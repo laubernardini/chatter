@@ -255,7 +255,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             #print("Archivo listo")
 
             # Escribir mensaje
-            if masive:
+            if False:#masive:
                 # "Teclear" mensaje
                 for letra in mensaje:
                     if letra != '`':
