@@ -367,7 +367,7 @@ def notification_clicker(driver, selectors):
                 except:
                     try:
                         writing = parent.find_element_by_xpath(selectors["writing"])
-                        if ' escribiendo' in (writing.get_attribute("title")):
+                        if ' escribiendo' in (writing.get_attribute("title")) or ' typing' in (writing.get_attribute("title")):
                             is_group = True
                     except:
                         try:
