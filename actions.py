@@ -510,7 +510,7 @@ def get_inbounds(driver, selectors):
                     first_msg.send_keys(Keys.TAB)
                     first_msg = driver.switch_to.active_element
                 if bot.SHOW_EX_PRINTS:
-                    print("Obteniendo primer mensaje")
+                    print("Obteniendo primer mensaje", first_msg.get_attribute("class"))
                 
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element

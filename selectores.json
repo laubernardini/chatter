@@ -1,6 +1,6 @@
 {
     "qr": "//div[@class='_3jid7']",
-    "refresh_qr": "//div[@class='_3DeCQ']",
+    "refresh_qr": "//button[@class='_3DeCQ']",
 
     "search": "//div[@class='_2_1wd copyable-text selectable-text'][@data-tab='3']",
     "searching": "//div[@class='_1Z51l']",
@@ -15,7 +15,7 @@
 
     "message": "//div[@class='_2_1wd copyable-text selectable-text'][@data-tab='6']",
     "input_class": "_2_1wd copyable-text selectable-text",
-    "message_attached": "//div[@class='_1JAUF _3to_- _3Foy4']/div[2]",
+    "message_attached": "//div[@class='_1JAUF _3to_- _3Foy4']/div[1]",
     "attachments": "//div[@title='Adjuntar']",
 
     "download": "//div[@aria-label='Descargar'][@class='_11srW _2xxet _3lsW-']",
@@ -26,7 +26,7 @@
     "attach_file": "//input[@accept='*']",
     "file_submit": "//div[@class='SncVf _3doiV']",
 
-    "unread": "//div[@class='_2WwJ0 focusable-list-item']",
+    "unread": "//div[@class='_2WwJ0 focusable-list-item']", 
     "archive": "//div[@class='_11srW _2xxet'][@aria-label='Archivar chat']",
 
     "message_in_container": "div.GDTQm.message-in",
@@ -53,7 +53,7 @@
     "audio_button": ".//span[@data-testid='audio-play']",
     "audio_status": ".//span[@data-testid='ptt-status']",
     "audio_icon": ".//span[@data-testid='audio-file']",
-    "audio_download": ".//button[@class='_28Dfr']",
+    "audio_download": ".//button[@class='_2HtgQ']",
 
     "missed_call_container": "//div[@class='GDTQm _397qe focusable-list-item']",
     "missed_call": ".//span[@data-testid='miss']",

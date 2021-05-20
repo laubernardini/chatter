@@ -68,6 +68,7 @@ def get_last_msg(celular):
                 if content["detail"]:
                     result = content["detail"]
             else:
+                r = ""
                 if bot.SHOW_ERRORS:
                     print("Error obteniendo chats")
                     print("  Detalle: ")
@@ -158,6 +159,9 @@ def get_response():
             content = json.loads(r.content)
             if content["request_status"] == 'success':
                 r = content["detail"]
+            else:
+                r = {}
+
         else:
             if bot.SHOW_ERRORS:
                 print("Error obteniendo respuesta")
@@ -276,6 +280,8 @@ def get_masiv():
             content = json.loads(r.content)
             if content["request_status"] == 'success':
                 r = content["detail"]
+            else:
+                r = {}
         else:
             if bot.SHOW_ERRORS:
                 print("Error obteniendo mensaje masivo")
