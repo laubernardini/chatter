@@ -506,11 +506,11 @@ def get_inbounds(driver, selectors):
                 pass
 
             while not first_msg.get_attribute("data-id"):
-                if first_msg.get_attribute("class") == selectors["input_class"]:
+                if first_msg.get_attribute("class") == selectors["input_class"] or first_msg.get_attribute("class") == selectors["voice_record_class"]:
                     first_msg.send_keys(Keys.TAB)
                     first_msg = driver.switch_to.active_element
                 if bot.SHOW_EX_PRINTS:
-                    print("Obteniendo primer mensaje", first_msg.get_attribute("class"))
+                    print("Obteniendo primer mensaje")
                 
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element

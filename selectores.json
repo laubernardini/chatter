@@ -15,6 +15,7 @@
 
     "message": "//div[@class='_2_1wd copyable-text selectable-text'][@data-tab='6']",
     "input_class": "_2_1wd copyable-text selectable-text",
+    "voice_record_class": "_2_1wd copyable-text selectable-text",
     "message_attached": "//div[@class='_1JAUF _3to_- _3Foy4']/div[1]",
     "attachments": "//div[@title='Adjuntar']",
 
