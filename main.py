@@ -67,7 +67,7 @@ def start():
         actions.clear_cache()
 
         # Actividad forzada
-        if datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
+        if False:#datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
             #if bot.SHOW_EX_PRINTS:
             print("Forzando actividad...")
             driver.refresh()

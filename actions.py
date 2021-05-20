@@ -816,7 +816,7 @@ def clear_cache():
             print("El caché entrante no se puede limpiar/ya está limpio")
 
     try:
-        shutil.rmtree('file_cache')
+        #shutil.rmtree('file_cache')
         if bot.SHOW_EX_PRINTS:
             print("Caché limpiado")
     except Exception as e:
