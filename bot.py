@@ -1,7 +1,7 @@
 import os
 
 # Datos del bot
-BOT_PK = "14"
+BOT_PK = "45"
 THREAD = "1"
 STATE = "INICIANDO"
 RESPONDE = "NO"
