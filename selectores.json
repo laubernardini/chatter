@@ -1,6 +1,7 @@
 {
     "qr": "//div[@class='_3jid7']",
     "refresh_qr": "//button[@class='_3DeCQ']",
+    "phone_disconected": "//span[@data-testid='alert-phone']",
 
     "search": "//div[@class='_2_1wd copyable-text selectable-text'][@data-tab='3']",
     "searching": "//div[@class='_1Z51l']",

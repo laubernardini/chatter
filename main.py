@@ -54,15 +54,28 @@ def start():
         if bot.STATE != 'ERROR':
             manage_inbounds(driver, selectors)
 
-        # Outbounds
-        if (bot.RESPONDE == "SI" or bot.AUTO == "SI") and bot.STATE != 'ERROR':
-            manage_response(driver=driver, selectors=selectors)
-        
-        # Masive
-        if bot.MASIVO == "SI" and bot.STATE != 'ERROR':
-            manage_masiv(driver=driver, selectors=selectors)
-            time.sleep(1)
-        
+        # Buscar desconexión de celular
+        phone_disconected = False
+        try:
+            driver.find_element_by_xpath(selectors["phone_disconected"])
+            phone_disconected = True
+            if bot.SHOW_EX_PRINTS:
+                print("Teléfono sin conexión, envíos en pausa")
+        except:
+            pass
+
+        if not phone_disconected:
+            # Outbounds
+            if (bot.RESPONDE == "SI" or bot.AUTO == "SI") and bot.STATE != 'ERROR':
+                manage_response(driver=driver, selectors=selectors)
+            
+            # Masive
+            if bot.MASIVO == "SI" and bot.STATE != 'ERROR':
+                manage_masiv(driver=driver, selectors=selectors)
+                time.sleep(1)
+        else:
+            time.sleep(3)
+            
         # Limpiar caché
         actions.clear_cache()
 
