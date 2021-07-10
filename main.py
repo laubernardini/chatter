@@ -224,7 +224,7 @@ def manage_masiv(driver, selectors):
     r = apis.get_masiv()
     if r:
         # Preparar mensaje masivo
-        mensaje = r.get("mensaje", "").replace("@apin", r.get("nombre", "")).replace("@apic", r.get("celular", "")).replace("@apivu", r.get("v_uni", ""))
+        mensaje = r.get("mensaje", "")
 
         result = actions.send_message(
             mensaje=mensaje, 
