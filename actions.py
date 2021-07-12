@@ -506,6 +506,7 @@ def get_inbounds(driver, selectors):
                 pass
 
             while not first_msg.get_attribute("data-id"):
+                print(first_msg.get_attribute("class"))
                 if first_msg.get_attribute("class") == selectors["input_class"] or first_msg.get_attribute("class") == selectors["voice_record_class"]:
                     first_msg.send_keys(Keys.TAB)
                     first_msg = driver.switch_to.active_element

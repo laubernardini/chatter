@@ -16,11 +16,11 @@
 
     "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='6']",
     "input_class": "_13NKt copyable-text selectable-text",
-    "voice_record_class": "_1KJY9",
+    "voice_record_class": "_30ggS",
     "message_attached": "//div[@class='_1UWac Z2O8p oHEu9']/div[2]",
     "attachments": "//div[@title='Adjuntar']",
 
-    "download": "//div[@aria-label='Descargar'][@class=_2oldI dJxPU _3gcnK']",
+    "download": "//div[@aria-label='Descargar'][@class='_2oldI dJxPU _3gcnK']",
     "download_media": "//div[@title='Descargar'][@role='button']",
     "close_media": "//div[@title='Cerrar'][@role='button']",
     "preview": "//div[@class='_1FrBz']",
@@ -36,7 +36,7 @@
     "message_out_container": "div._2wUmf.message-out",
     "message_out_class": "message-out",
     "chat_separator_class": "_2wUmf V-zSs focusable-list-item",
-    "attach_inbound_class": "_1B_Jc",
+    "attach_inbound_class": "_1q25n",
     "encrypted_chat": ".//span[@data-testid='lock-small']",
 
     "chat_info": "//span[@class='_3NUK1 VWPRY _1lF7t']",
@@ -65,7 +65,7 @@
     "video_button": ".//span[@data-testid='media-play']",
     "thumbnail": ".//img[@class='_1WrWf mFB5y']",
 
-    "attach_inbound_download": ".//button[@class='dIMN_ _3yiLE']",
+    "attach_inbound_download": ".//button[@class='UQz9- _1_Wyj']",
     "no_file_ok_button": "//div[@class='_20C5O _2Zdgs'][@role='button']",
 
     "emogi_container": ".//span[@class='_3R6rC']",

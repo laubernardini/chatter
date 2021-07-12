@@ -1,7 +1,7 @@
 import os
 
 # Datos del bot
-BOT_PK = "42"
+BOT_PK = "1"
 THREAD = "1"
 STATE = "INICIANDO"
 RESPONDE = "NO"
@@ -11,7 +11,7 @@ AUTO = "NO"
 # Datos del server
 SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"#
 FILE_SERVER = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
-FILE_SERVER_2 = "https://apicloud.com.ar"#"http://localhost:8000"#
+FILE_SERVER_2 = "http://localhost:8000"#"https://apicloud.com.ar"#
 
 # Variables de ejecución
 OS_SLASH = "/" # / -> linux \\ -> windows
