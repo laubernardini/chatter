@@ -10,8 +10,8 @@ AUTO = "NO"
 
 # Datos del server
 SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"#
-FILE_SERVER = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
-FILE_SERVER_2 = "https://apicloud.com.ar"#"http://localhost:8000"#
+FILE_SERVER = "https://apicloud.com.ar"#"http://localhost:8000"#
+FILE_SERVER_2 = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
 
 # Variables de ejecución
 OS_SLASH = "/" # / -> linux \\ -> windows
