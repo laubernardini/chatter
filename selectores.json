@@ -73,7 +73,7 @@
     "message_text1": ".//span[@class='i0jNr selectable-text copyable-text']/span[1]",
 
     "notification": "//div[@class='_1pJ9J']",
-    "sender_name": ".//span[@class='_ccCW FqYAR i0jNr']",
+    "sender_name": ".//span[@class='FqYAR i0jNr']",
     "writing": ".//span[@class='_16h0X _ccCW i0jNr']",
     "group_event": ".//span[@class='Hy9nV']",
     "chat_name_notification": ".//span[@class='_ccCW _1adfa i0jNr']",
