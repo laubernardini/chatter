@@ -8252,3 +8252,16 @@ getMarionetteCommandsActorProxy/get/<@chrome://marionette/content/actors/Marione
 ###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
 
 1626122481975	Marionette	INFO	Stopped listening on port 63108
+1626122501241	geckodriver	INFO	Listening on 127.0.0.1:63816
+1626122504283	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileHOadQA"
+1626122504902	Marionette	INFO	Marionette enabled
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileHOadQA\\search.json.mozlz4", (void 0)))
+1626122508170	Marionette	INFO	Listening on port 63824
+1626122508530	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.4b9c044a48c9fc5005b0.js, line 19: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.4b9c044a48c9fc5005b0.js, line 19: unreachable code after return statement
+1626122907277	Marionette	INFO	Stopped listening on port 63824
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
