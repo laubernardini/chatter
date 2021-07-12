@@ -355,9 +355,12 @@ def notification_clicker(driver, selectors):
     done = None
     try:
         notifications = driver.find_elements_by_xpath(selectors["notification"])
+        print("No leidos: ", len(notifications))
         for n in notifications:
+            print("aria-label: ", n.get_attribute("aria-label") == None)
             if n.get_attribute("aria-label") == None:
                 parent = n.find_element_by_xpath('.//..//..//..//..')
+                print("parent class: ", parent.get_attribute("class"))
                 
                 # Si es chat de grupo, continuar con la siguiente notificación
                 is_group = False
