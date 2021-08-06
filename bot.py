@@ -7,6 +7,7 @@ STATE = "INICIANDO"
 RESPONDE = "NO"
 MASIVO = "NO"
 AUTO = "NO"
+PHONE = ""
 
 # Datos del server
 SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"#
@@ -21,7 +22,6 @@ MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime'
 START_DATE = None
 FORCED_ACTIVITY_FREQUENCY = 240 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 CALL_RESPONSE = "-*IMPORTANTE*-\nEn este número -*no recibimos llamadas*-. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
-
 
 # Log
 SHOW_ERRORS = True

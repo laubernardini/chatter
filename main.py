@@ -173,9 +173,30 @@ def sync(driver, selectors):
     print("\nSincronización completada!")
     send_report()
 
+    # Buscar desconexión de celular
+    phone_disconected = True
+    while phone_disconected:
+        try:
+            driver.find_element_by_xpath(selectors["phone_disconected"])
+            if bot.SHOW_EX_PRINTS:
+                print("Teléfono sin conexión, envíos en pausa")
+            time.sleep(1)
+        except:
+            phone_disconected = False
+
+    time.sleep(2)
+    get_own_phone(driver, selectors)
+
     # Restablecer chats
     bot.CHATS = []
     bot.CURRENT_CHAT = {}
+
+def get_own_phone(driver, selectors):
+    driver.find_element_by_xpath(selectors["profile"]).click()
+    time.sleep(3)
+    celular = driver.find_element_by_xpath(selectors["own_phone"]).text
+    bot.PHONE = actions.cel_formatter(celular)
+    driver.find_element_by_xpath(selectors["back_button"]).click()
 
 # Managers
 def manage_response(driver, selectors):

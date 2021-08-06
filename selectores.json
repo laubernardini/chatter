@@ -2,10 +2,13 @@
     "qr": "//div[@class='_2UwZ_']",
     "refresh_qr": "//button[@class='_2znac']",
     "phone_disconected": "//span[@data-testid='alert-phone']",
+    "profile": "//div[@class='_3GlyB']",
+    "own_phone": "//div[@class='_1zywm']",
 
     "search": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='3']",
     "searching": "//div[@class='_1JFry']",
     "search_result_text": ".//span[@class='i0jNr']",
+    "back_button": "//button[@class='_18eKe']",
 
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
     "contact_name": "//span[@class='_2UVLe i0jNr selectable-text copyable-text']",
@@ -42,6 +45,7 @@
     "chat_info": "//span[@class='_3NUK1 VWPRY _1lF7t']",
     "chat_info_close": "//button[@class='_18eKe']",
     "chat_info_elements": "//span[@class='_2MNpf VWPRY _1lF7t']",
+    "chat_init": "//div[@class='_1bpDE']",
 
     "in_response_group_class": "div.hooVq ",
     "in_response_text": ".//span[@class='quoted-mention i0jNr']",
@@ -55,7 +59,7 @@
     "audio_button": ".//span[@data-testid='audio-play']",
     "audio_status": ".//span[@data-testid='ptt-status']",
     "audio_icon": ".//span[@data-testid='audio-file']",
-    "audio_download": ".//button[@class='_3y4sD']",
+    "audio_download": ".//button[@class='_2oSLN']",
 
     "missed_call_container": "//div[@class='_2wUmf V-zSs focusable-list-item']",
     "missed_call": ".//span[@data-testid='miss']",
@@ -71,6 +75,7 @@
     "emogi_container": ".//span[@class='_3R6rC']",
     "message_text": ".//span[@class='i0jNr selectable-text invisible-space copyable-text']/span[1]",
     "message_text1": ".//span[@class='i0jNr selectable-text copyable-text']/span[1]",
+    "message_link": ".//a[@class='i0jNr selectable-text copyable-text']",
 
     "notification": "//div[@class='_1pJ9J']",
     "sender_name": ".//span[@class='FqYAR i0jNr']",

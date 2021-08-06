@@ -1,11 +1,6 @@
-import os
-import shutil
-import re
+import os, shutil, re, time, asyncio
 
-import bot
-import apis
-import time
-import asyncio
+import bot, apis
 from datetime import datetime, timedelta
 
 from selenium.webdriver.common.keys import Keys
@@ -166,7 +161,50 @@ def get_inbound_file():
 def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
     try:
         # Obtener chat
-        elem = search(driver, selectors, celular)
+        elem = None#search(driver, selectors, celular)
+
+        if not elem:
+            clear_elem(driver, selectors, "search")
+            search(driver, selectors, bot.PHONE)
+            clear_elem(driver, selectors, "search")
+            time.sleep(1)
+            done = None
+            while not done:
+                try:
+                    own_chat_message = driver.find_element_by_xpath(selectors["message"])
+                    done = True
+                except:
+                    time.sleep(1)
+            
+            time.sleep(1)
+            own_chat_message.send_keys("https://wa.me/" + celular)
+            own_chat_message.send_keys(Keys.ENTER)
+            
+            done = None
+            while not done:
+                try:
+                    driver.find_element_by_xpath("//a[@href='https://wa.me/" + celular + "']").click()
+                    done = True
+                except:
+                    time.sleep(1)
+            
+            done = None
+            while not done:
+                try:
+                    driver.find_element_by_xpath(selectors["chat_init"])
+                    time.sleep(1)
+                except:
+                    done = True
+            
+            try:
+                driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                time.sleep(1)
+                elem = None
+            except:
+                if bot.SHOW_EX_PRINTS:
+                    print("Nuevo chat iniciado")
+                elem = True
+
         if elem:
             # Abrir chat (si es un chat vacío)
             try:
@@ -266,7 +304,6 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             else:
                 # Pegar mensaje
                 mensaje = mensaje.split("`")
-                print('\n', mensaje, '\n')
                 for m in mensaje:
                     message.send_keys(m)
                     message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
