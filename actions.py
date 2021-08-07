@@ -200,18 +200,22 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             done = None
             while not done:
                 try:
-                    driver.find_element_by_xpath(selectors["modal-text"])
+                    # Comprobar chat abierto
+                    own_chat_message.send_keys(Keys.BACKSPACE)
+                    done = True
+                    elem = True
+                    if bot.SHOW_EX_PRINTS:
+                        print("Nuevo chat iniciado")
+                except:
                     try:
+                        if bot.SHOW_EX_PRINTS:
+                            print("Cerrando pop-up de número inválido")
                         driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
                         done = True
                         elem = None
                     except:
                         time.sleep(1)
-                except:
-                    done = True
-                    elem = True
-                    if bot.SHOW_EX_PRINTS:
-                        print("Nuevo chat iniciado")
+                    
 
         if elem:
             # Abrir chat (si es un chat vacío)
