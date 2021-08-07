@@ -160,11 +160,6 @@ def get_inbound_file():
 
 def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
     try:
-        try:
-            driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
-        except:
-            pass
-            
         # Obtener chat
         elem = None#search(driver, selectors, celular)
 
@@ -209,6 +204,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                     try:
                         time.sleep(1)
                         driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                        print("Popup cerrado, inicio")
                         done = True
                         elem = None
                     except:
@@ -218,7 +214,6 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                     elem = True
                     if bot.SHOW_EX_PRINTS:
                         print("Nuevo chat iniciado")
-
 
         if elem:
             # Abrir chat (si es un chat vacío)
@@ -370,6 +365,11 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 "estado": "ERROR", 
                 "wa_id": None
             }
+            try:
+                driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                print("Popup cerrado, final")
+            except:
+                pass
             return result
     except Exception as e:
         if bot.SHOW_ERRORS:
