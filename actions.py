@@ -160,6 +160,11 @@ def get_inbound_file():
 
 def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
     try:
+        try:
+            driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+        except:
+            pass
+            
         # Obtener chat
         elem = None#search(driver, selectors, celular)
 
@@ -202,6 +207,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 try:
                     driver.find_element_by_xpath(selectors["modal-pop-up"])
                     try:
+                        time.sleep(1)
                         driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
                         done = True
                         elem = None
