@@ -201,7 +201,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             while not done:
                 try:
                     # Comprobar chat abierto
-                    own_chat_message.send_keys(Keys.BACKSPACE)
+                    driver.find_element_by_xpath(selectors["message"]).send_keys(Keys.BACKSPACE)
                     done = True
                     elem = True
                     if bot.SHOW_EX_PRINTS:
