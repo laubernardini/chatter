@@ -71,6 +71,7 @@
 
     "attach_inbound_download": ".//button[@class='UQz9- _1_Wyj']",
     "no_file_ok_button": "//div[@class='_20C5O _2Zdgs'][@role='button']",
+    "modal-popup": "//div[@data-animate-modal-backdrop='true']",
 
     "emogi_container": ".//span[@class='_3R6rC']",
     "message_text": ".//span[@class='i0jNr selectable-text invisible-space copyable-text']/span[1]",

@@ -163,6 +163,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
         # Obtener chat
         elem = None#search(driver, selectors, celular)
 
+        # Iniciar char nuevo
         if not elem:
             clear_elem(driver, selectors, "search")
             search(driver, selectors, bot.PHONE)
@@ -192,18 +193,26 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             while not done:
                 try:
                     driver.find_element_by_xpath(selectors["chat_init"])
-                    time.sleep(1)
                 except:
                     done = True
+                time.sleep(2)
             
-            try:
-                driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
-                time.sleep(1)
-                elem = None
-            except:
-                if bot.SHOW_EX_PRINTS:
-                    print("Nuevo chat iniciado")
-                elem = True
+            done = None
+            while not done:
+                try:
+                    driver.find_element_by_xpath(selectors["modal-pop-up"])
+                    try:
+                        driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                        done = True
+                        elem = None
+                    except:
+                        time.sleep(1)
+                except:
+                    done = True
+                    elem = True
+                    if bot.SHOW_EX_PRINTS:
+                        print("Nuevo chat iniciado")
+
 
         if elem:
             # Abrir chat (si es un chat vacío)
