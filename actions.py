@@ -195,16 +195,14 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                     driver.find_element_by_xpath(selectors["chat_init"])
                 except:
                     done = True
-                time.sleep(2)
+                time.sleep(3)
             
             done = None
             while not done:
                 try:
-                    driver.find_element_by_xpath(selectors["modal-pop-up"])
+                    driver.find_element_by_xpath(selectors["modal-text"])
                     try:
-                        time.sleep(1)
                         driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
-                        print("Popup cerrado, inicio")
                         done = True
                         elem = None
                     except:
@@ -365,11 +363,6 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 "estado": "ERROR", 
                 "wa_id": None
             }
-            try:
-                driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
-                print("Popup cerrado, final")
-            except:
-                pass
             return result
     except Exception as e:
         if bot.SHOW_ERRORS:
