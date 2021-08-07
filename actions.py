@@ -161,7 +161,7 @@ def get_inbound_file():
 def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
     try:
         # Obtener chat
-        elem = None#search(driver, selectors, celular)
+        elem = search(driver, selectors, celular)
 
         # Iniciar char nuevo
         if not elem:
@@ -217,8 +217,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                         elem = None
                     except:
                         time.sleep(1)
-                    
-
+        
         if elem:
             # Abrir chat (si es un chat vacío)
             try:
