@@ -664,3 +664,132 @@ JavaScript error: resource://gre/modules/Sqlite.jsm, line 1030: Error: Sqlite.js
 
 ###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
 
+1628691599957	geckodriver	INFO	Listening on 127.0.0.1:64520
+1628691603027	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileNRVUVO"
+1628691603858	Marionette	INFO	Marionette enabled
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileNRVUVO\\search.json.mozlz4", (void 0)))
+1628691608060	Marionette	INFO	Listening on port 64528
+1628691608430	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+JavaScript error: resource://gre/actors/AutoCompleteChild.jsm, line 125: Error: Invalid autocomplete selectedIndex
+console.error: services.settings: 
+  main/doh-providers Signature failed  InvalidSignatureError: Invalid content signature (main/doh-providers)
+console.error: services.settings: 
+  main/doh-providers local data was corrupted
+console.warn: services.settings: main/doh-providers Signature verified failed. Retry from scratch
+console.error: services.settings: 
+  main/doh-config Signature failed  InvalidSignatureError: Invalid content signature (main/doh-config)
+console.error: services.settings: 
+  main/doh-config local data was corrupted
+console.warn: services.settings: main/doh-config Signature verified failed. Retry from scratch
+1628692014633	Marionette	INFO	Stopped listening on port 64521628692016411	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileIiCz85"
+1628692017091	Marionette	INFO	Marionette enabled
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileIiCz85\\search.json.mozlz4", (void 0)))
+1628692020780	Marionette	INFO	Listening on port 61258
+1628692021313	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+[Child 844, MediaDecoderStateMachine #2] WARNING: 1b30cb63ac0 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #2] WARNING: 1b30cb63ac0 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #2] WARNING: 1b48e3f3d60 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #2] WARNING: 1b48e3f3d60 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+console.error: services.settings: 
+  main/doh-providers Signature failed  InvalidSignatureError: Invalid content signature (main/doh-providers)
+console.error: services.settings: 
+  main/doh-providers local data was corrupted
+console.warn: services.settings: main/doh-providers Signature verified failed. Retry from scratch
+console.error: services.settings: 
+  main/doh-config Signature failed  InvalidSignatureError: Invalid content signature (main/doh-config)
+console.error: services.settings: 
+  main/doh-config local data was corrupted
+console.warn: services.settings: main/doh-config Signature verified failed. Retry from scratch
+console.log: WebExtensions: reset-default-search: starting.
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+[Child 844, MediaDecoderStateMachine #3] WARNING: 1b491e8cd60 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #3] WARNING: 1b30cb63660 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #3] WARNING: 1b30cb63660 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #3] WARNING: 1b30bd49900 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #3] WARNING: 1b30bd49900 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #3] WARNING: 1b48e47e3c0 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #3] WARNING: 1b48e47e3c0 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 844, MediaDecoderStateMachine #3] WARNING: 1b48e47eba0 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+1628693175621	Marionette	INFO	Stopped listening on port 61258
+JavaScript error: resource:///modules/Interactions.jsm, line 209: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+tFoundError("Could not open the file at C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofile6T5YJO\\search.json.mozlz4", (void 0)))
+1628693083344	Marionette	INFO	Listening on port 62266
+1628693083469	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+1628693371920	Marionette	INFO	Stopped listening on port 62261628693372270	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofile2mVnVu"
+1628693373006	Marionette	INFO	Marionette enabled
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofile2mVnVu\\search.json.mozlz4", (void 0)))
+1628693376540	Marionette	INFO	Listening on port 51077
+1628693376578	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+[Child 3680, MediaDecoderStateMachine #2] WARNING: 15b3959fba0 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 3680, MediaDecoderStateMachine #2] WARNING: 15b3959fba0 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+console.error: services.settings: 
+  main/doh-providers Signature failed  InvalidSignatureError: Invalid content signature (main/doh-providers)
+console.error: services.settings: 
+  main/doh-providers local data was corrupted
+console.warn: services.settings: main/doh-providers Signature verified failed. Retry from scratch
+console.error: services.settings: 
+  main/doh-config Signature failed  InvalidSignatureError: Invalid content signature (main/doh-config)
+console.error: services.settings: 
+  main/doh-config local data was corrupted
+console.warn: services.settings: main/doh-config Signature verified failed. Retry from scratch
+[Child 3680, MediaDecoderStateMachine #3] WARNING: 15cbbae39e0 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 3680, MediaDecoderStateMachine #3] WARNING: 15cbbae39e0 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+JavaScript error: , line 0: NetworkError: FetchEvent.respondWith() Promise rejected
+JavaScript error: , line 0: NetworkError: FetchEvent.respondWith() Promise rejected
+JavaScript error: , line 0: NetworkError: FetchEvent.respondWith() Promise rejected
+JavaScript error: , line 0: NetworkError: FetchEvent.respondWith() Promise rejected
+console.log: WebExtensions: reset-default-search: starting.
+console.log: WebExtensions: reset-default-search: No addons in our list are installed.
+[Child 3680, MediaDecoderStateMachine #4] WARNING: 15b38aa4820 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+[Child 3680, MediaDecoderStateMachine #4] WARNING: 15b38aa4820 Could not set cubeb stream name.: file /builds/worker/checkouts/gecko/dom/media/AudioStream.cpp:367
+1628694333897	Marionette	INFO	Stopped listening on port 51071628694336620	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileNe8ueJ"
+1628694337377	Marionette	INFO	Marionette enabled
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileNe8ueJ\\search.json.mozlz4", (void 0)))
+1628694341006	Marionette	INFO	Listening on port 56840
+1628694341512	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+console.error: services.settings: 
+  main/doh-providers Signature failed  InvalidSignatureError: Invalid content signature (main/doh-providers)
+console.error: services.settings: 
+  main/doh-providers local data was corrupted
+console.warn: services.settings: main/doh-providers Signature verified failed. Retry from scratch
+console.error: services.settings: 
+  main/doh-config Signature failed  InvalidSignatureError: Invalid content signature (main/doh-config)
+console.error: services.settings: 
+  main/doh-config local data was corrupted
+console.warn: services.settings: main/doh-config Signature verified failed. Retry from scratch
+1628694764650	Marionette	INFO	Stopped listening on port 56840
+JavaScript error: resource:///modules/Interactions.jsm, line 209: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIUserIdleService.removeIdleObserver]
+l\\Temp\\rust_mozprofileXRrcqL"
+1628694762554	Marionette	INFO	Marionette enabled
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofileXRrcqL\\search.json.mozlz4", (void 0)))
+
+###!!! [Child][MessageChannel] Error: (msgtype=0x390097,name=PContent::Msg_InitBackground) Channel closing: too late to send/recv, messages will be lost
+
+1628694766418	Marionette	INFO	Listening on port 57107
+1628694766742	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code after return statement
+1628695005863	Marionette	INFO	Stopped listening on port 57101628695007753	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofilemiRMYT"
+1628695008453	Marionette	INFO	Marionette enabled
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\Lautaro\\AppData\\Local\\Temp\\rust_mozprofilemiRMYT\\search.json.mozlz4", (void 0)))
+1628695011979	Marionette	INFO	Listening on port 57222
+1628695012114	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://web.whatsapp.com/bootstrap_qr.bc386689689a4903e068.js, line 29: unreachable code afte

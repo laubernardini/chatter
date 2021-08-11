@@ -83,6 +83,7 @@ def clear_elem(driver, selectors, id):
     driver.find_element_by_xpath(selectors[id]).send_keys(Keys.ESCAPE)
 
 def search(driver, selectors, text):
+    print("Buscando: ", text)
     # Obtener input de búsqueda
     result = None
     no_result = False    
@@ -105,14 +106,13 @@ def search(driver, selectors, text):
                 pass
         except:
             done = True
-
+    
     if not no_result:
         # Seleccionar la primera opción
         elem.send_keys(Keys.ARROW_DOWN)
-
         if driver.switch_to.active_element == elem: # Revisa si hubo resultados, sino devuelve None
             elem.send_keys(Keys.TAB) # Prueba con TAB en caso de que no funcione ARROW_DOWN
-            if driver.switch_to.active_element != elem:
+            if driver.switch_to.active_element != elem and driver.switch_to.active_element.get_attribute('class') != "":
                 result = driver.switch_to.active_element
         else:
             result = driver.switch_to.active_element
@@ -195,14 +195,13 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                     driver.find_element_by_xpath(selectors["chat_init"])
                 except:
                     done = True
-                time.sleep(3)
-            
+                time.sleep(1)
+
             done = None
             while not done:
                 try:
                     # Comprobar chat abierto
                     driver.find_element_by_xpath(selectors["attachments"]).click()
-                    time.sleep(1)
                     driver.find_element_by_xpath(selectors["message"]).click()
                     done = True
                     elem = True
@@ -217,7 +216,20 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                         elem = None
                     except:
                         time.sleep(1)
-        
+        else:
+            time.sleep(2)
+
+        # Comprobar cruce de chat
+        if elem:
+            try:
+                chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+                print('Chat name: ', chat_name_header.text)
+                if bot.PHONE == cel_formatter(chat_name_header.text):
+                    elem = None
+            except:
+                elem = None
+
         if elem:
             # Abrir chat (si es un chat vacío)
             try:
@@ -281,7 +293,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 # Actualizar elementos html para adjuntar
                 driver.find_element_by_xpath(selectors["search"]).click()
 
-                driver.find_element_by_xpath(selectors["preview"]).click()
+                #driver.find_element_by_xpath(selectors["preview"]).click()
                 
                 if attach_type == 'multimedia':
                     # Obtener input de mensaje
@@ -293,7 +305,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                         except:
                             time.sleep(1)
                             driver.find_element_by_xpath(selectors["search"]).click()
-                            driver.find_element_by_xpath(selectors["preview"]).click()
+                            #driver.find_element_by_xpath(selectors["preview"]).click()
                 else:
                     # Enviar archivo
                     e = None

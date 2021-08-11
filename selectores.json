@@ -16,6 +16,8 @@
     "agended_contact_name": "//span[@class='FqYAR i0jNr selectable-text invisible-space copyable-text']",
     "agended_contact_name1": "//span[@class='FqYAR i0jNr selectable-text copyable-text']",
     "group_name": "//div[@class='_1UWac czcZD']/div[1]",
+    "chat_header": "//header[@class='_23P3O']",
+    "chat_name_header": ".//span[@class='_ccCW FqYAR i0jNr']",
 
     "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='6']",
     "input_class": "_13NKt copyable-text selectable-text",
@@ -26,10 +28,10 @@
     "download": "//div[@aria-label='Descargar'][@class='_2oldI dJxPU _3gcnK']",
     "download_media": "//div[@title='Descargar'][@role='button']",
     "close_media": "//div[@title='Cerrar'][@role='button']",
-    "preview": "//div[@class='_1FrBz']",
+    "preview": "//div[@class='_1yM10 _3Q2F2 _31Diy _3juR8 qAj2u']",
     "attach_multimedia": "//input[@accept='image/*,video/mp4,video/3gpp,video/quicktime']",
     "attach_file": "//input[@accept='*']",
-    "file_submit": "//div[@class='_165_h _2HL9j']",
+    "file_submit": "//div[@class='_165_h _2HL9j'][@role='button']",
 
     "unread": "//div[@class='_5ML0C focusable-list-item']",
     "archive": "//div[@class='_2oldI dJxPU'][@aria-label='Archivar chat']",
