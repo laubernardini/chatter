@@ -90,7 +90,10 @@ def search(driver, selectors, text):
     elem = driver.find_element_by_xpath(selectors["search"])
     
     # Buscar
-    elem.send_keys(text)
+    #elem.send_keys(text)
+    driver.execute_script("arguments[0].innerText = `{}`".format(text), elem)
+    elem.send_keys('.')
+    elem.send_keys(Keys.BACKSPACE)
     time.sleep(2)
 
     done = None
@@ -257,7 +260,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             #print("Mensajes pendientes listos")
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
-            mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("-_", "_").replace("_-", "_").replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
+            mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("-_", "_").replace("_-", "_")#.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
             #print("Mensaje preparado")
 
             attach_type = None
@@ -320,12 +323,15 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             # Escribir mensaje
             if False:#masive:
                 # "Teclear" mensaje
-                for letra in mensaje:
-                    if letra != '`':
-                        message.send_keys(letra)
-                    else:
-                        message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
-                    time.sleep(0.02)
+                #for letra in mensaje:
+                #    if letra != '`':
+                #        message.send_keys(letra)
+                #    else:
+                #        message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
+                #    time.sleep(0.02)
+                driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
+                message.send_keys('.')
+                message.send_keys(Keys.BACKSPACE)
             else:
                 # Pegar mensaje
                 mensaje = mensaje.split("`")

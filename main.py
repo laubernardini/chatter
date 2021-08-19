@@ -19,7 +19,7 @@ def start():
 
     # Abrir WhatsApp
     while bot.STATE != "OK":
-        driver = driver_connect("https://web.whatsapp.com")
+        driver = driver_connect_chrome("https://web.whatsapp.com")#driver_connect("https://web.whatsapp.com")
     
     # Sincronización
     sync(driver, selectors)
@@ -117,6 +117,35 @@ def driver_connect(url=""):
     try:
         driver.get(url)
         bot.STATE = "OK"
+    except Exception as e:
+        if bot.SHOW_ERRORS:
+            print("Error abriendo WhatsApp")
+            print("     Detalle: ")
+            print(e)
+            print(repr(e))
+            print(e.args)
+        bot.STATE = "ERROR"
+        time.sleep(5)
+
+    return driver
+
+def driver_connect_chrome(url=""):
+    options = webdriver.chrome.options.Options()
+    prefs = {
+        "download.default_directory" : bot.DOWNLOAD_PATH,
+        "download.prompt_for_download": False    
+    }
+    options.add_experimental_option("prefs", prefs)
+
+    driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
+
+    driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
+    params = {'cmd':'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': bot.DOWNLOAD_PATH}}
+    driver.execute("send_command", params)
+
+    try:
+        driver.get(url)
+        bot.STATE = "DESINCRONIZADO"
     except Exception as e:
         if bot.SHOW_ERRORS:
             print("Error abriendo WhatsApp")
