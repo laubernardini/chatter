@@ -145,7 +145,7 @@ def driver_connect_chrome(url=""):
 
     try:
         driver.get(url)
-        bot.STATE = "DESINCRONIZADO"
+        bot.STATE = "OK"
     except Exception as e:
         if bot.SHOW_ERRORS:
             print("Error abriendo WhatsApp")
