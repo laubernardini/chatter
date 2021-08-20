@@ -329,15 +329,16 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 #    else:
                 #        message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
                 #    time.sleep(0.02)
-                driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
-                message.send_keys('.')
-                message.send_keys(Keys.BACKSPACE)
+                pass
             else:
                 # Pegar mensaje
-                mensaje = mensaje.split("`")
-                for m in mensaje:
-                    message.send_keys(m)
-                    message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
+                #mensaje = mensaje.split("`")
+                #for m in mensaje:
+                #    message.send_keys(m)
+                #    message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
+                #message.send_keys(Keys.BACKSPACE)
+                driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
+                message.send_keys('.')
                 message.send_keys(Keys.BACKSPACE)
 
             # Enviar mensaje
