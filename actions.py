@@ -1,4 +1,4 @@
-import os, shutil, re, time, asyncio
+import sys, os, shutil, re, time, asyncio
 
 import bot, apis
 from datetime import datetime, timedelta
@@ -389,11 +389,13 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             return result
     except Exception as e:
         if bot.SHOW_ERRORS:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             print("Error enviando mensaje")
             print("     Detalle: ")
             print(e)
             print(repr(e))
             print(e.args)
+            print(os.path.split(exc_tb.tb_frame.f_code.co_filename)[1], ", linea ", exc_tb.tb_lineno)
         result = {
             "estado": "ERROR", 
             "wa_id": None
