@@ -164,7 +164,10 @@ def get_inbound_file():
 def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
     try:
         # Obtener chat
-        elem = search(driver, selectors, celular)
+        if not masive:
+            elem = search(driver, selectors, celular)
+        else:
+            elem = None
 
         # Iniciar char nuevo
         if not elem:
