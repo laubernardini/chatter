@@ -19,7 +19,7 @@
     "chat_header": "//header[@class='_23P3O']",
     "chat_name_header": ".//span[@class='_ccCW FqYAR i0jNr']",
 
-    "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='6']",
+    "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='9']",
     "input_class": "_13NKt copyable-text selectable-text",
     "voice_record_class": "_30ggS",
     "message_attached": "//div[@class='_1UWac Z2O8p oHEu9']/div[2]",
