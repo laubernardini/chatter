@@ -199,11 +199,23 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             while not done:
                 try:
                     try:
-                        print(driver.find_element_by_xpath(selectors["modal_text"]).text)
+                        driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
+                    except Exception as e:
+                        print(e)
+                        pass
+                    
+                    try:
+                        driver.send_keys(Keys.TAB)
                     except Exception as e:
                         print(e)
                         pass
 
+                    try:
+                        print(driver.find_element_by_xpath(selectors["modal_text"]).text)
+                    except Exception as e:
+                        print(e)
+                        pass
+                    driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
                     driver.find_element_by_xpath(selectors["modal"])
 
                     try:
