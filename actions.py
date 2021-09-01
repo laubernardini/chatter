@@ -207,19 +207,19 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             while not done:
                 try:
                     # Comprobar chat abierto
-                    driver.find_element_by_xpath(selectors["attachments"]).click()
-                    driver.find_element_by_xpath(selectors["message"]).click()
-                    done = True
-                    elem = True
                     if bot.SHOW_EX_PRINTS:
-                        print("Nuevo chat iniciado")
+                        print("Cerrando pop-up de número inválido")
+                    driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                    done = True
+                    elem = None
                 except:
                     try:
-                        if bot.SHOW_EX_PRINTS:
-                            print("Cerrando pop-up de número inválido")
-                        driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                        driver.find_element_by_xpath(selectors["attachments"]).click()
+                        driver.find_element_by_xpath(selectors["message"]).click()
                         done = True
-                        elem = None
+                        elem = True
+                        if bot.SHOW_EX_PRINTS:
+                            print("Nuevo chat iniciado")
                     except:
                         time.sleep(1)
         else:
@@ -590,12 +590,10 @@ def get_inbounds(driver, selectors):
             #if driver.switch_to.active_element.get_attribute("class") == selectors["input_class"]:
             #    driver.switch_to.active_element.send_keys(Keys.TAB)
             first_msg = reference_elem
-            first_msg.click()
             try:
                 first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] # Comprobar si es el mensaje de "este chat está cifrado"
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
-                first_msg.click()
             except:
                 pass
 
@@ -610,12 +608,10 @@ def get_inbounds(driver, selectors):
                 
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
-                first_msg.click()
                 try:
                     first_msg.find_element_by_xpath(selectors["encrypted_chat"]) # Comprobar si es el mensaje de "este chat está cifrado"
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
-                    first_msg.click()
                 except:
                     pass
         
