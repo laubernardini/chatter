@@ -44,6 +44,7 @@
     "attach_inbound_class": "_1q25n",
     "encrypted_chat": ".//span[@data-testid='lock-small']",
 
+    "chat_container": "//div[@class='y8WcF']",
     "chat_info": "//span[@class='_3NUK1 VWPRY _1lF7t']",
     "chat_info_close": "//button[@class='_18eKe']",
     "chat_info_elements": "//span[@class='_2MNpf VWPRY _1lF7t']",

@@ -199,7 +199,6 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             while not done:
                 try:
                     driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
-                    driver.find_element_by_xpath(selectors["modal"])
 
                     try:
                         driver.find_element_by_xpath(selectors["chat_init"])
@@ -208,8 +207,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                             elem = None
                             done = True
                             print("Número inválido")
-                    except Exception as e:
-                        print(e)
+                    except:
                         try:
                             if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
                                 driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
@@ -218,8 +216,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                                 print("Número inválido")
                         except:
                             pass
-                except Exception as e:
-                    print(e)
+                except:
                     elem = True
                     done = True
                     print("Nuevo chat iniciado")
@@ -540,9 +537,9 @@ def get_inbounds(driver, selectors):
         reference_elem = None
 
         # Localizar elemento de mensaje
+        driver.find_element_by_xpath(selectors["chat_container"]).click()
         try:
             reference_elem = driver.find_element_by_xpath('//div[@data-id="' + bot.CURRENT_CHAT["last_msg"] + '"]')
-            reference_elem.click()
             reference_elem.send_keys(Keys.ARROW_DOWN)
             reference_elem = driver.switch_to.active_element
 
@@ -552,7 +549,6 @@ def get_inbounds(driver, selectors):
                 reference_elem = driver.switch_to.active_element
             if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
                 reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
-                reference_elem.click()
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
             if bot.SHOW_EX_PRINTS:
@@ -568,7 +564,6 @@ def get_inbounds(driver, selectors):
             except:
                 try:
                     reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
-                    reference_elem.click()
                     reference_elem.send_keys(Keys.ARROW_DOWN)
                     reference_elem = driver.switch_to.active_element
                     if bot.SHOW_EX_PRINTS:
@@ -576,7 +571,6 @@ def get_inbounds(driver, selectors):
                 except:
                     try:
                         first_msg = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
-                        first_msg.click()
                         if bot.SHOW_EX_PRINTS:
                             print("Obteniendo primer mensaje entrante del chat")
                     except:
