@@ -556,7 +556,6 @@ def get_inbounds(driver, selectors):
         except:
             try:
                 reference_elem = driver.find_element_by_xpath(selectors["unread"])
-                reference_elem.click()
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
                 if bot.SHOW_EX_PRINTS:
