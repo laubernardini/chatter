@@ -537,7 +537,7 @@ def get_inbounds(driver, selectors):
         reference_elem = None
 
         # Localizar elemento de mensaje
-        driver.find_element_by_xpath(selectors["chat_container"]).click()
+        driver.find_element_by_xpath(selectors["chat_container"]).send_keys(Keys.ARROW_DOWN)
         try:
             reference_elem = driver.find_element_by_xpath('//div[@data-id="' + bot.CURRENT_CHAT["last_msg"] + '"]')
             reference_elem.send_keys(Keys.ARROW_DOWN)
