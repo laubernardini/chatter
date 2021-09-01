@@ -200,18 +200,20 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 try:
                     try:
                         print(driver.find_element_by_xpath(selectors["modal_text"]).text)
-                    except:
+                    except Exception as e:
+                        print(e)
                         pass
 
                     driver.find_element_by_xpath(selectors["modal"])
-                    
+
                     try:
                         driver.find_element_by_xpath(selectors["chat_init"])
                         if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
                             elem = None
                             done = True
                             print("Número inválido")
-                    except:
+                    except Exception as e:
+                        print(e)
                         try:
                             if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
                                 elem = None
@@ -219,7 +221,8 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                                 print("Número inválido")
                         except:
                             pass
-                except:
+                except Exception as e:
+                    print(e)
                     elem = True
                     done = True
                     print("Nuevo chat iniciado")
