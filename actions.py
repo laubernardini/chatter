@@ -534,65 +534,88 @@ def get_inbounds(driver, selectors):
     try:
         done = None
         first_msg = None
+        reference_elem = None
 
         # Localizar elemento de mensaje
         try:
-            driver.find_element_by_xpath('//div[@data-id="' + bot.CURRENT_CHAT["last_msg"] + '"]').send_keys(Keys.ARROW_DOWN)
-            if selectors["chat_separator_class"] in driver.switch_to.active_element.get_attribute("class"):
-                driver.find_elements_by_xpath(selectors["missed_call_container"])[-1].send_keys(Keys.ARROW_DOWN)
+            reference_elem = driver.find_element_by_xpath('//div[@data-id="' + bot.CURRENT_CHAT["last_msg"] + '"]')
+            reference_elem.click()
+            reference_elem.send_keys(Keys.ARROW_DOWN)
+            reference_elem = driver.switch_to.active_element
+
+            if selectors["chat_separator_class"] in reference_elem.get_attribute("class"):
+                reference_elem = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
+                reference_elem.click()
+                reference_elem.send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.switch_to.active_element
             if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
-                driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+                reference_elem.click()
+                reference_elem.send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.switch_to.active_element
             if bot.SHOW_EX_PRINTS:
                 print("Mensaje en caché ", bot.CURRENT_CHAT["last_msg"])
         except:
             try:
-                driver.find_element_by_xpath(selectors["unread"]).click()
-                driver.find_element_by_xpath(selectors["unread"]).send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.find_element_by_xpath(selectors["unread"])
+                reference_elem.click()
+                reference_elem.send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.switch_to.active_element
                 if bot.SHOW_EX_PRINTS:
                     print("Hay mensajes no leidos")
             except:
                 try:
-                    driver.find_elements_by_css_selector(selectors["message_out_container"])[-1].send_keys(Keys.ARROW_DOWN)
+                    reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+                    reference_elem.click()
+                    reference_elem.send_keys(Keys.ARROW_DOWN)
+                    reference_elem = driver.switch_to.active_element
                     if bot.SHOW_EX_PRINTS:
                         print("Navegando a primer mensaje desde ultimo mensaje saliente")
                 except:
                     try:
                         first_msg = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
+                        first_msg.click()
                         if bot.SHOW_EX_PRINTS:
                             print("Obteniendo primer mensaje entrante del chat")
                     except:
                         try:
                             first_msg = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
+                            first_msg.click()
                             if bot.SHOW_EX_PRINTS:
                                 print("Obteniendo llamada perdida")
                         except:
                             done = True
         
         if not first_msg and not done:
-            if driver.switch_to.active_element.get_attribute("class") == selectors["input_class"]:
-                driver.switch_to.active_element.send_keys(Keys.TAB)
-            first_msg = driver.switch_to.active_element
+            #if driver.switch_to.active_element.get_attribute("class") == selectors["input_class"]:
+            #    driver.switch_to.active_element.send_keys(Keys.TAB)
+            first_msg = reference_elem
+            first_msg.click()
             try:
-                first_msg.find_element_by_xpath(selectors["encrypted_chat"]) # Comprobar si es el mensaje de "este chat está cifrado"
+                first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] # Comprobar si es el mensaje de "este chat está cifrado"
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
+                first_msg.click()
             except:
                 pass
 
             while not first_msg.get_attribute("data-id"):
                 print(first_msg.get_attribute("class"))
-                if first_msg.get_attribute("class") == selectors["input_class"] or first_msg.get_attribute("class") == selectors["voice_record_class"]:
-                    first_msg.send_keys(Keys.TAB)
-                    first_msg = driver.switch_to.active_element
+
+                #if first_msg.get_attribute("class") == selectors["input_class"] or voice_record:
+                #    first_msg.send_keys(Keys.TAB)
+                #    first_msg = driver.switch_to.active_element
                 if bot.SHOW_EX_PRINTS:
                     print("Obteniendo primer mensaje")
                 
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
+                first_msg.click()
                 try:
                     first_msg.find_element_by_xpath(selectors["encrypted_chat"]) # Comprobar si es el mensaje de "este chat está cifrado"
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
+                    first_msg.click()
                 except:
                     pass
         
@@ -607,6 +630,7 @@ def get_inbounds(driver, selectors):
         else:
             done = True
 
+        # Get all unread inbounds
         while not done:
             try:
                 last_msg.send_keys(Keys.ARROW_DOWN)
