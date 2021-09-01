@@ -198,30 +198,27 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             done = None
             while not done:
                 try:
-                    driver.find_element_by_xpath(selectors["chat_init"])
+                    driver.find_element_by_xpath(selectors["modal"])
+                    try:
+                        driver.find_element_by_xpath(selectors["chat_init"])
+                        if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
+                            elem = None
+                            done = True
+                            print("Número inválido")
+                    except:
+                        try:
+                            if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
+                                elem = None
+                                done = True
+                                print("Número inválido")
+                        except:
+                            pass
                 except:
+                    elem = True
                     done = True
+                    print("Nuevo chat iniciado")
                 time.sleep(1)
 
-            done = None
-            while not done:
-                try:
-                    # Comprobar chat abierto
-                    if bot.SHOW_EX_PRINTS:
-                        print("Cerrando pop-up de número inválido")
-                    driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
-                    done = True
-                    elem = None
-                except:
-                    try:
-                        driver.find_element_by_xpath(selectors["attachments"]).click()
-                        driver.find_element_by_xpath(selectors["message"]).click()
-                        done = True
-                        elem = True
-                        if bot.SHOW_EX_PRINTS:
-                            print("Nuevo chat iniciado")
-                    except:
-                        time.sleep(1)
         else:
             time.sleep(2)
 
@@ -545,7 +542,6 @@ def get_inbounds(driver, selectors):
 
             if selectors["chat_separator_class"] in reference_elem.get_attribute("class"):
                 reference_elem = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
-                reference_elem.click()
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
             if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
@@ -580,7 +576,6 @@ def get_inbounds(driver, selectors):
                     except:
                         try:
                             first_msg = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
-                            first_msg.click()
                             if bot.SHOW_EX_PRINTS:
                                 print("Obteniendo llamada perdida")
                         except:
