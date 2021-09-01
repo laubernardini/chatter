@@ -668,7 +668,7 @@ def make_inbound_messages(driver, selectors, messages):
                 m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
                 done = True
             except:
-                driver.find_element_by_xpath(selectors["message_in_container"]).send_keys(Keys.ARROW_UP)
+                driver.find_element_by_css_selector(selectors["message_in_container"]).send_keys(Keys.ARROW_UP)
 
         # Variables de ejecución
         nombre = bot.CURRENT_CHAT["nombre"]
