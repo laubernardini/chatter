@@ -73,7 +73,7 @@
 
     "attach_inbound_download": ".//button[@class='UQz9- _1_Wyj']",
     "no_file_ok_button": "//div[@class='_20C5O _2Zdgs'][@role='button']",
-    "modal": "//div[@data-animate-modal-popup='true']",
+    "modal": "//div[@class='_3J6wB']",
     "modal_text": "//div[@class='_2Nr6U']",
 
     "emogi_container": ".//span[@class='_3R6rC']",

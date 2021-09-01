@@ -198,7 +198,13 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             done = None
             while not done:
                 try:
+                    try:
+                        print(driver.find_element_by_xpath(selectors["modal_text"]).text)
+                    except:
+                        pass
+
                     driver.find_element_by_xpath(selectors["modal"])
+                    
                     try:
                         driver.find_element_by_xpath(selectors["chat_init"])
                         if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
