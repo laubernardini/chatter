@@ -803,7 +803,8 @@ def make_inbound_messages(driver, selectors, messages):
                 
                 html = text.get_attribute("innerHTML")
                 # Obtener emogis
-                text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL).replace('">', '')
+                text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL)
+                text = re.sub('" style.*?;"','',text, flags=re.DOTALL).replace('>', '')
                 # Formatear negrita
                 text = text.replace('<strong class="_1VzZY selectable-text invisible-space copyable-text" data-app-text-template="*${appText}*', '-*').replace('</strong>', '*-')
                 # Formatear cursiva
