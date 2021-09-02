@@ -592,7 +592,7 @@ def get_inbounds(driver, selectors):
                 pass
 
             while not first_msg.get_attribute("data-id"):
-                print(first_msg.get_attribute("class"))
+                print(first_msg.get_attribute("class"), first_msg.get_attribute("data-tab"))
 
                 #if first_msg.get_attribute("class") == selectors["input_class"] or voice_record:
                 #    first_msg.send_keys(Keys.TAB)
