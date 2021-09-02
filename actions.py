@@ -582,22 +582,24 @@ def get_inbounds(driver, selectors):
                             done = True
         
         if not first_msg and not done:
-            #if driver.switch_to.active_element.get_attribute("class") == selectors["input_class"]:
-            #    driver.switch_to.active_element.send_keys(Keys.TAB)
             first_msg = reference_elem
+
+            # Comprobar si es el mensaje de "este chat está cifrado"
             try:
-                first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] # Comprobar si es el mensaje de "este chat está cifrado"
+                first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] 
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
             except:
                 pass
 
+            # Buscar primer mensaje
             while not first_msg.get_attribute("data-id"):
                 print(first_msg.get_attribute("class"), first_msg.get_attribute("data-tab"))
 
                 if bot.SHOW_EX_PRINTS:
                     print("Obteniendo primer mensaje")
 
+                # Comprobar si es un elemento del chat
                 if selectors["chat_item_class"] in first_msg.get_attribute("class") or selectors["unread_class"] in first_msg.get_attribute("class"):
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
@@ -606,8 +608,9 @@ def get_inbounds(driver, selectors):
                     first_msg = driver.switch_to.active_element
                     time.sleep(0.5)
                 
+                # Comprobar si es el mensaje de "este chat está cifrado"
                 try:
-                    first_msg.find_element_by_xpath(selectors["encrypted_chat"]) # Comprobar si es el mensaje de "este chat está cifrado"
+                    first_msg.find_element_by_xpath(selectors["encrypted_chat"])
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
                 except:
@@ -624,7 +627,7 @@ def get_inbounds(driver, selectors):
         else:
             done = True
 
-        # Get all unread inbounds
+        # Obtener todos los mensajes nuevos
         while not done:
             try:
                 last_msg.send_keys(Keys.ARROW_DOWN)
