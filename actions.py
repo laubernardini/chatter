@@ -602,6 +602,7 @@ def get_inbounds(driver, selectors):
                     first_msg = driver.switch_to.active_element
                 else:
                     first_msg.send_keys(Keys.TAB)
+                    first_msg = driver.switch_to.active_element
                     time.sleep(1)
                 
                 try:
