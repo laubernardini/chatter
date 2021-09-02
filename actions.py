@@ -594,14 +594,16 @@ def get_inbounds(driver, selectors):
             while not first_msg.get_attribute("data-id"):
                 print(first_msg.get_attribute("class"), first_msg.get_attribute("data-tab"))
 
-                #if first_msg.get_attribute("class") == selectors["input_class"] or voice_record:
-                #    first_msg.send_keys(Keys.TAB)
-                #    first_msg = driver.switch_to.active_element
                 if bot.SHOW_EX_PRINTS:
                     print("Obteniendo primer mensaje")
+
+                if selectors["chat_item_class"] in first_msg.get_attribute("class"):
+                    first_msg.send_keys(Keys.ARROW_DOWN)
+                    first_msg = driver.switch_to.active_element
+                else:
+                    first_msg.send_keys(Keys.TAB)
+                    time.sleep(1)
                 
-                first_msg.send_keys(Keys.ARROW_DOWN)
-                first_msg = driver.switch_to.active_element
                 try:
                     first_msg.find_element_by_xpath(selectors["encrypted_chat"]) # Comprobar si es el mensaje de "este chat está cifrado"
                     first_msg.send_keys(Keys.ARROW_DOWN)

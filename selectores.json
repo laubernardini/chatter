@@ -40,6 +40,7 @@
     "message_in_class": "message-in",
     "message_out_container": "div._2wUmf.message-out",
     "message_out_class": "message-out",
+    "chat_item_class": "_2wUmf",
     "chat_separator_class": "_2wUmf V-zSs focusable-list-item",
     "attach_inbound_class": "_1q25n",
     "encrypted_chat": ".//span[@data-testid='lock-small']",
