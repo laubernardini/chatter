@@ -34,6 +34,7 @@
     "file_submit": "//div[@class='_165_h _2HL9j'][@role='button']",
 
     "unread": "//div[@class='_5ML0C focusable-list-item']",
+    "unread_class": "_5ML0C",
     "archive": "//div[@class='_2oldI dJxPU'][@aria-label='Archivar chat']",
 
     "message_in_container": "div._2wUmf.message-in",

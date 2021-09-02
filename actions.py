@@ -556,6 +556,7 @@ def get_inbounds(driver, selectors):
         except:
             try:
                 reference_elem = driver.find_element_by_xpath(selectors["unread"])
+                reference_elem.click()
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
                 if bot.SHOW_EX_PRINTS:
@@ -597,13 +598,13 @@ def get_inbounds(driver, selectors):
                 if bot.SHOW_EX_PRINTS:
                     print("Obteniendo primer mensaje")
 
-                if selectors["chat_item_class"] in first_msg.get_attribute("class"):
+                if selectors["chat_item_class"] in first_msg.get_attribute("class") or selectors["unread_class"] in first_msg.get_attribute("class"):
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
                 else:
                     first_msg.send_keys(Keys.TAB)
                     first_msg = driver.switch_to.active_element
-                    time.sleep(1)
+                    time.sleep(0.5)
                 
                 try:
                     first_msg.find_element_by_xpath(selectors["encrypted_chat"]) # Comprobar si es el mensaje de "este chat está cifrado"
