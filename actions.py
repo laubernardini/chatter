@@ -802,7 +802,7 @@ def make_inbound_messages(driver, selectors, messages):
                     text = m.find_element_by_xpath(selectors["message_text1"])
                 
                 html = text.get_attribute("innerHTML")
-                # Obtener emogis
+                # Obtener emojis
                 text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL)
                 text = re.sub('" style.*?;"','',text, flags=re.DOTALL).replace('>', '')
                 # Formatear negrita
@@ -810,13 +810,13 @@ def make_inbound_messages(driver, selectors, messages):
                 # Formatear cursiva
                 text = text.replace('<em class="_1VzZY selectable-text invisible-space copyable-text" data-app-text-template="_${appText}_', '-_').replace('</em>', '_-')
                 # Eliminar link
-                text = re.sub('<a.*?copyable-text','',text, flags=re.DOTALL).replace('</a>', '')
+                text = re.sub('<a.*?copyable-text"','',text, flags=re.DOTALL).replace('</a>', '')
                 text = re.sub('<a.*?">','',text, flags=re.DOTALL).replace('</a>', '')
             except:
                 try:
-                    emogis = m.find_elements_by_xpath(selectors["emogi_container"])
+                    emojis = m.find_elements_by_xpath(selectors["emogi_container"])
                     text = ''
-                    for ec in emogis:
+                    for ec in emojis:
                         text += ec.find_element_by_xpath(".//img").get_attribute("data-plain-text")
                 except:
                     pass
