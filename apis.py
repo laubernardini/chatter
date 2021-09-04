@@ -129,9 +129,9 @@ def get_file(url):
     if not os.path.exists('file_cache'):
         os.makedirs('file_cache')
     
-    open("file_cache/" + filename, "wb").write(r.content)
+    open("file_cache" + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + filename, "wb").write(r.content)
 
-    return os.path.abspath('file_cache/' + filename)
+    return os.path.abspath("file_cache" + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + filename)
 
 # Respuestas manuales
 def get_response():

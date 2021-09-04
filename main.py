@@ -21,6 +21,8 @@ def start():
     while bot.STATE != "OK":
         driver = driver_connect_chrome("https://web.whatsapp.com")#driver_connect("https://web.whatsapp.com")
     
+    driver.execute_script(f"document.title = 'BOT {bot.BOT_PK}'")
+
     # Sincronización
     sync(driver, selectors)
     
@@ -33,6 +35,7 @@ def start():
 
     # Loop principal
     while True:
+        driver.execute_script(f"document.title = 'BOT {bot.BOT_PK}'")
         # Reporte de estado
         send_report()
         if bot.STATE == 'ERROR':

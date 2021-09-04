@@ -151,7 +151,7 @@ def get_inbound_file():
     loaded = None
     while not loaded:
         try:
-            archivo = max(['inbound_file_cache' + bot.OS_SLASH + f for f in os.listdir('inbound_file_cache')],key=os.path.getctime)
+            archivo = max(['inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + f for f in os.listdir('inbound_file_cache')],key=os.path.getctime)
             if archivo != bot.LAST_FILE:
                 loaded = True
                 bot.LAST_FILE = archivo
@@ -277,7 +277,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 # Descargar archivo temporalmente y obtener path
                 try:
                     # Obtener archivo si ya ha sido descargado
-                    f = open('file_cache' + bot.OS_SLASH + archivo)
+                    f = open('file_cache' + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + archivo)
                     file_path = os.path.abspath('file_cache' + bot.OS_SLASH + archivo)
                 except:
                     file_path = apis.get_file(archivo)
@@ -905,7 +905,7 @@ def make_inbound_messages(driver, selectors, messages):
 
 def clear_cache():
     try:
-        shutil.rmtree('inbound_file_cache')
+        shutil.rmtree(f'inbound_file_cache{bot.OS_SLASH}{str(bot.BOT_PK)}{bot.OS_SLASH}')
         if bot.SHOW_EX_PRINTS:
             print("Caché limpiado")
     except Exception as e:
