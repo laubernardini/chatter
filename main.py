@@ -22,7 +22,7 @@ def start():
         driver = driver_connect_chrome("https://web.whatsapp.com")#driver_connect("https://web.whatsapp.com")
     
     driver.execute_script(f"document.title = 'BOT {bot.BOT_PK}'")
-    driver.execute_script("document.body.style.zoom='50%';")
+    #driver.execute_script("document.body.style.zoom='50%';")
 
     # Sincronización
     sync(driver, selectors)
