@@ -22,6 +22,7 @@ def start():
         driver = driver_connect_chrome("https://web.whatsapp.com")#driver_connect("https://web.whatsapp.com")
     
     driver.execute_script(f"document.title = 'BOT {bot.BOT_PK}'")
+    driver.execute_script("document.body.style.zoom='50%';")
 
     # Sincronización
     sync(driver, selectors)
@@ -136,9 +137,10 @@ def driver_connect_chrome(url=""):
     options = webdriver.chrome.options.Options()
     prefs = {
         "download.default_directory" : bot.DOWNLOAD_PATH,
-        "download.prompt_for_download": False    
+        "download.prompt_for_download": False
     }
     options.add_experimental_option("prefs", prefs)
+    options.add_argument("--window-size=400,500")
 
     driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
 
