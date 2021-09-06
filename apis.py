@@ -126,8 +126,8 @@ def get_file(url):
             time.sleep(2)
     
     filename = url.rsplit('/', 1)[1]
-    if not os.path.exists('file_cache'):
-        os.makedirs('file_cache')
+    if not os.path.exists("file_cache" + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH):
+        os.makedirs("file_cache" + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH)
     
     open("file_cache" + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + filename, "wb").write(r.content)
 

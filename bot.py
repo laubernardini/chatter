@@ -8,6 +8,7 @@ RESPONDE = "NO"
 MASIVO = "NO"
 AUTO = "NO"
 PHONE = ""
+VERSION = "2.0"
 
 # Datos del server
 SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"#

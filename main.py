@@ -10,6 +10,7 @@ from selenium.webdriver.common.keys import Keys
 import bot, apis, actions
 
 def start():
+    actions.clear_cache()
     # Obtener selectores
     with open('selectores.json', 'rb') as selectors:
         selectors = json.load(selectors)
@@ -80,7 +81,7 @@ def start():
             time.sleep(3)
             
         # Limpiar caché
-        actions.clear_cache()
+        #actions.clear_cache()
 
         # Actividad forzada
         if False:#datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
@@ -139,7 +140,9 @@ def driver_connect_chrome(url=""):
         "download.prompt_for_download": False
     }
     options.add_experimental_option("prefs", prefs)
-    options.add_argument("--window-size=400,500")
+
+    if bot.VERSION == "3.0":
+        options.add_argument("--window-size=400,500")
 
     driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
 

@@ -61,12 +61,12 @@ def get_data_by_chat_info(driver, selectors):
         nombre = driver.find_element_by_xpath(selectors["contact_name"]).text
     except:
         try:
-            nombre = driver.find_element_by_xpath(selectors["contact_name1"]).text
+            nombre = driver.find_element_by_xpath(selectors["business_name"]).text
         except:
             try:
                 nombre = driver.find_element_by_xpath(selectors["agended_contact_name"]).text
             except:
-                nombre = driver.find_element_by_xpath(selectors["agended_contact_name1"]).text
+                nombre = driver.find_element_by_xpath(selectors["agended_business_name"]).text
 
     result = {
         "nombre": nombre,
@@ -153,7 +153,7 @@ def get_inbound_file():
     loaded = None
     while not loaded:
         try:
-            archivo = max(['inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + f for f in os.listdir('inbound_file_cache')],key=os.path.getctime)
+            archivo = max(['inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + f for f in os.listdir('inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK))],key=os.path.getctime)
             if archivo != bot.LAST_FILE:
                 loaded = True
                 bot.LAST_FILE = archivo
@@ -539,7 +539,7 @@ def get_inbounds(driver, selectors):
         reference_elem = None
 
         # Localizar elemento de mensaje
-        driver.find_element_by_xpath(selectors["chat_container"]).send_keys(Keys.ARROW_DOWN)
+        #driver.find_element_by_xpath(selectors["chat_container"]).send_keys(Keys.ARROW_DOWN)
         try:
             reference_elem = driver.find_element_by_xpath('//div[@data-id="' + bot.CURRENT_CHAT["last_msg"] + '"]')
             reference_elem.send_keys(Keys.ARROW_DOWN)
@@ -915,10 +915,9 @@ def clear_cache():
             print("El caché entrante no se puede limpiar/ya está limpio")
 
     try:
-        #shutil.rmtree('file_cache')
+        shutil.rmtree(f'file_cache{bot.OS_SLASH}{str(bot.BOT_PK)}{bot.OS_SLASH}')
         if bot.SHOW_EX_PRINTS:
             print("Caché limpiado")
     except Exception as e:
         if bot.SHOW_EX_PRINTS:
             print("El caché saliente no se puede limpiar/ya está limpio")
-

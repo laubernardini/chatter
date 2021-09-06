@@ -11,10 +11,12 @@ argv = sys.argv[1:]
 opts, args = getopt.getopt(argv, 'b:', ['foperand'])
 if len(opts) == 0 or len(opts) > 1:
     print ('Falta un parámetro: -b <BOT_PK>')
-    exit()
+    #exit()
 else:
     bot.BOT_PK = opts[0][1]
-    bot.DOWNLOAD_PATH = bot.DOWNLOAD_PATH + str(bot.BOT_PK) + bot.OS_SLASH
+    bot.VERSION = "3.0"
+
+bot.DOWNLOAD_PATH = bot.DOWNLOAD_PATH + str(bot.BOT_PK) + bot.OS_SLASH
 
 system("title BOT " + bot.BOT_PK)
 
