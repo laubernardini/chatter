@@ -16,11 +16,11 @@ FILE_SERVER = "https://apicloud.com.ar"#"http://localhost:8000"#
 FILE_SERVER_2 = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
 
 # Variables de ejecución
-OS_SLASH = "/" # / -> linux \\ -> windows
+OS_SLASH = "\\" # / -> linux \\ -> windows
 DOWNLOAD_PATH = os.getcwd() + OS_SLASH + 'inbound_file_cache' + OS_SLASH
-DRIVER_PATH = "/usr/local/bin/chromedriver"#"chromedriver.exe"#
+DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
 MIME_TYPES = "" # Los tipos incluidos se descargarán sin confirmación
-MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime'] # Estos archivos se envían por el botón "galería"
+MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime', '.mp3', '.ogg', '.m4a'] # Estos archivos se envían por el botón "galería"
 START_DATE = None
 FORCED_ACTIVITY_FREQUENCY = 240 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 CALL_RESPONSE = "-*IMPORTANTE*-\nEn este número -*no recibimos llamadas*-. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
