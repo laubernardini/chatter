@@ -12,9 +12,9 @@
 
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
     "contact_name": "//span[@class='_2UVLe i0jNr selectable-text copyable-text']",
-    "contact_name1": "//span[@class='_2UVLe i0jNr selectable-text invisible-space copyable-text']",
-    "agended_contact_name": "//span[@class='FqYAR i0jNr selectable-text invisible-space copyable-text']",
-    "agended_contact_name1": "//span[@class='FqYAR i0jNr selectable-text copyable-text']",
+    "business_name": "//span[@class='_ccCW i0jNr']",
+    "agended_contact_name": "//span[@class='FqYAR i0jNr selectable-text copyable-text']",
+    "agended_business_name": "//span[@class='FqYAR i0jNr']",
     "group_name": "//div[@class='_1UWac czcZD']/div[1]",
     "chat_header": "//header[@class='_23P3O']",
     "chat_name_header": ".//span[@class='_ccCW FqYAR i0jNr']",

@@ -55,6 +55,7 @@ def get_data_by_chat_info(driver, selectors):
             celular = i.text
             break
     
+
     # Obtener nombre
     try:
         nombre = driver.find_element_by_xpath(selectors["contact_name"]).text
@@ -71,6 +72,7 @@ def get_data_by_chat_info(driver, selectors):
         "nombre": nombre,
         "celular": cel_formatter(celular),
     }
+    print(result)
 
     # Cerrar info del contacto
     driver.find_element_by_xpath(selectors["chat_info_close"]).click()
