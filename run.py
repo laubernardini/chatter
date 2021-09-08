@@ -8,7 +8,7 @@ from main import start
 from apis import status
 
 argv = sys.argv[1:]
-opts, args = getopt.getopt(argv, 'b:c', ['foperand', 'soperand'])
+opts, args = getopt.getopt(argv, 'b:c:', ['foperand', 'soperand'])
 if len(opts) == 0:# or len(opts) > 1:
     print ('Falta un parámetro: -b <BOT_PK>')
     #exit()
