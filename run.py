@@ -14,7 +14,7 @@ if len(opts) == 0:# or len(opts) > 1:
     #exit()
 else:
     bot.BOT_PK = opts[0][1]
-    if len(opts == 2):
+    if len(opts) == 2:
         try:
             phone = opts[1][1]
             if phone and phone != "":
