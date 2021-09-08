@@ -22,6 +22,7 @@ else:
         except:
             pass
     bot.VERSION = "3.0"
+    print(f"PK: {bot.BOT_PK}, PHONE: {bot.PHONE}")
 
 bot.DOWNLOAD_PATH = bot.DOWNLOAD_PATH + str(bot.BOT_PK) + bot.OS_SLASH
 
