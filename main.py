@@ -221,7 +221,8 @@ def sync(driver, selectors):
             phone_disconected = False
 
     time.sleep(2)
-    get_own_phone(driver, selectors)
+    if bot.PHONE == "":
+        get_own_phone(driver, selectors)
 
     # Restablecer chats
     bot.CHATS = []
