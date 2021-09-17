@@ -231,7 +231,13 @@ def sync(driver, selectors):
 def get_own_phone(driver, selectors):
     driver.find_element_by_xpath(selectors["profile"]).click()
     time.sleep(3)
-    celular = driver.find_element_by_xpath(selectors["own_phone"]).text
+    done = None
+    while not done:
+        try:
+            celular = driver.find_element_by_xpath(selectors["own_phone"]).text
+            done = True
+        except:
+            time.sleep(1)
     bot.PHONE = actions.cel_formatter(celular)
     driver.find_element_by_xpath(selectors["back_button"]).click()
 
