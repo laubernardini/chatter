@@ -154,6 +154,7 @@ def get_inbound_file():
     while not loaded:
         try:
             archivo = max(['inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + f for f in os.listdir('inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK))],key=os.path.getctime)
+            archivo = archivo.replace('.crdownload', '')
             if archivo != bot.LAST_FILE:
                 loaded = True
                 bot.LAST_FILE = archivo
@@ -761,6 +762,7 @@ def make_inbound_messages(driver, selectors, messages):
             if is_image or is_audio:
                 time.sleep(2)
                 m.send_keys(Keys.ARROW_RIGHT)
+                
                 downl = None
                 loaded = None
 
@@ -769,7 +771,13 @@ def make_inbound_messages(driver, selectors, messages):
                         downl = driver.find_element_by_xpath(selectors["download"])
                         loaded = True
                     except:
-                        pass
+                        try:
+                            m.find_element_by_xpath(selectors["message_checkbox"])
+                            m.find_element_by_xpath(selectors["close_message_selection"]).click()
+                            m.send_keys(Keys.ARROW_RIGHT)
+                        except:
+                            pass
+                    time.sleep(1)
                 
                 if downl:
                     downl.click()

@@ -3,7 +3,7 @@
     "refresh_qr": "//button[@class='_2znac']",
     "phone_disconected": "//span[@data-testid='alert-phone']",
     "profile": "//div[@class='_3GlyB']",
-    "own_phone": "//div[@class='_1zywm']",
+    "own_phone": "//div[@class='_1zywm i0jNr selectable-text copyable-text']",
 
     "search": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='3']",
     "searching": "//div[@class='_1JFry']",
@@ -11,7 +11,7 @@
     "back_button": "//button[@class='_18eKe']",
 
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
-    "contact_name": "//span[@class='_2UVLe i0jNr selectable-text copyable-text']",
+    "contact_name": "//span[@class='i0jNr selectable-text copyable-text']",
     "business_name": "//span[@class='_ccCW i0jNr']",
     "agended_contact_name": "//span[@class='FqYAR i0jNr selectable-text copyable-text']",
     "agended_business_name": "//span[@class='FqYAR i0jNr']",
@@ -21,11 +21,13 @@
 
     "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='9']",
     "input_class": "_13NKt copyable-text selectable-text",
-    "voice_record_class": "_30ggS",
+    "voice_record_class": "_1KJY9",
     "message_attached": "//div[@class='_1UWac Z2O8p oHEu9']/div[2]",
     "attachments": "//div[@title='Adjuntar']",
 
     "download": "//div[@aria-label='Descargar'][@class='_2oldI dJxPU _3gcnK']",
+    "message_checkbox": ".//input[@type='checkbox']",
+    "close_message_selection": "//button[@class='_1fimr']",
     "download_media": "//div[@title='Descargar'][@role='button']",
     "close_media": "//div[@title='Cerrar'][@role='button']",
     "preview": "//div[@class='_1yM10 _3Q2F2 _31Diy _3juR8 qAj2u']",
@@ -74,7 +76,7 @@
     "video_button": ".//span[@data-testid='media-play']",
     "thumbnail": ".//img[@class='_1WrWf mFB5y']",
 
-    "attach_inbound_download": ".//button[@class='UQz9- _1_Wyj']",
+    "attach_inbound_download": ".//button[@class='i5tg98hk f9ovudaz przvwfww gx1rr48f shdiholb phqmzxqs gtscxtjd ajgl1lbb thr4l2wc cc8mgx9x eta5aym1 d9802myq e4xiuwjv cm280p3y p357zi0d f8m0rgwh elxb2u3l ln8gz9je gfz4du6o r7fjleex tffp5ko5 l8fojup5 paxyh2gw']",
     "no_file_ok_button": "//div[@class='_20C5O _2Zdgs'][@role='button']",
     "modal": "//div[@class='_3J6wB']",
     "modal_backdrop": "//div[@class='_209uk'][@role='dialog']",
@@ -84,6 +86,7 @@
     "message_text": ".//span[@class='i0jNr selectable-text invisible-space copyable-text']/span[1]",
     "message_text1": ".//span[@class='i0jNr selectable-text copyable-text']/span[1]",
     "message_link": ".//a[@class='i0jNr selectable-text copyable-text']",
+    "message_link_button": ".//div[@class='_3tcao _2gZCX']",
 
     "notification": "//div[@class='_1pJ9J']",
     "sender_name": ".//span[@class='FqYAR i0jNr']",

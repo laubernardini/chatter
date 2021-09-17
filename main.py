@@ -142,7 +142,7 @@ def driver_connect_chrome(url=""):
     options.add_experimental_option("prefs", prefs)
 
     if bot.VERSION == "3.0":
-        options.add_argument("--window-size=400,500")
+        options.add_argument("--window-size=950,800")
 
     driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
 
@@ -301,10 +301,14 @@ def manage_masiv(driver, selectors):
 def manage_inbounds(driver, selectors):
     # Revisar en el chat
     if bot.STATE != 'ERROR':
+        if bot.SHOW_EX_PRINTS:
+            print("Revisando chat")
         actions.check_current_chat(driver, selectors, chat=bot.CURRENT_CHAT)
 
     # Obtener mensajes desde notificación
     if bot.STATE != 'ERROR':
+        if bot.SHOW_EX_PRINTS:
+            print("Buscando notificaciones")
         done = None
         while not done:
             n = actions.notification_clicker(driver, selectors)
@@ -316,6 +320,8 @@ def manage_inbounds(driver, selectors):
                 
                 time.sleep(1)
             else:
+                if bot.SHOW_EX_PRINTS:
+                    print("No hay notificaciones")
                 done = True
     
     time.sleep(1)

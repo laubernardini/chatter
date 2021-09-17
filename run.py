@@ -13,8 +13,6 @@ parser.add_argument("-b","--bot", help="Bot PK")
 parser.add_argument("-c", "--celular", help="Celular")
 args = parser.parse_args()
 
-#argv = sys.argv[1:]
-opts = []#, args = getopt.getopt(argv, 'b::c::', ['foperand'])
 if args.bot:
     bot.BOT_PK = args.bot
 if args.celular:
