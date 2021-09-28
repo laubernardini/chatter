@@ -164,71 +164,92 @@ def get_inbound_file():
             time.sleep(2)
     return archivo
 
-def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
-    try:
-        # Obtener chat
-        if not masive:
-            elem = search(driver, selectors, celular)
-        else:
-            elem = None
+def chat_init(driver, selectors, celular):
+    clear_elem(driver, selectors, "search")
 
-        # Iniciar char nuevo
-        if not elem:
-            clear_elem(driver, selectors, "search")
-            search(driver, selectors, bot.PHONE)
-            clear_elem(driver, selectors, "search")
-            time.sleep(1)
-            done = None
-            while not done:
-                try:
-                    own_chat_message = driver.find_element_by_xpath(selectors["message"])
-                    done = True
-                except:
-                    time.sleep(1)
-            
-            time.sleep(1)
-            own_chat_message.send_keys("https://wa.me/" + celular)
-            own_chat_message.send_keys(Keys.ENTER)
-            
-            done = None
-            while not done:
-                try:
-                    driver.find_element_by_xpath("//a[@href='https://wa.me/" + celular + "']").click()
-                    done = True
-                except:
-                    time.sleep(1)
-            
-            done = None
-            while not done:
-                try:
-                    driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
+    # Verificar chat propio abierto
+    done = None
+    while not done:
+        search(driver, selectors, bot.PHONE)
+        clear_elem(driver, selectors, "search")
+        try:
+            chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+            chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+            if bot.PHONE == cel_formatter(chat_name_header.text):
+                done = True
+        except:
+            pass
+        time.sleep(1)
 
+    # Instanciar input mensaje
+    done = None
+    while not done:
+        try:
+            own_chat_message = driver.find_element_by_xpath(selectors["message"])
+            done = True
+        except:
+            time.sleep(1)
+    
+    time.sleep(1)
+    own_chat_message.send_keys("https://wa.me/" + celular)
+    own_chat_message.send_keys(Keys.ENTER)
+    
+    # Esperar link
+    done = None
+    while not done:
+        try:
+            driver.find_element_by_xpath("//a[@href='https://wa.me/" + celular + "']").click()
+            done = True
+        except:
+            time.sleep(1)
+    
+    # Popup
+    done = None
+    while not done:
+            try:
+                driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
+
+                # Comprobar número inválido
+                try:
+                    driver.find_element_by_xpath(selectors["chat_init"])
+                    if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
+                        driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                        elem = None
+                        done = True
+                        print("Número inválido")
+                except:
                     try:
-                        driver.find_element_by_xpath(selectors["chat_init"])
                         if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
                             driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
                             elem = None
                             done = True
                             print("Número inválido")
                     except:
-                        try:
-                            if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
-                                driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
-                                elem = None
-                                done = True
-                                print("Número inválido")
-                        except:
-                            pass
-                except:
-                    elem = True
-                    done = True
-                    print("Nuevo chat iniciado")
-                time.sleep(1)
+                        pass
+            except:
+                elem = True
+                done = True
+                print("Nuevo chat iniciado")
+            time.sleep(1)
+    
 
+    return elem
+
+def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
+    try:
+        # Obtener chat si es respuesta manual
+        if not masive:
+            elem = search(driver, selectors, celular)
+        else:
+            elem = None
+
+        # Iniciar chat
+        if not elem:
+            elem = chat_init(driver, selectors, celular)
         else:
             time.sleep(2)
-
-        # Comprobar cruce de chat
+        
+        # Descartar cruce de chat
         if elem:
             try:
                 chat_header = driver.find_element_by_xpath(selectors["chat_header"])
@@ -467,7 +488,7 @@ def notification_clicker(driver, selectors):
                 
                 # Ingresar al chat
                 bot.CURRENT_CHAT = {}
-                n.click()
+                parent.click()
 
                 time.sleep(2)
                 done = True
@@ -480,18 +501,6 @@ def notification_clicker(driver, selectors):
             print("No hay notificaciones")
             
     return done
-
-# Función en desuso
-def readed_chat_clicker(driver, selectors):
-    try:
-        r = driver.find_elements_by_xpath(selectors["readed_chat"])[0]
-        time.sleep(2)
-        r.click()
-        return None
-    except:
-        if bot.SHOW_EX_PRINTS:
-            print("No hay notificaciones")
-        return True
 
 def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes nuevos
     try:
@@ -540,7 +549,6 @@ def get_inbounds(driver, selectors):
         reference_elem = None
 
         # Localizar elemento de mensaje
-        #driver.find_element_by_xpath(selectors["chat_container"]).send_keys(Keys.ARROW_DOWN)
         try:
             reference_elem = driver.find_element_by_xpath('//div[@data-id="' + bot.CURRENT_CHAT["last_msg"] + '"]')
             reference_elem.send_keys(Keys.ARROW_DOWN)
@@ -591,7 +599,9 @@ def get_inbounds(driver, selectors):
             try:
                 first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] 
                 first_msg.send_keys(Keys.ARROW_DOWN)
+                time.sleep(0.2)
                 first_msg = driver.switch_to.active_element
+                time.sleep(0.2)
             except:
                 pass
 
@@ -605,9 +615,12 @@ def get_inbounds(driver, selectors):
                 # Comprobar si es un elemento del chat
                 if selectors["chat_item_class"] in first_msg.get_attribute("class") or selectors["unread_class"] in first_msg.get_attribute("class"):
                     first_msg.send_keys(Keys.ARROW_DOWN)
+                    time.sleep(0.2)
                     first_msg = driver.switch_to.active_element
+                    time.sleep(0.2)
                 else:
                     first_msg.send_keys(Keys.TAB)
+                    time.sleep(0.2)
                     first_msg = driver.switch_to.active_element
                     time.sleep(0.5)
                 
@@ -615,13 +628,20 @@ def get_inbounds(driver, selectors):
                 try:
                     first_msg.find_element_by_xpath(selectors["encrypted_chat"])
                     first_msg.send_keys(Keys.ARROW_DOWN)
+                    time.sleep(0.2)
                     first_msg = driver.switch_to.active_element
+                    time.sleep(0.2)
                 except:
                     pass
         
+        print("Mensaje obtenido")
+        print(f"Primer mensaje: {first_msg.get_attribute('data-id')}")
+
         # Condiciones
         different_data_id = (first_msg.get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"])
         not_msg_out = not(selectors["message_out_class"] in first_msg.get_attribute('class'))
+
+        print(f"Es un mensaje nuevo: {different_data_id and not_msg_out}")
 
         # Guardando primer mensaje
         if different_data_id and not_msg_out:
@@ -634,7 +654,9 @@ def get_inbounds(driver, selectors):
         while not done:
             try:
                 last_msg.send_keys(Keys.ARROW_DOWN)
+                time.sleep(0.2)
                 next_msg = driver.switch_to.active_element
+                time.sleep(0.2)
                 if last_msg != next_msg:
                     # Condiciones
                     not_msg_out = not(selectors["message_out_class"] in next_msg.get_attribute('class'))

@@ -239,6 +239,8 @@ def get_own_phone(driver, selectors):
         except:
             time.sleep(1)
     bot.PHONE = actions.cel_formatter(celular)
+    print(f"PK: {bot.BOT_PK}, PHONE: {bot.PHONE}")
+    
     driver.find_element_by_xpath(selectors["back_button"]).click()
 
 # Managers
