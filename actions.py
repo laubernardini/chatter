@@ -599,9 +599,7 @@ def get_inbounds(driver, selectors):
             try:
                 first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] 
                 first_msg.send_keys(Keys.ARROW_DOWN)
-                time.sleep(0.2)
                 first_msg = driver.switch_to.active_element
-                time.sleep(0.2)
             except:
                 pass
 
@@ -615,12 +613,9 @@ def get_inbounds(driver, selectors):
                 # Comprobar si es un elemento del chat
                 if selectors["chat_item_class"] in first_msg.get_attribute("class") or selectors["unread_class"] in first_msg.get_attribute("class"):
                     first_msg.send_keys(Keys.ARROW_DOWN)
-                    time.sleep(0.2)
                     first_msg = driver.switch_to.active_element
-                    time.sleep(0.2)
                 else:
                     first_msg.send_keys(Keys.TAB)
-                    time.sleep(0.2)
                     first_msg = driver.switch_to.active_element
                     time.sleep(0.5)
                 
@@ -628,9 +623,7 @@ def get_inbounds(driver, selectors):
                 try:
                     first_msg.find_element_by_xpath(selectors["encrypted_chat"])
                     first_msg.send_keys(Keys.ARROW_DOWN)
-                    time.sleep(0.2)
                     first_msg = driver.switch_to.active_element
-                    time.sleep(0.2)
                 except:
                     pass
         
@@ -654,9 +647,7 @@ def get_inbounds(driver, selectors):
         while not done:
             try:
                 last_msg.send_keys(Keys.ARROW_DOWN)
-                time.sleep(0.2)
                 next_msg = driver.switch_to.active_element
-                time.sleep(0.2)
                 if last_msg != next_msg:
                     # Condiciones
                     not_msg_out = not(selectors["message_out_class"] in next_msg.get_attribute('class'))
@@ -679,6 +670,7 @@ def get_inbounds(driver, selectors):
 def make_inbound_messages(driver, selectors, messages):
     time.sleep(1)
     result = []
+    print(messages)
     for m in messages:
         wa_id = m
         nombre = ""
@@ -690,7 +682,8 @@ def make_inbound_messages(driver, selectors, messages):
                 m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
                 done = True
             except:
-                driver.find_element_by_css_selector(selectors["message_in_container"]).send_keys(Keys.ARROW_UP)
+                driver.find_element_by_xpath(selectors["message"]).click()
+                time.sleep(0.8)
 
         # Variables de ejecución
         nombre = bot.CURRENT_CHAT["nombre"]
