@@ -547,6 +547,7 @@ def get_inbounds(driver, selectors):
         done = None
         first_msg = None
         reference_elem = None
+        has_data_id = None
 
         # Localizar elemento de mensaje
         try:
@@ -651,8 +652,9 @@ def get_inbounds(driver, selectors):
                 if last_msg != next_msg:
                     # Condiciones
                     not_msg_out = not(selectors["message_out_class"] in next_msg.get_attribute('class'))
+                    has_data_id = next_msg.get_attribute("data-id")
 
-                    if not_msg_out:
+                    if not_msg_out and has_data_id:
                         messages.append(next_msg.get_attribute("data-id"))
                     
                     last_msg = next_msg
