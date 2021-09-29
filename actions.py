@@ -288,7 +288,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             #print("Mensajes pendientes listos")
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
-            mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("-_", "_").replace("_-", "_")#.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
+            #mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("-_", "_").replace("_-", "_")#.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
             #print("Mensaje preparado")
 
             attach_type = None
@@ -875,7 +875,7 @@ def make_inbound_messages(driver, selectors, messages):
                 time.sleep(2)
                 
                 if shared_contact_phone != '': 
-                    text = "-*Contacto*-\n-_Nombre:_- " + shared_contact_name + "\n-_Celular:_- " + shared_contact_phone
+                    text = "*Contacto*\n_Nombre:_ " + shared_contact_name + "\n_Celular:_ " + shared_contact_phone
             except:
                 pass
 
