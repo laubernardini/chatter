@@ -260,6 +260,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             except:
                 elem = None
 
+        # Enviar mensaje
         if elem:
             # Abrir chat (si es un chat vacío)
             try:
@@ -833,9 +834,9 @@ def make_inbound_messages(driver, selectors, messages):
                 text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL)
                 text = re.sub('" style.*?;"','',text, flags=re.DOTALL).replace('>', '')
                 # Formatear negrita
-                text = text.replace('<strong class="_1VzZY selectable-text invisible-space copyable-text" data-app-text-template="*${appText}*', '-*').replace('</strong>', '*-')
+                text = text.replace('<strong class="i0jNr selectable-text copyable-text" data-app-text-template="*${appText}*"', '*').replace('</strong', '*')
                 # Formatear cursiva
-                text = text.replace('<em class="_1VzZY selectable-text invisible-space copyable-text" data-app-text-template="_${appText}_', '-_').replace('</em>', '_-')
+                text = text.replace('<em class="i0jNr selectable-text copyable-text" data-app-text-template="_${appText}_"', '_').replace('</em', '_')
                 # Eliminar link
                 text = re.sub('<a.*?copyable-text"','',text, flags=re.DOTALL).replace('</a>', '')
                 text = re.sub('<a.*?">','',text, flags=re.DOTALL).replace('</a>', '')
