@@ -13,6 +13,8 @@ import json
 import actions
 import bot
 
+text = ""
+
 with open('mime_types.txt', 'rb') as mime:
     bot.MIME_TYPES = str(mime.read())
 

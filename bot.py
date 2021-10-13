@@ -23,7 +23,7 @@ MIME_TYPES = "" # Los tipos incluidos se descargarán sin confirmación
 MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime', '.mp3', '.ogg', '.m4a'] # Estos archivos se envían por el botón "galería"
 START_DATE = None
 FORCED_ACTIVITY_FREQUENCY = 240 # En minutos. Click para marcar al navegador como "activo" frente al SO 
-CALL_RESPONSE = "-*IMPORTANTE*-\nEn este número -*no recibimos llamadas*-. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
+CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
 
 # Log
 SHOW_ERRORS = True
