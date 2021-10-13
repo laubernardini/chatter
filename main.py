@@ -142,7 +142,7 @@ def driver_connect_chrome(url=""):
     options.add_experimental_option("prefs", prefs)
 
     if bot.VERSION == "3.0":
-        options.add_argument("--window-size=950,800")
+        options.add_argument("--window-size=950,700")
 
     driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
 
