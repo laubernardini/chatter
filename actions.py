@@ -175,6 +175,8 @@ def chat_init(driver, selectors, celular):
         try:
             chat_header = driver.find_element_by_xpath(selectors["chat_header"])
             chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+            print(f"CHAT: {chat_name_header.text}, PHONE: {bot.PHONE}")
+            print(cel_formatter(chat_name_header.text))
             if bot.PHONE == cel_formatter(chat_name_header.text):
                 done = True
         except:
