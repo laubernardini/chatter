@@ -11,10 +11,10 @@
     "back_button": "//button[@class='_18eKe']",
 
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
-    "contact_name": "//span[@class='i0jNr selectable-text copyable-text']",
-    "business_name": "//span[@class='_ccCW i0jNr']",
-    "agended_contact_name": "//span[@class='FqYAR i0jNr selectable-text copyable-text']",
-    "agended_business_name": "//span[@class='FqYAR i0jNr']",
+    "contact_name": "//span[@class='emoji-texttt i0jNr selectable-text copyable-text']",
+    "business_name": "//span[@class='emoji-texttt _ccCW i0jNr']",
+    "agended_contact_name": "//span[@class='emoji-texttt FqYAR i0jNr selectable-text copyable-text']",
+    "agended_business_name": "//span[@class='emoji-texttt FqYAR i0jNr']",
     "group_name": "//div[@class='_1UWac czcZD']/div[1]",
     "chat_header": "//header[@class='_23P3O']",
     "chat_name_header": ".//span[@class='_ccCW FqYAR i0jNr']",
@@ -59,8 +59,8 @@
     "in_response_text": ".//span[@class='quoted-mention i0jNr']",
 
     "shared_contact_button": ".//div[@class='_2GhDW'][@role='button']",
-    "shared_contact_name": "//span[@class='_ccCW i0jNr selectable-text copyable-text']",
-    "shared_contact_name1": "//span[@class='_ccCW i0jNr selectable-text invisible-space copyable-text']",
+    "shared_contact_name": "//span[@class='emoji-texttt _ccCW i0jNr selectable-text copyable-text']",
+    "shared_contact_name1": "//span[@class='emoji-texttt _ccCW i0jNr selectable-text invisible-space copyable-text']",
     "shared_contact_phone": "//div[@class='_18Bwj i0jNr selectable-text copyable-text']/span[1]",
     "shared_contact_phone1": "//div[@class='_18Bwj i0jNr selectable-text invisible-space copyable-text']/span[1]",
 
@@ -84,8 +84,8 @@
     "modal_text": "//div[@class='_2Nr6U']",
 
     "emogi_container": ".//span[@class='_3R6rC']",
-    "message_text": ".//span[@class='i0jNr selectable-text invisible-space copyable-text']/span[1]",
-    "message_text1": ".//span[@class='i0jNr selectable-text copyable-text']/span[1]",
+    "message_text": ".//span[@class='emoji-texttt i0jNr selectable-text invisible-space copyable-text']/span[1]",
+    "message_text1": ".//span[@class='emoji-texttt i0jNr selectable-text copyable-text']/span[1]",
     "message_link": ".//a[@class='i0jNr selectable-text copyable-text']",
     "message_link_button": ".//div[@class='_3tcao _2gZCX']",
 
