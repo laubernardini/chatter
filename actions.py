@@ -179,7 +179,8 @@ def chat_init(driver, selectors, celular):
             print(cel_formatter(chat_name_header.text))
             if bot.PHONE == cel_formatter(chat_name_header.text):
                 done = True
-        except:
+        except Exception as e:
+            print(e)
             pass
         time.sleep(1)
 
