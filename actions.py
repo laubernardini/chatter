@@ -174,13 +174,14 @@ def chat_init(driver, selectors, celular):
         clear_elem(driver, selectors, "search")
         try:
             chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-            chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
-            print(f"CHAT: {chat_name_header.text}, PHONE: {bot.PHONE}")
-            print(cel_formatter(chat_name_header.text))
+            try:
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+            except:
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+                
             if bot.PHONE == cel_formatter(chat_name_header.text):
                 done = True
-        except Exception as e:
-            print(e)
+        except:
             pass
         time.sleep(1)
 
@@ -256,7 +257,10 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
         if elem:
             try:
                 chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+                try:
+                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+                except:
+                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
                 print('Chat name: ', chat_name_header.text)
                 if bot.PHONE == cel_formatter(chat_name_header.text):
                     elem = None
