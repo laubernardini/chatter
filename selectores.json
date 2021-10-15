@@ -7,7 +7,7 @@
 
     "search": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='3']",
     "searching": "//div[@class='_1JFry']",
-    "search_result_text": ".//span[@class='i0jNr']",
+    "search_result_text": ".//span[@class='emoji-texttt i0jNr']",
     "back_button": "//button[@class='_18eKe']",
 
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
@@ -56,7 +56,7 @@
     "chat_init": "//div[@class='_1bpDE']",
 
     "in_response_group_class": "div.hooVq ",
-    "in_response_text": ".//span[@class='quoted-mention i0jNr']",
+    "in_response_text": ".//span[@class='emoji-texttt quoted-mention i0jNr']",
 
     "shared_contact_button": ".//div[@class='_2GhDW'][@role='button']",
     "shared_contact_name": "//span[@class='emoji-texttt _ccCW i0jNr selectable-text copyable-text']",
