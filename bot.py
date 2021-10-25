@@ -11,9 +11,9 @@ PHONE = ""
 VERSION = "2.0"
 
 # Datos del server
-SERVER_URL = "http://educandonos.com.ar/thread-"#"https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"#
-FILE_SERVER = "http://educandonos.com.ar"#"https://apicloud.com.ar"#"http://localhost:8000"#
-FILE_SERVER_2 = "http://educandonos.com.ar:8080"#"http://apicloud.com.ar:8080"#"http://localhost:8000"#
+SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"#
+FILE_SERVER = "https://apicloud.com.ar"#"http://localhost:8000"#
+FILE_SERVER_2 = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
 
 # Variables de ejecución
 OS_SLASH = "\\" # / -> linux \\ -> windows
