@@ -5,6 +5,7 @@
     "profile": "//div[@class='_3GlyB']",
     "own_phone": "//div[@class='_1zywm i0jNr selectable-text copyable-text']",
 
+    "side": "//div[@id='side']",
     "search": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='3']",
     "searching": "//div[@class='_1JFry']",
     "search_result_text": ".//span[@class='emoji-texttt i0jNr']",

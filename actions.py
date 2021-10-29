@@ -88,8 +88,9 @@ def search(driver, selectors, text):
     print("Buscando: ", text)
     # Obtener input de búsqueda
     result = None
-    no_result = False    
-    elem = driver.find_element_by_xpath(selectors["search"])
+    no_result = False
+    side = driver.find_element_by_xpath(selectors["search"]) 
+    elem = side.find_element_by_xpath(selectors["search"])
     
     # Buscar
     #elem.send_keys(text)
