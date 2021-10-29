@@ -7,8 +7,9 @@
 
     "side": "//div[@id='side']",
     "search": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='3']",
-    "searching": "//div[@class='_1JFry']",
+    "searching": "//div[@class='cm280p3y p357zi0d tvf2evcx f8m0rgwh gndfcl4n fhf7t426 bvcnfjzh cihm0v32 td5bf8pq ctv2fiom l3k7h4x6 hp667wtd qfejxiq4 oq44ahr5 lb5m6g5c']",
     "search_result_text": ".//span[@class='emoji-texttt i0jNr']",
+    "chat_class": "_3m_Xw",
     "back_button": "//button[@class='_18eKe']",
 
     "chat_name": "//div[@class='_24-Ff'][@role='button']",

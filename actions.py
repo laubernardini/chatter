@@ -118,7 +118,7 @@ def search(driver, selectors, text):
         elem.send_keys(Keys.ARROW_DOWN)
         if driver.switch_to.active_element == elem: # Revisa si hubo resultados, sino devuelve None
             elem.send_keys(Keys.TAB) # Prueba con TAB en caso de que no funcione ARROW_DOWN
-            if driver.switch_to.active_element != elem and driver.switch_to.active_element.get_attribute('class') != "":
+            if driver.switch_to.active_element.get_attribute('class') == selectors["chat_class"]:
                 result = driver.switch_to.active_element
         else:
             result = driver.switch_to.active_element
