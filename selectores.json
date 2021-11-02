@@ -63,8 +63,8 @@
     "shared_contact_button": ".//div[@class='_2GhDW'][@role='button']",
     "shared_contact_name": "//span[@class='emoji-texttt _ccCW i0jNr selectable-text copyable-text']",
     "shared_contact_name1": "//span[@class='emoji-texttt _ccCW i0jNr selectable-text invisible-space copyable-text']",
-    "shared_contact_phone": "//div[@class='_18Bwj i0jNr selectable-text copyable-text']/span[1]",
-    "shared_contact_phone1": "//div[@class='_18Bwj i0jNr selectable-text invisible-space copyable-text']/span[1]",
+    "shared_contact_phone": "//div[@class='tviruh8d bze30y65 i0jNr selectable-text copyable-text']/span[1]",
+    "shared_contact_phone1": "//div[@class='tviruh8d bze30y65 i0jNr selectable-text invisible-space copyable-text']/span[1]",
 
     "audio_button": ".//span[@data-testid='audio-play']",
     "audio_status": ".//span[@data-testid='ptt-status']",
@@ -77,7 +77,7 @@
     "missed_call_text": ".//span[@class='emoji-texttt i0jNr'][@dir='ltr']",
 
     "video_button": ".//span[@data-testid='media-play']",
-    "thumbnail": ".//img[@class='_1WrWf mFB5y']",
+    "thumbnail": ".//img[@class='jciay5ix tvf2evcx oq44ahr5 lb5m6g5c fsmudgz7']",
 
     "attach_inbound_download": ".//button[@class='i5tg98hk f9ovudaz przvwfww gx1rr48f shdiholb phqmzxqs gtscxtjd ajgl1lbb thr4l2wc cc8mgx9x eta5aym1 d9802myq e4xiuwjv cm280p3y p357zi0d f8m0rgwh elxb2u3l ln8gz9je gfz4du6o r7fjleex tffp5ko5 l8fojup5 paxyh2gw']",
     "no_file_ok_button": "//div[@class='_20C5O _2Zdgs'][@role='button']",
@@ -92,7 +92,7 @@
     "message_link_button": ".//div[@class='_3tcao _2gZCX']",
 
     "notification": "//div[@class='_1pJ9J']",
-    "sender_name": ".//span[@class='FqYAR i0jNr']",
+    "sender_name": ".//span[@class='emoji-texttt FqYAR i0jNr']",
     "writing": ".//span[@class='_16h0X _ccCW i0jNr']",
     "group_event": ".//span[@class='Hy9nV']",
     "chat_name_notification": ".//span[@class='_ccCW _1adfa i0jNr']",

@@ -863,20 +863,25 @@ def make_inbound_messages(driver, selectors, messages):
                 time.sleep(2)
                 shared_contact_name = ''
                 shared_contact_phone = ''
+                driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
                 try:
                     shared_contact_name = driver.find_element_by_xpath(selectors["shared_contact_name"]).text
-                except:
+                except Exception as e:
+                    print(e)
                     try:
                         shared_contact_name = driver.find_element_by_xpath(selectors["shared_contact_name1"]).text
-                    except:
+                    except Exception as e:
+                        print(e)
                         pass
 
                 try:
                     shared_contact_phone = driver.find_element_by_xpath(selectors["shared_contact_phone"]).text
-                except:
+                except Exception as e:
+                    print(e)
                     try:
                         shared_contact_phone = driver.find_element_by_xpath(selectors["shared_contact_phone1"]).text
-                    except:
+                    except Exception as e:
+                        print(e)
                         pass
 
                 m.find_element_by_xpath(selectors["chat_info_close"]).click()
@@ -884,7 +889,7 @@ def make_inbound_messages(driver, selectors, messages):
                 
                 if shared_contact_phone != '': 
                     text = "*Contacto*\n_Nombre:_ " + shared_contact_name + "\n_Celular:_ " + shared_contact_phone
-            except:
+            except Exception as e:
                 pass
 
             text = " " if text == '' else text
@@ -913,7 +918,7 @@ def make_inbound_messages(driver, selectors, messages):
             except:
                 pass
         else:
-            text = "-*" + m.find_element_by_xpath(selectors["missed_call_text"]).text + "*-"
+            text = "*" + m.find_element_by_xpath(selectors["missed_call_text"]).text + "*"
 
             # Generar respuesta automática a llamada pedida
             bot.AUTO_RESPONSES.append({
