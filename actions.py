@@ -155,12 +155,25 @@ def get_inbound_file():
     while not loaded:
         try:
             archivo = max(['inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + f for f in os.listdir('inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK))],key=os.path.getctime)
-            archivo = archivo.replace('.crdownload', '')
+            if ('.crdownload' in archivo):
+                new_name = archivo.replace('.crdownload', '')
+                os.rename(archivo, new_name)
+                archivo = new_name
+
             if archivo != bot.LAST_FILE:
                 loaded = True
+                ext = os.path.splitext(archivo)[1]
+                new_name = f"inbound_file_cache{bot.OS_SLASH}{str(bot.BOT_PK)}{bot.OS_SLASH}{str(bot.FILE_COUNTER)}{ext}"
+                os.rename(archivo, new_name)
+
+                bot.FILE_COUNTER = bot.FILE_COUNTER + 1
+                archivo = new_name
+
                 bot.LAST_FILE = archivo
                 if bot.SHOW_EX_PRINTS:
                     print("Archivo obtenido")
+            else:
+                time.sleep(1)
         except:
             time.sleep(2)
     return archivo
