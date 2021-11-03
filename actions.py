@@ -152,6 +152,9 @@ def archive(driver, selectors, text):
 
 def get_inbound_file():
     loaded = None
+    archivo = ""
+    new_name = ""
+    ext = ""
     while not loaded:
         try:
             archivo = max(['inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + f for f in os.listdir('inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK))],key=os.path.getctime)
@@ -159,6 +162,7 @@ def get_inbound_file():
                 new_name = archivo.replace('.crdownload', '')
                 os.rename(archivo, new_name)
                 archivo = new_name
+            print(f"Last: {bot.LAST_FILE}\nArchivo: {archivo}")
 
             if archivo != bot.LAST_FILE:
                 loaded = True
@@ -168,13 +172,15 @@ def get_inbound_file():
 
                 bot.FILE_COUNTER = bot.FILE_COUNTER + 1
                 archivo = new_name
+                print(f"Nuevo nombre: {archivo}")
 
                 bot.LAST_FILE = archivo
                 if bot.SHOW_EX_PRINTS:
                     print("Archivo obtenido")
             else:
                 time.sleep(1)
-        except:
+        except Exception as e:
+            print(e)
             time.sleep(2)
     return archivo
 
