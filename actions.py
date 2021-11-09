@@ -353,7 +353,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
 
                 #driver.find_element_by_xpath(selectors["preview"]).click()
                 
-                if attach_type == 'multimedia':
+                if attach_type == 'multimedia' and len(mensaje) < 1000:
                     # Obtener input de mensaje
                     e = None
                     while not e:
@@ -363,7 +363,6 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                         except:
                             time.sleep(1)
                             driver.find_element_by_xpath(selectors["search"]).click()
-                            #driver.find_element_by_xpath(selectors["preview"]).click()
                 else:
                     # Enviar archivo
                     e = None
@@ -373,28 +372,11 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                             e = True
                         except:
                             time.sleep(1)
-            #print("Archivo listo")
 
             # Escribir mensaje
-            if False:#masive:
-                # "Teclear" mensaje
-                #for letra in mensaje:
-                #    if letra != '`':
-                #        message.send_keys(letra)
-                #    else:
-                #        message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
-                #    time.sleep(0.02)
-                pass
-            else:
-                # Pegar mensaje
-                #mensaje = mensaje.split("`")
-                #for m in mensaje:
-                #    message.send_keys(m)
-                #    message.send_keys(Keys.LEFT_SHIFT, Keys.ENTER)
-                #message.send_keys(Keys.BACKSPACE)
-                driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
-                message.send_keys('.')
-                message.send_keys(Keys.BACKSPACE)
+            driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
+            message.send_keys('.')
+            message.send_keys(Keys.BACKSPACE)
 
             # Enviar mensaje
             message.send_keys(Keys.ENTER)
