@@ -13,9 +13,10 @@
     "back_button": "//button[@class='_18eKe']",
 
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
-    "contact_name": "//span[@class='emoji-texttt i0jNr selectable-text copyable-text']",
+    "business_alert": "//div[@class='ggj6brxn m0h2a7mj lb5m6g5c kv6wexeh gfz4du6o r7fjleex lhj4utae le5p0ye3']",
+    "phone": "//span[@class='AjtLy _1FXE6 _1lF7t']",
+    "contact_name": "//span[@class='emoji-texttt FqYAR i0jNr selectable-text copyable-text']",
     "business_name": "//span[@class='emoji-texttt _ccCW i0jNr']",
-    "agended_contact_name": "//span[@class='emoji-texttt FqYAR i0jNr selectable-text copyable-text']",
     "agended_business_name": "//span[@class='emoji-texttt FqYAR i0jNr']",
     "group_name": "//div[@class='_1UWac czcZD']/div[1]",
     "chat_header": "//header[@class='_23P3O']",

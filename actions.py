@@ -48,25 +48,34 @@ def get_data_by_chat_info(driver, selectors):
     driver.find_element_by_xpath(selectors["chat_name"]).click()
     time.sleep(2)
     info = driver.find_elements_by_xpath(selectors["chat_info"])
-
-    # Obtener celular
-    for i in info:
-        if "+" in i.text:
-            celular = i.text
-            break
     
-
-    # Obtener nombre
+    # Obtener tipo
     try:
-        nombre = driver.find_element_by_xpath(selectors["contact_name"]).text
+        if 'empresa' in driver.find_element_by_xpath(selectors["business_alert"]).text:
+            tipo = 'business'
     except:
+        tipo = 'common'
+    print(f"Tipo de chat: {tipo}")
+    
+    # Obtener celular y nombre
+    if tipo == 'common':
+        celular = driver.find_element_by_xpath(selectors["phone"]).text
+        try:
+            nombre = driver.find_element_by_xpath(selectors["contact_name"]).text
+        except:
+            nombre = celular
+    else:
+        for i in info:
+            if "+" in i.text:
+                celular = i.text
+                break
         try:
             nombre = driver.find_element_by_xpath(selectors["business_name"]).text
         except:
             try:
-                nombre = driver.find_element_by_xpath(selectors["agended_contact_name"]).text
-            except:
                 nombre = driver.find_element_by_xpath(selectors["agended_business_name"]).text
+            except:
+                nombre = celular
 
     result = {
         "nombre": nombre,
@@ -353,17 +362,24 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
 
                 #driver.find_element_by_xpath(selectors["preview"]).click()
                 
-                if attach_type == 'multimedia' and len(mensaje) < 1000:
-                    # Obtener input de mensaje
-                    e = None
-                    while not e:
-                        try:
-                            message = driver.find_element_by_xpath(selectors["message_attached"])
-                            e = True
-                        except:
-                            time.sleep(1)
-                            driver.find_element_by_xpath(selectors["search"]).click()
+                send_file = False
+                if attach_type == 'multimedia':
+                    if masive or len(mensaje) < 1000:
+                        # Obtener input de mensaje
+                        e = None
+                        while not e:
+                            try:
+                                message = driver.find_element_by_xpath(selectors["message_attached"])
+                                e = True
+                            except:
+                                time.sleep(1)
+                                driver.find_element_by_xpath(selectors["search"]).click()
+                    else:
+                        send_file = True
                 else:
+                    send_file = True
+                
+                if send_file:
                     # Enviar archivo
                     e = None
                     while not e:
