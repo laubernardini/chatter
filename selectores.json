@@ -70,7 +70,7 @@
     "audio_button": ".//span[@data-testid='audio-play']",
     "audio_status": ".//span[@data-testid='ptt-status']",
     "audio_icon": ".//span[@data-testid='audio-file']",
-    "audio_download": ".//button[@class='_2oSLN']",
+    "audio_download": ".//button[@aria-label='Descargar mensaje de voz']",
 
     "missed_call_container": "//div[@class='_2wUmf V-zSs focusable-list-item']",
     "missed_call": ".//span[@data-testid='miss']",
