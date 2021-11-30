@@ -161,20 +161,26 @@ def archive(driver, selectors, text):
 
 def get_inbound_file():
     loaded = None
-    archivo = ""
+    dpath = f'inbound_file_cache{bot.OS_SLASH}{str(bot.BOT_PK)}{bot.OS_SLASH}'
+    archivo = None
     new_name = ""
     ext = ""
     while not loaded:
         try:
-            archivo = max(['inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK) + bot.OS_SLASH + f for f in os.listdir('inbound_file_cache' + bot.OS_SLASH + str(bot.BOT_PK))],key=os.path.getctime)
-            if ('.crdownload' in archivo):
-                new_name = archivo.replace('.crdownload', '')
-                os.rename(archivo, new_name)
-                archivo = new_name
-            print(f"Last: {bot.LAST_FILE}\nArchivo: {archivo}")
+            for (_, _, filenames) in os.walk(dpath):
+                for fn in filenames:
+                    if f"{dpath}{fn}" not in bot.FILE_CACHE:
+                        archivo = f"{dpath}{fn}"
+                break
 
-            if archivo != bot.LAST_FILE:
+            if archivo:
                 loaded = True
+                if ('.crdownload' in archivo):
+                    new_name = archivo.replace('.crdownload', '')
+                    os.rename(archivo, new_name)
+                    archivo = new_name
+                print(f"Archivo: {archivo}")
+
                 ext = os.path.splitext(archivo)[1]
                 new_name = f"inbound_file_cache{bot.OS_SLASH}{str(bot.BOT_PK)}{bot.OS_SLASH}{str(bot.FILE_COUNTER)}{ext}"
                 os.rename(archivo, new_name)
@@ -183,7 +189,7 @@ def get_inbound_file():
                 archivo = new_name
                 print(f"Nuevo nombre: {archivo}")
 
-                bot.LAST_FILE = archivo
+                bot.FILE_CACHE.append(archivo)
                 if bot.SHOW_EX_PRINTS:
                     print("Archivo obtenido")
             else:
