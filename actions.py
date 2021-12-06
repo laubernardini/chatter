@@ -542,9 +542,25 @@ def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes
             print("Buscando mensajes nuevos")
         
         # Definir sobre qué chat se trabaja
-        if not chat:
+        if chat:
+            chat_changed = False
+            try:
+                chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+                try:
+                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+                except:
+                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+                print('Chat name: ', chat_name_header.text)
+                if chat["celular"] != cel_formatter(chat_name_header.text):
+                    chat_changed = True
+            except:
+                pass
+
+            if chat_changed:
+                update_current_chat(driver, selectors)
+        else:
             update_current_chat(driver, selectors)
-        
+
         # Obtener id's de mensajes nuevos
         messages = []
         try:
