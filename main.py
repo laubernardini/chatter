@@ -309,9 +309,20 @@ def manage_masiv(driver, selectors):
 def manage_inbounds(driver, selectors):
     # Revisar en el chat
     if bot.STATE != 'ERROR':
-        if bot.SHOW_EX_PRINTS:
-            print("Revisando chat")
-        actions.check_current_chat(driver, selectors, chat=bot.CURRENT_CHAT)
+        chat_name_header = ''
+        try:
+            chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+            try:
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+            except:
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+        except:
+            pass
+        
+        if cel_formatter(chat_name_header) != bot.PHONE:
+            if bot.SHOW_EX_PRINTS:
+                print("Revisando chat")
+            actions.check_current_chat(driver, selectors, chat=bot.CURRENT_CHAT)
 
     # Obtener mensajes desde notificación
     if bot.STATE != 'ERROR':
