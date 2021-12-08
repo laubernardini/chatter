@@ -59,7 +59,11 @@ def get_data_by_chat_info(driver, selectors):
     
     # Obtener celular y nombre
     if tipo == 'common':
-        celular = driver.find_element_by_xpath(selectors["phone"]).text
+        try:
+            celular = driver.find_element_by_xpath(selectors["phone"]).text
+        except:
+            celular = driver.find_element_by_xpath(selectors["contact_name"]).text
+
         if '~' in celular:
             nombre = celular.replace('~', '')
             celular = driver.find_element_by_xpath(selectors["contact_name"]).text
