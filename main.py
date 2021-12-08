@@ -319,7 +319,7 @@ def manage_inbounds(driver, selectors):
         except:
             pass
         
-        if cel_formatter(chat_name_header) != bot.PHONE:
+        if actions.cel_formatter(chat_name_header) != bot.PHONE:
             if bot.SHOW_EX_PRINTS:
                 print("Revisando chat")
             actions.check_current_chat(driver, selectors, chat=bot.CURRENT_CHAT)
