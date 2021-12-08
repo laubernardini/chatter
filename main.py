@@ -313,9 +313,9 @@ def manage_inbounds(driver, selectors):
         try:
             chat_header = driver.find_element_by_xpath(selectors["chat_header"])
             try:
-                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"]).text
             except:
-                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"]).text
         except:
             pass
         
