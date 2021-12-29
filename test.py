@@ -8,22 +8,54 @@ from datetime import datetime, timedelta
 from selenium import webdriver
 
 from selenium.webdriver.common.keys import Keys
-import time
-import json
-import actions
-import bot
+import time, json, actions, bot
 
-from os import walk
+headers = {
+    "Content-Type": "application/json"#"application/x-www-form-urlencoded"
+}
+fields = {
+    "token": 1,
+    "pk": 172,
+    "estado": "FINALIZADO",
+    "wa_id": "",
+    "intentos": [
+        {
+            "clave": "celular",
+            "cel": "5493546499999",
+            "estado": "ERROR"
+        },
+        {
+            "clave": "celular_2",
+            "cel": "5493546401198",
+            "estado": "OK"
+        }
+    ],
+    "errores": 1
+}
+try:
+    data = json.dumps(fields)#urllib.parse.urlencode(fields)
+    
+    r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/m-masivos", validate_certificate=False, headers=headers, data=data)
+except Exception as e:
+    if bot.SHOW_ERRORS:
+        print("Error confirmando masivo")
+        print("     Detalle: ")
+        print(e)
+        print(repr(e))
+        print(e.args)
+    r = e
 
-f = ['prueba_arboles.py']
-new_file = None
-mypath = f'inbound_file_cache{bot.OS_SLASH}{str(bot.BOT_PK)}{bot.OS_SLASH}'
+if type(r) != urlfetch.UrlfetchException:
+    if bot.SHOW_API_RESPONSES:
+        print("API post_response: " + str(r.status_code))
+        print("Data:")
+        print(f"     {fields}")
+        print("Response: " + str(r.content))
 
-for (_, _, filenames) in walk(mypath):
-    for fn in filenames:
-        if fn not in f:
-            new_file = fn
-    break
-
-print(f"Files: {f}\nNew file: {new_file}")
+    if r.status_code != 200:
+        if bot.SHOW_ERRORS:
+            print("Error confirmando masivo")
+            print("  Detalle: ")
+            print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
+        
 

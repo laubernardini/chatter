@@ -290,18 +290,38 @@ def manage_masiv(driver, selectors):
     r = apis.get_masiv()
     if r:
         # Preparar mensaje masivo
+        cel_list = r.get("celular", "{}")
         mensaje = r.get("mensaje", "")
+        archivo = r.get("archivo", "")
+        last_msg = r.get("last_msg", "")
+        pk = r.get("pk", "")
 
-        result = actions.send_message(
-            mensaje=mensaje, 
-            celular=r.get("celular", ""), 
-            archivo=r.get("archivo", ""),
-            last_msg=r.get("last_msg", ""),
-            driver=driver, 
-            selectors=selectors,
-            masive=True,
-        )
-        asyncio.run(apis.post_masiv(pk=r.get("pk", ""), wa_id=r.get("wa_id", ""), estado=('ERROR' if result["estado"] == "ERROR" else 'FINALIZADO')))
+        intentos = [] 
+        errores = 0
+        for clave, item in cel_list.items():
+            result = actions.send_message(
+                mensaje=mensaje, 
+                celular=item["cel"], 
+                archivo=archivo,
+                last_msg=last_msg,
+                driver=driver, 
+                selectors=selectors,
+                masive=True,
+            )
+            intentos.append({
+                "clave": clave,
+                "cel": item["cel"],
+                "estado": ("ERROR" if result["estado"] == "ERROR" else "OK")
+            })
+            if result["estado"] == 'ENVIADO':
+                break
+            else:
+                errores = errores + 1
+        
+        estado = ('ERROR' if result["estado"] == "ERROR" else 'FINALIZADO')
+        wa_id = result["wa_id"]
+
+        asyncio.run(apis.post_masiv(pk=pk, wa_id=wa_id, estado=estado, intentos=intentos, errores=errores))
     else:
         if bot.SHOW_EX_PRINTS:
             print("Sin campañas pendientes")

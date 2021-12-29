@@ -295,17 +295,20 @@ def get_masiv():
 
     return r
 
-async def post_masiv(pk, estado, wa_id):
+async def post_masiv(pk, estado, wa_id, intentos, errores):
     try:
         headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/json"
         }
-        fields = {}
-        fields["token"] = bot.BOT_PK
-        fields["pk"] = pk
-        fields["estado"] = estado
-        fields["wa_id"] = wa_id
-        data = urllib.parse.urlencode(fields)
+        fields = {
+            "token": bot.BOT_PK,
+            "pk": pk,
+            "estado": estado,
+            "wa_id": wa_id,
+            "intentos": intentos,
+            "errores": errores
+        }
+        data = json.dumps(fields)
         
         r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/m-masivos", validate_certificate=False, headers=headers, data=data)
     except Exception as e:
