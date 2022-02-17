@@ -106,7 +106,7 @@ def search(driver, selectors, text):
     # Obtener input de búsqueda
     result = None
     no_result = False
-    side = driver.find_element_by_xpath(selectors["search"]) 
+    side = driver.find_element_by_xpath(selectors["side"]) 
     elem = side.find_element_by_xpath(selectors["search"])
     
     # Buscar
@@ -936,8 +936,7 @@ def make_inbound_messages(driver, selectors, messages):
                 
                 if shared_contact_phone != '': 
                     text = "*Contacto*\n_Nombre:_ " + shared_contact_name + "\n_Celular:_ " + shared_contact_phone
-            except Exception as e:
-                pass
+            except:pass
 
             text = " " if text == '' else text
 
