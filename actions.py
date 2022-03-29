@@ -74,9 +74,11 @@ def get_data_by_chat_info(driver, selectors):
                 nombre = celular
     else:
         for i in info:
-            if "+" in i.text:
-                celular = i.text
-                break
+            try:
+                if "+" in i.text:
+                    celular = i.text
+                    break
+            except:pass
         try:
             nombre = driver.find_element_by_xpath(selectors["business_name"]).text
         except:
@@ -471,6 +473,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
         return result
 
 def update_current_chat(driver, selectors, last_msg=None, celular=None):
+    print("Actualizando chat")
     if not celular:
         chat_info = get_data_by_chat_info(driver, selectors)
     else:
@@ -478,6 +481,9 @@ def update_current_chat(driver, selectors, last_msg=None, celular=None):
             "nombre": celular,
             "celular": celular
         }
+    
+    print(f"Chat info: {chat_info}")
+
     chat = get_chat_by_chat_name(chat_info["celular"])
     if not chat:
         # Pedir último mensaje
@@ -488,6 +494,7 @@ def update_current_chat(driver, selectors, last_msg=None, celular=None):
     
     # Indicar chat en ejecución
     bot.CURRENT_CHAT = get_chat_by_chat_name(chat["celular"])
+    print(f"Chat actualizado, celular: {bot.CURRENT_CHAT['celular']}")
 
 def notification_clicker(driver, selectors):
     done = None
@@ -550,6 +557,7 @@ def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes
             print("Buscando mensajes nuevos")
         
         # Definir sobre qué chat se trabaja
+        print(f"Chequeando chat: {chat}")
         if chat:
             chat_changed = False
             try:
@@ -565,6 +573,7 @@ def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes
                 pass
 
             if chat_changed:
+                print("Cambio de chat detectado")
                 update_current_chat(driver, selectors)
         else:
             update_current_chat(driver, selectors)
