@@ -15,7 +15,6 @@
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
     "business_alert": "//div[@class='ggj6brxn m0h2a7mj lb5m6g5c kv6wexeh gfz4du6o r7fjleex lhj4utae le5p0ye3']",
     "phone": "//span[@class='AjtLy _1FXE6 _1lF7t']",
-    "business_phone": "//span[@class='_3NUK1 VWPRY _1lF7t']",
     "contact_name": "//span[@class='l7jjieqr cw3vfol9 i0jNr selectable-text copyable-text']",
     "business_name": "//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 cw3vfol9 i0jNr']",
     "agended_business_name": "//span[@class='l7jjieqr cw3vfol9 i0jNr']",
