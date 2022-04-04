@@ -51,7 +51,7 @@ def get_data_by_chat_info(driver, selectors):
     
     # Obtener tipo
     try:
-        if 'empresa' in driver.find_element_by_xpath(selectors["business_alert"]).text:
+        if ('empresa' in driver.find_element_by_xpath(selectors["business_alert"]).text) or ('business' in driver.find_element_by_xpath(selectors["business_alert"]).text):
             tipo = 'business'
     except:
         tipo = 'common'
