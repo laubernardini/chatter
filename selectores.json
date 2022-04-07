@@ -69,6 +69,7 @@
     "audio_status": ".//span[@data-testid='ptt-status']",
     "audio_icon": ".//span[@data-testid='audio-file']",
     "audio_download": ".//button[@aria-label='Descargar mensaje de voz']",
+    "audio_loading": ".//button[@class='_1cZGZ']",
 
     "missed_call_container": "//div[@class='_2wUmf V-zSs focusable-list-item']",
     "missed_call": ".//span[@data-testid='miss']",
@@ -91,6 +92,7 @@
 
     "notification": "//div[@class='_1pJ9J']",
     "sender_name": ".//span[@class='l7jjieqr i0jNr']",
+    "conversation_name": ".//span[@class='_3q9s6']/span[1]",
     "writing": ".//span[@class='_16h0X ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 i0jNr']",
     "group_event": ".//span[@class='Hy9nV']",
 

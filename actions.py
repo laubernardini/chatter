@@ -503,34 +503,44 @@ def notification_clicker(driver, selectors):
         for n in notifications:
             if n.get_attribute("aria-label") == None:
                 parent = n.find_element_by_xpath('.//..//..//..//..')
-                
-                # Si es chat de grupo, continuar con la siguiente notificación
+
+                # Si es chat de grupo o chat propio, continuar con la siguiente notificación
+                is_own_chat = False
                 is_group = False
+
                 try:
-                    parent.find_element_by_xpath(selectors["sender_name"])
-                    is_group = True
-                except:
+                    conversation_name = parent.find_element_by_xpath(selectors["conversation_name"]).text
+                    print(f'Conversación: {conversation_name}, BOT PHONE: {bot.PHONE}')
+                    if cel_formatter(conversation_name) == bot.PHONE:
+                        is_own_chat = True
+                except:pass
+
+                if not is_own_chat:    
                     try:
-                        writing = parent.find_element_by_xpath(selectors["writing"])
-                        if ' escribiendo' in (writing.get_attribute("title")) or ' typing' in (writing.get_attribute("title")):
-                            is_group = True
+                        parent.find_element_by_xpath(selectors["sender_name"])
+                        is_group = True
                     except:
                         try:
-                            done_1 = None
-                            while not done_1:
-                                try:
-                                    event = parent.find_element_by_xpath(selectors["group_event"])
-                                    e_title = event.get_attribute("title")
-                                    if e_title != '':
-                                        if (' unió a' in e_title) or (' añadió a' in e_title) or (' salió del grupo' in e_title):
-                                            is_group = True
-                                        done_1 = True
-                                except:
-                                    pass
+                            writing = parent.find_element_by_xpath(selectors["writing"])
+                            if ' escribiendo' in (writing.get_attribute("title")) or ' typing' in (writing.get_attribute("title")):
+                                is_group = True
                         except:
-                            pass
+                            try:
+                                done_1 = None
+                                while not done_1:
+                                    try:
+                                        event = parent.find_element_by_xpath(selectors["group_event"])
+                                        e_title = event.get_attribute("title")
+                                        if e_title != '':
+                                            if (' unió a' in e_title) or (' añadió a' in e_title) or (' salió del grupo' in e_title):
+                                                is_group = True
+                                            done_1 = True
+                                    except:
+                                        pass
+                            except:
+                                pass
 
-                if is_group:
+                if is_group or is_own_chat:
                     continue
                 
                 # Ingresar al chat
@@ -551,41 +561,53 @@ def notification_clicker(driver, selectors):
 
 def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes nuevos
     try:
+        messages = []
+        chat_name = ''
+
         # Comprobar chat abierto
         driver.find_element_by_xpath(selectors["message"])
-        if bot.SHOW_EX_PRINTS:
-            print("Buscando mensajes nuevos")
-        
-        # Definir sobre qué chat se trabaja
-        print(f"Chequeando chat: {chat}")
-        if chat:
-            chat_changed = False
-            try:
-                chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-                try:
-                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
-                except:
-                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
-                print('Chat name: ', chat_name_header.text)
-                if chat["celular"] != cel_formatter(chat_name_header.text):
-                    chat_changed = True
-            except:
-                pass
 
-            if chat_changed:
-                print("Cambio de chat detectado")
-                update_current_chat(driver, selectors)
-        else:
-            update_current_chat(driver, selectors)
-
-        # Obtener id's de mensajes nuevos
-        messages = []
+        # Obtener nombre del chat
         try:
-            messages = get_inbounds(driver, selectors)
-        except Exception as e:
-            if bot.SHOW_ERRORS:
-                print("Error al obtener mensajes nuevos")
-                print(e)
+            chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+            try:
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+            except:
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+            chat_name = cel_formatter(chat_name_header.text)
+            print('Chat name: ', chat_name)
+        except:pass
+
+        if chat_name != bot.PHONE:
+            if bot.SHOW_EX_PRINTS:
+                print("Buscando mensajes nuevos")
+            
+            # Definir sobre qué chat se trabaja
+            print(f"Chequeando chat: {chat}")
+            
+            if chat:
+                chat_changed = False
+                if chat["celular"] != chat_name:
+                    chat_changed = True
+
+                if chat_changed:
+                    print("Cambio de chat detectado")
+                    update_current_chat(driver, selectors)
+            else:
+                update_current_chat(driver, selectors)
+
+            if bot.CURRENT_CHAT["celular"] != bot.PHONE:
+                # Obtener id's de mensajes nuevos
+                try:
+                    messages = get_inbounds(driver, selectors)
+                except Exception as e:
+                    if bot.SHOW_ERRORS:
+                        print("Error al obtener mensajes nuevos")
+                        print(e)
+            else:
+                print('Chat propio detectado')
+        else:
+            print('Chat propio detectado')
 
         # Formatear y subir mensajes
         if messages != []:
@@ -790,7 +812,7 @@ def make_inbound_messages(driver, selectors, messages):
                         done = True
                     except:
                         try:
-                            m.find_element_by_xpath(selectors["audio_download"]).click()
+                            m.find_element_by_xpath(selectors["audio_loading"]).click()
                             if bot.SHOW_EX_PRINTS:
                                 print("Forzando descarga de audio")
                             time.sleep(2)
