@@ -284,33 +284,39 @@ def chat_init(driver, selectors, celular):
 
     return elem
 
-def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
-    try:
-        # Obtener chat si es respuesta manual
-        if not masive:
-            elem = search(driver, selectors, celular)
-        else:
-            elem = None
+def open_chat(driver, selectors, celular, masive=False, tipo='SALIENTE'):
+    elem = None
+    
+    if not masive:
+        elem = search(driver, selectors, celular)
 
+    if tipo == 'SALIENTE':
         # Iniciar chat
         if not elem:
             elem = chat_init(driver, selectors, celular)
         else:
             time.sleep(2)
         
-        # Descartar cruce de chat
-        if elem:
+    # Descartar cruce de chat
+    if elem:
+        try:
+            chat_header = driver.find_element_by_xpath(selectors["chat_header"])
             try:
-                chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-                try:
-                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
-                except:
-                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
-                print('Chat name: ', chat_name_header.text)
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+            except:
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+            print('Chat name: ', chat_name_header.text)
+            if tipo == 'SALIENTE':
                 if bot.PHONE == cel_formatter(chat_name_header.text):
                     elem = None
-            except:
-                elem = None
+        except:
+            elem = None
+    
+    return elem
+
+def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
+    try:
+        elem = open_chat(driver, selectors, celular, masive)
 
         # Enviar mensaje
         if elem:
@@ -803,8 +809,38 @@ def make_inbound_messages(driver, selectors, messages):
                 try:
                     m.find_element_by_xpath(selectors["audio_icon"])
                 except:
-                    m.find_element_by_xpath(selectors["audio_status"])
-                
+                    try:
+                        m.find_element_by_xpath(selectors["audio_status"])
+                    except:
+                        m.find_element_by_xpath(selectors["audio_icon_ptt"])
+
+                no_spam = False
+                try:
+                    driver.find_element_by_xpath(selectors["no_spam_button"]).click()
+                    no_spam = True
+                except:pass
+
+                if no_spam:
+                    print("Marcado como no-spam")
+                    celular = bot.CURRENT_CHAT["celular"]
+                    open_chat(driver, selectors, celular=bot.PHONE, tipo='ENTRANTE')
+                    clear_elem(driver, selectors, "search")
+                    time.sleep(2)
+                    open_chat(driver, selectors, celular=celular, tipo='ENTRANTE')
+                    time.sleep(2)
+                    clear_elem(driver, selectors, "search")
+                    
+                    # Instanciar mensaje
+                    done = None
+                    while not done:
+                        try:
+                            m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
+                            done = True
+                        except:
+                            driver.find_element_by_xpath(selectors["message"]).click()
+                            time.sleep(0.8)
+                    print(f"Mensaje re-instanciado: {m}")
+                                
                 done = None
                 while not done:
                     try:
@@ -818,8 +854,7 @@ def make_inbound_messages(driver, selectors, messages):
                             time.sleep(2)
                         except Exception as e:
                             print(e)
-                            time.sleep(1)          
-                
+                            time.sleep(1)
                 is_audio = True
             except:
                 try:

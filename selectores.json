@@ -68,6 +68,7 @@
     "audio_button": ".//span[@data-testid='audio-play']",
     "audio_status": ".//span[@data-testid='ptt-status']",
     "audio_icon": ".//span[@data-testid='audio-file']",
+    "audio_icon_ptt": ".//span[@data-testid='ptt-file']",
     "audio_download": ".//button[@aria-label='Descargar mensaje de voz']",
     "audio_loading": ".//button[@class='_1cZGZ']",
 
@@ -95,6 +96,7 @@
     "conversation_name": ".//span[@class='_3q9s6']/span[1]",
     "writing": ".//span[@class='_16h0X ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 i0jNr']",
     "group_event": ".//span[@class='Hy9nV']",
+    "no_spam_button": ".//div[@class='_3E-9Z']/div[3]/div[1]",
 
     "readed_chat": "//div[@class='_3m_Xw']"
 }
