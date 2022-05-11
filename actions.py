@@ -348,7 +348,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
             #mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("-_", "_").replace("_-", "_")#.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
             #print("Mensaje preparado")
-
+            time.sleep(2)
             attach_type = None
             if archivo:
                 # Resolver tipo de archivo
