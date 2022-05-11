@@ -434,7 +434,14 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             
             if bot.SHOW_EX_PRINTS:
                 print("Buscando wa_id de mensaje enviado")
-            last_send = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+            done = None
+            while not done:
+                try:
+                    last_send = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+                    done = True
+                except:
+                    time.sleep(1)
+                    
             done = None
             while not done:
                 if last_send.get_attribute("data-id"):
