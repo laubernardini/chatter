@@ -339,11 +339,11 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                     done = True
                 except:
                     time.sleep(1)
-            #print("Conversación lista")
+            print("Conversación lista")
 
             # Revisar mensajes nuevos en el chat
             check_current_chat(driver=driver, selectors=selectors, chat=bot.CURRENT_CHAT)
-            #print("Mensajes pendientes listos")
+            print("Mensajes pendientes listos")
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
             #mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("-_", "_").replace("_-", "_")#.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
@@ -419,7 +419,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             # Enviar mensaje
             message.send_keys(Keys.ENTER)
             time.sleep(2)
-            #print("Mensaje enviado")
+            print("Mensaje enviado")
 
             # Revisar si hay algún mensaje sin leer
             try:
