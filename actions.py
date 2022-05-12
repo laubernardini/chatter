@@ -433,22 +433,30 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             #archive(driver, selectors, celular)
             
             if bot.SHOW_EX_PRINTS:
-                print("Buscando wa_id de mensaje enviado")
+                print("Buscando wa_id de mensaje enviado, esperando 15s para ignorar...")
+            
             done = None
-            while not done:
+            last_send = None
+            sleep_counter = 0
+            while (not done) and (sleep_counter < 15):
                 try:
                     last_send = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
                     done = True
                 except:
                     time.sleep(1)
-                    
-            done = None
-            while not done:
-                if last_send.get_attribute("data-id"):
-                    wa_id = last_send.get_attribute("data-id")
-                    done = True
-                else:
-                    time.sleep(1)
+                    sleep_counter = sleep_counter + 1
+            
+            if last_send:
+                done = None
+                while not done:
+                    if last_send.get_attribute("data-id"):
+                        wa_id = last_send.get_attribute("data-id")
+                        done = True
+                    else:
+                        time.sleep(1)
+            else:
+                print('No se encontró "wa_id", ignorando')
+                wa_id = "SD"
             
             result = {
                 "estado": "ENVIADO", 
