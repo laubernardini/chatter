@@ -720,10 +720,24 @@ def get_inbounds(driver, selectors):
                     print("Obteniendo primer mensaje")
 
                 # Comprobar si es un elemento del chat
-                if selectors["chat_item_class"] in first_msg.get_attribute("class") or selectors["unread_class"] in first_msg.get_attribute("class"):
+                # Condiciones
+                is_chat_item = selectors["chat_item_class"] in first_msg.get_attribute("class")
+                is_unread_sign = selectors["unread_class"] in first_msg.get_attribute("class")
+                is_reaction_bubble = "reaction-bubble" in first_msg.get_attribute("data-a8n")
+
+                if is_chat_item or is_unread_sign:
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
-                else:
+                elif is_reaction_bubble:
+                    first_msg.send_keys(Keys.ARROW_DOWN)
+                    first_msg = driver.switch_to.active_element
+
+                    # Revisar si es la reacción es el último elemento del chat
+                    is_reaction_bubble = "reaction-bubble" in first_msg.get_attribute("data-a8n")
+                    if is_reaction_bubble:
+                        first_msg.send_keys(Keys.ARROW_UP)
+                        first_msg = driver.switch_to.active_element
+                else: # Si no es elemento del chat TAB hasta entrar a la ventana del chat
                     first_msg.send_keys(Keys.TAB)
                     first_msg = driver.switch_to.active_element
                     time.sleep(0.5)
