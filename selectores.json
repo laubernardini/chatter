@@ -85,7 +85,7 @@
     "attach_inbound_download": ".//button[@class='i5tg98hk f9ovudaz przvwfww gx1rr48f shdiholb phqmzxqs gtscxtjd ajgl1lbb thr4l2wc cc8mgx9x eta5aym1 d9802myq e4xiuwjv cm280p3y p357zi0d f8m0rgwh elxb2u3l ln8gz9je gfz4du6o r7fjleex tffp5ko5 l8fojup5 paxyh2gw']",
     "no_file_ok_button": "//div[@class='_20C5O _2Zdgs'][@role='button']",
     "modal": "//div[@class='_3J6wB']",
-    "modal_backdrop": "//div[@class='_209uk'][@role='dialog']",
+    "modal_backdrop": "//div[@class='lhggkp7q qq0sjtgm ebjesfe0 jxacihee tkdu00h0'][@role='dialog']",
     "modal_text": "//div[@class='_2Nr6U']",
 
     "emogi_container": ".//span[@class='_3R6rC']",

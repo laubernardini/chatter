@@ -257,31 +257,32 @@ def chat_init(driver, selectors, celular):
     # Popup
     done = None
     while not done:
-            try:
-                driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
+        try:
+            driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
 
-                # Comprobar número inválido
+            # Comprobar número inválido
+            try:
+                driver.find_element_by_xpath(selectors["chat_init"])
+                if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
+                    driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                    elem = None
+                    done = True
+                    print("Número inválido")
+            except:
                 try:
-                    driver.find_element_by_xpath(selectors["chat_init"])
                     if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
                         driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
                         elem = None
                         done = True
                         print("Número inválido")
                 except:
-                    try:
-                        if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
-                            driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
-                            elem = None
-                            done = True
-                            print("Número inválido")
-                    except:
-                        pass
-            except:
-                elem = True
-                done = True
-                print("Nuevo chat iniciado")
-            time.sleep(1)
+                    pass
+        except Exception as e:
+            print(e)
+            elem = True
+            done = True
+            print("Nuevo chat iniciado")
+        time.sleep(1)
     
 
     return elem
