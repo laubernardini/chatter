@@ -258,7 +258,10 @@ def chat_init(driver, selectors, celular):
     done = None
     while not done:
         try:
-            driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
+            try:
+                driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
+            except:
+                driver.find_element_by_xpath(selectors["modal_backdrop1"]).click()
 
             # Comprobar número inválido
             try:

@@ -86,6 +86,7 @@
     "no_file_ok_button": "//div[@class='_20C5O _2Zdgs'][@role='button']",
     "modal": "//div[@class='_3J6wB']",
     "modal_backdrop": "//div[@class='lhggkp7q qq0sjtgm ebjesfe0 jxacihee tkdu00h0'][@role='dialog']",
+    "modal_backdrop1": "//div[@class='_209uk'][@role='dialog']",
     "modal_text": "//div[@class='_2Nr6U']",
 
     "emogi_container": ".//span[@class='_3R6rC']",
