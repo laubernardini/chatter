@@ -625,12 +625,7 @@ def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes
 
             if bot.CURRENT_CHAT["celular"] != bot.PHONE:
                 # Obtener id's de mensajes nuevos
-                try:
-                    messages = get_inbounds(driver, selectors)
-                except Exception as e:
-                    if bot.SHOW_ERRORS:
-                        print("Error al obtener mensajes nuevos")
-                        print(e)
+                messages = get_inbounds(driver, selectors)
             else:
                 print('Chat propio detectado')
         else:
@@ -669,6 +664,11 @@ def get_inbounds(driver, selectors):
             reference_elem.send_keys(Keys.ARROW_DOWN)
             reference_elem = driver.switch_to.active_element
 
+            # Reacción
+            reaction = reference_elem.get_attribute("data-a8n")
+            is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
+            print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
+
             if selectors["chat_separator_class"] in reference_elem.get_attribute("class"):
                 reference_elem = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
                 reference_elem.send_keys(Keys.ARROW_DOWN)
@@ -677,6 +677,17 @@ def get_inbounds(driver, selectors):
                 reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
+            if is_reaction_bubble: # Reacción
+                reference_elem.send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.switch_to.active_element
+
+                reaction = reference_elem.get_attribute("data-a8n")
+                is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
+                print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
+                if is_reaction_bubble: # Si el último elemento del chat es una reacción
+                    reference_elem.send_keys(Keys.ARROW_UP)
+                    reference_elem = driver.switch_to.active_element
+
             if bot.SHOW_EX_PRINTS:
                 print("Mensaje en caché ", bot.CURRENT_CHAT["last_msg"])
         except:
@@ -726,21 +737,25 @@ def get_inbounds(driver, selectors):
                     print("Obteniendo primer mensaje")
 
                 # Comprobar si es un elemento del chat
+
                 # Condiciones
                 is_chat_item = selectors["chat_item_class"] in first_msg.get_attribute("class")
                 is_unread_sign = selectors["unread_class"] in first_msg.get_attribute("class")
-                is_reaction_bubble = "reaction-bubble" in first_msg.get_attribute("data-a8n")
+                reaction = first_msg.get_attribute("data-a8n")
+                is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
+                print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
 
                 if is_chat_item or is_unread_sign:
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
-                elif is_reaction_bubble:
+                elif is_reaction_bubble: # Reacción
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
 
-                    # Revisar si es la reacción es el último elemento del chat
-                    is_reaction_bubble = "reaction-bubble" in first_msg.get_attribute("data-a8n")
-                    if is_reaction_bubble:
+                    reaction = first_msg.get_attribute("data-a8n")
+                    is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
+                    print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
+                    if is_reaction_bubble: # Si el último elemento del chat es una reacción
                         first_msg.send_keys(Keys.ARROW_UP)
                         first_msg = driver.switch_to.active_element
                 else: # Si no es elemento del chat TAB hasta entrar a la ventana del chat
@@ -763,7 +778,7 @@ def get_inbounds(driver, selectors):
         different_data_id = (first_msg.get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"])
         not_msg_out = not(selectors["message_out_class"] in first_msg.get_attribute('class'))
 
-        print(f"Es un mensaje nuevo: {different_data_id and not_msg_out}")
+        print(f"Es un mensaje nuevo: {'SI' if (different_data_id and not_msg_out) else 'NO'}")
 
         # Guardando primer mensaje
         if different_data_id and not_msg_out:
@@ -773,6 +788,7 @@ def get_inbounds(driver, selectors):
             done = True
 
         # Obtener todos los mensajes nuevos
+        print("Revisando mensajes siguientes...")
         while not done:
             try:
                 last_msg.send_keys(Keys.ARROW_DOWN)
@@ -781,8 +797,16 @@ def get_inbounds(driver, selectors):
                     # Condiciones
                     not_msg_out = not(selectors["message_out_class"] in next_msg.get_attribute('class'))
                     has_data_id = next_msg.get_attribute("data-id")
+                    reaction = first_msg.get_attribute("data-a8n")
+                    not_reaction_bubble = not(("reaction-bubble" in reaction) if reaction else False)
+                    print(f"Es una reaction: {'NO' if (not_reaction_bubble) else 'SI'} ")
 
-                    if not_msg_out and has_data_id:
+                    is_message_in = not_msg_out and has_data_id and not_reaction_bubble
+                    
+                    print(f"Es mensaje entrante: {is_message_in}")
+
+                    if is_message_in:
+                        print(f"Añadiendo {next_msg.get_attribute('data-id')}")
                         messages.append(next_msg.get_attribute("data-id"))
                     
                     last_msg = next_msg
@@ -791,6 +815,8 @@ def get_inbounds(driver, selectors):
             except:
                 done = True
 
+        print("No hay más mensajes nuevos")
+
     except:
         if bot.SHOW_EX_PRINTS:
             print("No hay mensajes no leidos")
@@ -798,9 +824,10 @@ def get_inbounds(driver, selectors):
     return messages
 
 def make_inbound_messages(driver, selectors, messages):
+    print("Formateando mensajes")
     time.sleep(1)
     result = []
-    print(messages)
+    print(f"Lista de mensajes: {messages}")
     for m in messages:
         wa_id = m
         nombre = ""
