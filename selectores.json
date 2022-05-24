@@ -25,6 +25,7 @@
 
     "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='10']",
     "message1": "//div[@class='fd365im1 to2l77zo bbv8nyr4 mwp4sxku gfz4du6o ag5g9lrv'][@data-tab='10']",
+    "message_input": ".//span[@class='selectable-text copyable-text'][@data-lexical-text='true']",
     "input_class": "_13NKt copyable-text selectable-text",
     "voice_record_class": "_30ggS",
     "message_attached": "//div[@class='_1UWac Z2O8p oHEu9']/div[2]",

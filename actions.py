@@ -326,6 +326,7 @@ def open_chat(driver, selectors, celular, masive=False, tipo='SALIENTE'):
 def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None, driver=None, selectors=None):
     try:
         elem = open_chat(driver, selectors, celular, masive)
+        new_message_input = False
 
         # Enviar mensaje
         if elem:
@@ -348,6 +349,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                         message = driver.find_element_by_xpath(selectors["message"])
                     except:
                         message = driver.find_element_by_xpath(selectors["message1"])
+                        new_message_input = True
                     done = True
                 except:
                     time.sleep(1)
@@ -404,6 +406,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                         while not e:
                             try:
                                 message = driver.find_element_by_xpath(selectors["message_attached"])
+                                new_message_input = False
                                 e = True
                             except:
                                 time.sleep(1)
@@ -424,7 +427,10 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                             time.sleep(1)
 
             # Escribir mensaje
-            driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
+            if new_message_input:
+                driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message.find_element_by_xpath(selectors["message_input"]))
+            else:
+                driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
             message.send_keys('.')
             message.send_keys(Keys.BACKSPACE)
 
