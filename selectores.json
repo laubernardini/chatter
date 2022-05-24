@@ -24,6 +24,7 @@
     "chat_name_header_1": ".//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 l7jjieqr i0jNr']",
 
     "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='10']",
+    "message1": "//div[@class='fd365im1 to2l77zo bbv8nyr4 mwp4sxku gfz4du6o ag5g9lrv'][@data-tab='10']",
     "input_class": "_13NKt copyable-text selectable-text",
     "voice_record_class": "_30ggS",
     "message_attached": "//div[@class='_1UWac Z2O8p oHEu9']/div[2]",

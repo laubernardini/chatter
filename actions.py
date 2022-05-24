@@ -236,7 +236,10 @@ def chat_init(driver, selectors, celular):
     done = None
     while not done:
         try:
-            own_chat_message = driver.find_element_by_xpath(selectors["message"])
+            try:
+                own_chat_message = driver.find_element_by_xpath(selectors["message"])
+            except:
+                own_chat_message = driver.find_element_by_xpath(selectors["message1"])
             done = True
         except:
             time.sleep(1)
@@ -341,7 +344,10 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             done = None
             while not done:
                 try:
-                    message = driver.find_element_by_xpath(selectors["message"])
+                    try:
+                        message = driver.find_element_by_xpath(selectors["message"])
+                    except:
+                        message = driver.find_element_by_xpath(selectors["message1"])
                     done = True
                 except:
                     time.sleep(1)
@@ -592,7 +598,10 @@ def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes
         chat_name = ''
 
         # Comprobar chat abierto
-        driver.find_element_by_xpath(selectors["message"])
+        try:
+            driver.find_element_by_xpath(selectors["message"])
+        except:
+            driver.find_element_by_xpath(selectors["message1"])
 
         # Obtener nombre del chat
         try:
@@ -839,7 +848,11 @@ def make_inbound_messages(driver, selectors, messages):
                 m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
                 done = True
             except:
-                driver.find_element_by_xpath(selectors["message"]).click()
+                try:
+                    driver.find_element_by_xpath(selectors["message"]).click()
+                except:
+                    driver.find_element_by_xpath(selectors["message1"]).click()
+                
                 time.sleep(0.8)
 
         # Variables de ejecución
@@ -899,7 +912,10 @@ def make_inbound_messages(driver, selectors, messages):
                             m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
                             done = True
                         except:
-                            driver.find_element_by_xpath(selectors["message"]).click()
+                            try:
+                                driver.find_element_by_xpath(selectors["message"]).click()
+                            except:
+                                driver.find_element_by_xpath(selectors["message1"]).click()
                             time.sleep(0.8)
                     print(f"Mensaje re-instanciado: {m}")
                                 
