@@ -431,7 +431,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 message.send_keys(" ")
                 time.sleep(2)
                 message = driver.switch_to.active_element
-                driver.execute_script("arguments[0].innerText = `{}`;".format(mensaje), message.find_element_by_xpath(selectors["message_input"]))
+                driver.execute_script("arguments[0].innerText = `{}`".format(mensaje), message.find_element_by_xpath(selectors["message_input"]))
                 
                 time.sleep(2)
             else:
