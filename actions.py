@@ -360,7 +360,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             print("Mensajes pendientes listos")
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
-            #mensaje = mensaje.replace("-#", '').replace("#-", '').replace("-*", "*").replace("*-", "*").replace("-_", "_").replace("_-", "_")#.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
+            mensaje = mensaje.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
             #print("Mensaje preparado")
             time.sleep(2)
             attach_type = None
@@ -429,11 +429,19 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             # Escribir mensaje
             if new_message_input:
                 message.send_keys(" ")
+                time.sleep(2)
+                message = driver.switch_to.active_element
                 driver.execute_script("arguments[0].innerText = `{}`;".format(mensaje), message.find_element_by_xpath(selectors["message_input"]))
+                
+                time.sleep(2)
             else:
                 driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
             message.send_keys('.')
+            
+            time.sleep(2)
             message.send_keys(Keys.BACKSPACE)
+            
+            time.sleep(2)
 
             # Enviar mensaje
             message.send_keys(Keys.ENTER)
