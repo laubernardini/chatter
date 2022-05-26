@@ -428,7 +428,8 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
 
             # Escribir mensaje
             if new_message_input:
-                driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message.find_element_by_xpath(selectors["message_input"]))
+                message.send_keys(" ")
+                driver.execute_script("arguments[0].innerText = `{}`;".format(mensaje), message.find_element_by_xpath(selectors["message_input"]))
             else:
                 driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
             message.send_keys('.')
