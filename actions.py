@@ -360,7 +360,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             print("Mensajes pendientes listos")
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
-            mensaje = mensaje.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
+            #mensaje = mensaje.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
             #print("Mensaje preparado")
             time.sleep(2)
             attach_type = None
