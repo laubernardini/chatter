@@ -435,10 +435,8 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
                 message.send_keys('.')
             
-            time.sleep(2)
             message.send_keys(Keys.BACKSPACE)
-            
-            time.sleep(2)
+            time.sleep(0.5)
 
             # Enviar mensaje
             message.send_keys(Keys.ENTER)
