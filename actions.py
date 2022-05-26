@@ -283,8 +283,7 @@ def chat_init(driver, selectors, celular):
                         print("Número inválido")
                 except:
                     pass
-        except Exception as e:
-            print(e)
+        except:
             elem = True
             done = True
             print("Nuevo chat iniciado")
