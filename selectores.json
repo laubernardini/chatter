@@ -60,7 +60,7 @@
     "chat_info_close": "//button[@class='_18eKe']",
     "chat_init": "//div[@class='_1bpDE']",
 
-    "in_response_group_class": "div.hooVq ",
+    "in_response_group_class": "div.hooVq",
     "in_response_text": ".//span[@class='quoted-mention i0jNr']",
 
     "shared_contact_button": ".//div[@class='_2GhDW'][@role='button']",

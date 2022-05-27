@@ -359,8 +359,9 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             print("Mensajes pendientes listos")
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
-            mensaje = mensaje.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
-            #print("Mensaje preparado")
+            if new_message_input:
+                mensaje = mensaje.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
+            
             time.sleep(2)
             attach_type = None
             if archivo:
@@ -745,8 +746,7 @@ def get_inbounds(driver, selectors):
                 first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] 
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
-            except:
-                pass
+            except:pass
 
             # Buscar primer mensaje
             while not first_msg.get_attribute("data-id"):
@@ -821,7 +821,6 @@ def get_inbounds(driver, selectors):
                     print(f"Es una reaction: {'NO' if (not_reaction_bubble) else 'SI'} ")
 
                     is_message_in = not_msg_out and has_data_id and not_reaction_bubble
-                    
                     print(f"Es mensaje entrante: {is_message_in}")
 
                     if is_message_in:
