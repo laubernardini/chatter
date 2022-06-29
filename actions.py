@@ -360,7 +360,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
 
             # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
             if new_message_input:
-                mensaje = mensaje.replace("\r\n", "`").replace("\n\r", "`").replace("\n", "`").replace("\r", "`")
+                mensaje = mensaje.replace("\r\n", "ё").replace("\n\r", "ё").replace("\n", "ё").replace("\r", "ё")
             
             time.sleep(2)
             attach_type = None
@@ -427,8 +427,8 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                             time.sleep(1)
 
             # Escribir mensaje
-            if new_message_input:
-                mensaje = mensaje.split('`')
+            if True:#new_message_input:
+                mensaje = mensaje.split('ё')
                 for msg_part in mensaje:
                     for m in msg_part:
                         message.send_keys(m)
