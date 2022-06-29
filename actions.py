@@ -430,7 +430,8 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             if new_message_input:
                 mensaje = mensaje.split('`')
                 for msg_part in mensaje:
-                    message.send_keys(msg_part)
+                    for m in msg_part:
+                        message.send_keys(m)
                     message.send_keys(Keys.SHIFT, Keys.ENTER)
             else:
                 driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
