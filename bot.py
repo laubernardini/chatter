@@ -38,6 +38,8 @@ LAST_MSG_CACHE = ""
 AUTO_RESPONSES = []
 NEXT_FORCED_ACTIVITY = None
 CHATS = []
+SLEEP_TIME = 0
+CLIPBOARD_SLEEP_TIME = 0
 
 # Funciones
 def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
@@ -47,7 +49,7 @@ def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
     MASIVO = masivo
     AUTO = auto
     THREAD = thread
-
+    
 def set_error():
     global STATE, THREAD
 

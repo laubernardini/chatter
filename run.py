@@ -28,6 +28,12 @@ if args.server == 'cat' or args.server == 'CAT':
 bot.VERSION = "3.0"
 print(f"PK: {bot.BOT_PK}, PHONE: {bot.PHONE}")
 
+sleep_time = float(int(bot.BOT_PK) / 10)
+while sleep_time > 5:
+    sleep_time /= 2
+bot.SLEEP_TIME = sleep_time
+bot.CLIPBOARD_SLEEP_TIME = (sleep_time if sleep_time < 3 else sleep_time / 2) if (sleep_time > 1) else (sleep_time + 1)
+
 bot.DOWNLOAD_PATH = bot.DOWNLOAD_PATH + str(bot.BOT_PK) + bot.OS_SLASH
 
 system("title BOT " + bot.BOT_PK)

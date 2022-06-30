@@ -1,12 +1,20 @@
-import sys, os, shutil, re, time, asyncio
+import sys, os, shutil, re, time, asyncio, pyperclip
 
 import bot, apis
 from datetime import datetime, timedelta
 
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 
 # Acciones
+
+# Clipboard
+def wait_and_set(text, clipboard_sleep_time):
+    while not ":f:" in pyperclip.paste() or pyperclip.paste() == "":
+        print(f"Esperando clipboard {clipboard_sleep_time} segundos")
+        time.sleep(clipboard_sleep_time)
+    pyperclip.copy(text)
 
 # Manejo de chats
 def get_chat_by_chat_name(chat_name): # Usar 'celular' UNICAMENTE
@@ -357,10 +365,6 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             # Revisar mensajes nuevos en el chat
             check_current_chat(driver=driver, selectors=selectors, chat=bot.CURRENT_CHAT)
             print("Mensajes pendientes listos")
-
-            # Preparar mensaje, reemplazar saltos de linea por caracter no utilizado -> `
-            if new_message_input:
-                mensaje = mensaje.replace("\r\n", "ё").replace("\n\r", "ё").replace("\n", "ё").replace("\r", "ё")
             
             time.sleep(2)
             attach_type = None
@@ -427,17 +431,37 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                             time.sleep(1)
 
             # Escribir mensaje
-            if True:#new_message_input:
-                mensaje = mensaje.split('ё')
-                for msg_part in mensaje:
-                    for m in msg_part:
-                        message.send_keys(m)
-                    message.send_keys(Keys.SHIFT, Keys.ENTER)
+            if new_message_input:
+                act = ActionChains(driver)
+                act.click(message)
+
+                # Manejo del clipboard
+                text = mensaje.replace(':f:', "") + f':{bot.BOT_PK}:'
+                while pyperclip.paste() != text:
+                    while not f":{bot.BOT_PK}:" in pyperclip.paste():
+                        wait_and_set(text, bot.CLIPBOARD_SLEEP_TIME)
+                    print(f"Esperando {bot.SLEEP_TIME} segundos")
+                    time.sleep(bot.SLEEP_TIME)
+                
+                # Pegar mensaje
+                act.key_down(Keys.CONTROL).send_keys('v').key_up(Keys.CONTROL)
+                time.sleep(0.5)
+
+                # Limpiar código y liberar clipboard
+                act.click(message)
+                time.sleep(0.5)
+                act.key_down(Keys.CONTROL).send_keys(Keys.END).key_up(Keys.CONTROL)
+                act.send_keys(Keys.BACKSPACE)
+                for d in bot.BOT_PK:
+                    act.send_keys(Keys.BACKSPACE)
+                act.send_keys(Keys.BACKSPACE)
+                act.perform()
+                pyperclip.copy(":f:")
             else:
                 driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
                 message.send_keys('.')
+                message.send_keys(Keys.BACKSPACE)
             
-            message.send_keys(Keys.BACKSPACE)
             time.sleep(0.5)
 
             # Enviar mensaje
@@ -751,7 +775,7 @@ def get_inbounds(driver, selectors):
 
             # Buscar primer mensaje
             while not first_msg.get_attribute("data-id"):
-                print(first_msg.get_attribute("class"), first_msg.get_attribute("data-tab"))
+                #print(first_msg.get_attribute("class"), first_msg.get_attribute("data-tab"))
 
                 if bot.SHOW_EX_PRINTS:
                     print("Obteniendo primer mensaje")
@@ -761,13 +785,36 @@ def get_inbounds(driver, selectors):
                 # Condiciones
                 is_chat_item = selectors["chat_item_class"] in first_msg.get_attribute("class")
                 is_unread_sign = selectors["unread_class"] in first_msg.get_attribute("class")
+                is_shared_contact_action = selectors["shared_contact_action_class"] in first_msg.get_attribute("class")
                 reaction = first_msg.get_attribute("data-a8n")
                 is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
                 print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
+                print(f"Es una acción de contacto: {'SI' if (is_shared_contact_action) else 'NO'} ")
+                time.sleep(1)
 
                 if is_chat_item or is_unread_sign:
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
+                elif is_shared_contact_action:
+                    print("Navegando desde acción de contacto compartido")
+                    print(first_msg.text)
+                    first_msg.send_keys(Keys.ARROW_DOWN)
+                    first_msg = driver.switch_to.active_element
+                    time.sleep(1)
+                    print(first_msg.text)
+                    first_msg.send_keys(Keys.ARROW_DOWN)
+                    first_msg = driver.switch_to.active_element
+                    time.sleep(1)
+                    is_shared_contact_action = selectors["shared_contact_action_class"] in first_msg.get_attribute("class")
+                    if is_shared_contact_action:
+                        print(first_msg.text)
+                        first_msg.send_keys(Keys.ARROW_UP)
+                        first_msg = driver.switch_to.active_element
+                        time.sleep(1)
+                        print(first_msg.text)
+                        first_msg.send_keys(Keys.ARROW_UP)
+                        first_msg = driver.switch_to.active_element
+                        time.sleep(1)
                 elif is_reaction_bubble: # Reacción
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
@@ -790,7 +837,8 @@ def get_inbounds(driver, selectors):
                     first_msg = driver.switch_to.active_element
                 except:
                     pass
-        
+            time.sleep(1)      
+
         print("Mensaje obtenido")
         print(f"Primer mensaje: {first_msg.get_attribute('data-id')}")
 

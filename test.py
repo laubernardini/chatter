@@ -1,61 +1,52 @@
-import os
-import shutil
-
-import urllib
-import urlfetch
+import os, shutil, urllib, urlfetch, pyperclip
 from datetime import datetime, timedelta
 
 from selenium import webdriver
 
 from selenium.webdriver.common.keys import Keys
-import time, json, actions, bot
+from selenium.webdriver.common.action_chains import ActionChains
+import time, json, actions, bot, main
 
-headers = {
-    "Content-Type": "application/json"#"application/x-www-form-urlencoded"
-}
-fields = {
-    "token": 1,
-    "pk": 172,
-    "estado": "FINALIZADO",
-    "wa_id": "",
-    "intentos": [
-        {
-            "clave": "celular",
-            "cel": "5493546499999",
-            "estado": "ERROR"
-        },
-        {
-            "clave": "celular_2",
-            "cel": "5493546401198",
-            "estado": "OK"
-        }
-    ],
-    "errores": 1
-}
-try:
-    data = json.dumps(fields)#urllib.parse.urlencode(fields)
-    
-    r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/m-masivos", validate_certificate=False, headers=headers, data=data)
-except Exception as e:
-    if bot.SHOW_ERRORS:
-        print("Error confirmando masivo")
-        print("     Detalle: ")
-        print(e)
-        print(repr(e))
-        print(e.args)
-    r = e
+import argparse
 
-if type(r) != urlfetch.UrlfetchException:
-    if bot.SHOW_API_RESPONSES:
-        print("API post_response: " + str(r.status_code))
-        print("Data:")
-        print(f"     {fields}")
-        print("Response: " + str(r.content))
+def wait_and_set(text, clipboard_sleep_time):
+    while not ":f:" in pyperclip.paste() or pyperclip.paste() == "":
+        print(f"Esperando clipboard {clipboard_sleep_time} segundos")
+        time.sleep(clipboard_sleep_time)
+    pyperclip.copy(text)
 
-    if r.status_code != 200:
-        if bot.SHOW_ERRORS:
-            print("Error confirmando masivo")
-            print("  Detalle: ")
-            print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
+parser = argparse.ArgumentParser()
+parser.add_argument("-t","--text", help="Text")
+args = parser.parse_args()
+b = args.text
+text = f"BOT {b} 🧉 :{b}:"
+sleep_time = float(int(b) / 10)
+while sleep_time > 5:
+    sleep_time /= 2
+clipboard_sleep_time = (sleep_time if sleep_time < 3 else sleep_time / 2) if (sleep_time > 1) else (sleep_time + 1)
+
+
+driver = main.driver_connect_chrome("https://google.com")
         
+search = driver.find_element_by_name("q")
 
+
+act = ActionChains(driver)
+
+while pyperclip.paste() != text:
+    while not f":{b}:" in pyperclip.paste():
+        wait_and_set(text, clipboard_sleep_time)
+    print(f"Esperando {sleep_time} segundos")
+    time.sleep(sleep_time)
+
+act.click(search)
+act.key_down(Keys.CONTROL).send_keys("v").key_up(Keys.CONTROL)
+print(search.text, b)
+
+act.send_keys(Keys.BACKSPACE)
+for d in b:
+    act.send_keys(Keys.BACKSPACE)
+act.send_keys(Keys.BACKSPACE)
+act.perform()
+
+pyperclip.copy(":f:")
