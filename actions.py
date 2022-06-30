@@ -438,10 +438,10 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 # Manejo del clipboard
                 text = mensaje.replace(':f:', "") + f':{bot.BOT_PK}:'
                 while pyperclip.paste() != text:
-                    while not f":{bot.BOT_PK}:" in pyperclip.paste():
-                        wait_and_set(text, bot.CLIPBOARD_SLEEP_TIME)
                     print(f"Esperando {bot.SLEEP_TIME} segundos")
                     time.sleep(bot.SLEEP_TIME)
+                    while not f":{bot.BOT_PK}:" in pyperclip.paste():
+                        wait_and_set(text, bot.CLIPBOARD_SLEEP_TIME)
                 
                 # Pegar mensaje
                 act.key_down(Keys.CONTROL).send_keys('v').key_up(Keys.CONTROL)
