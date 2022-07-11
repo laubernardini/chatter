@@ -189,17 +189,22 @@ def get_inbound_file():
         try:
             for (_, _, filenames) in os.walk(dpath):
                 for fn in filenames:
-                    if f"{dpath}{fn}" not in bot.FILE_CACHE:
-                        archivo = f"{dpath}{fn}"
+                    if f"{dpath}{fn}" not in bot.FILE_CACHE and not fn.endswith(".crdownload"):
+                        if f"{dpath}{fn}" == "downloads.htm":
+                            try:
+                                os.remove(f"{dpath}{fn}")
+                            except:pass
+                        else:
+                            archivo = f"{dpath}{fn}"
                 break
 
             if archivo:
                 loaded = True
-                if ('.crdownload' in archivo):
-                    new_name = archivo.replace('.crdownload', '')
-                    os.rename(archivo, new_name)
-                    archivo = new_name
-                print(f"Archivo: {archivo}")
+                #if ('.crdownload' in archivo):
+                #    new_name = archivo.replace('.crdownload', '')
+                #    os.rename(archivo, new_name)
+                #    archivo = new_name
+                #print(f"Archivo: {archivo}")
 
                 ext = os.path.splitext(archivo)[1]
                 new_name = f"inbound_file_cache{bot.OS_SLASH}{str(bot.BOT_PK)}{bot.OS_SLASH}{str(bot.FILE_COUNTER)}{ext}"
@@ -1198,6 +1203,7 @@ def clear_cache():
         if bot.SHOW_EX_PRINTS:
             print("Caché limpiado")
     except Exception as e:
+        print(e)
         if bot.SHOW_EX_PRINTS:
             print("El caché entrante no se puede limpiar/ya está limpio")
 
