@@ -14,7 +14,12 @@ def wait_and_set(text, clipboard_sleep_time):
     while not ":f:" in pyperclip.paste() or pyperclip.paste() == "":
         print(f"Esperando clipboard {clipboard_sleep_time} segundos")
         time.sleep(clipboard_sleep_time)
+        release_clipboard()
     pyperclip.copy(text)
+
+def release_clipboard():
+    if f":{bot.BOT_TOKEN}:" in pyperclip.paste():
+        pyperclip.copy(':f:')
 
 # Manejo de chats
 def get_chat_by_chat_name(chat_name): # Usar 'celular' UNICAMENTE

@@ -245,9 +245,11 @@ def get_own_phone(driver, selectors):
 
 # Managers
 def manage_response(driver, selectors):
+    actions.release_clipboard()
     if bot.AUTO == "SI":
         # Respuestas automáticas
         for r in bot.AUTO_RESPONSES:
+            actions.release_clipboard()
             if bot.SHOW_EX_PRINTS:
                 print("Enviando respuesta automática: '", r.get("mensaje", ""), "'")
             
@@ -268,6 +270,7 @@ def manage_response(driver, selectors):
         counter = 5 # Para no enviar mas de 5 respuestas sin revisar entrantes
         while not done and counter > 0 and bot.RESPONDE == "SI":
             r = apis.get_response()
+            actions.release_clipboard()
             if r:
                 result = actions.send_message(
                     mensaje=r.get("mensaje", ""), 
@@ -288,6 +291,7 @@ def manage_response(driver, selectors):
 
 def manage_masiv(driver, selectors):
     r = apis.get_masiv()
+    actions.release_clipboard()
     if r:
         # Preparar mensaje masivo
         cel_list = r.get("celular", "{}")
