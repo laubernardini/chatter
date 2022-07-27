@@ -466,7 +466,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                     act.send_keys(Keys.BACKSPACE)
                 act.send_keys(Keys.BACKSPACE)
                 act.perform()
-                pyperclip.copy(":f:")
+                release_clipboard()
             else:
                 driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
                 message.send_keys('.')
@@ -525,7 +525,8 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
 
             bot.CURRENT_CHAT["last_msg"] = wa_id
-            
+            release_clipboard()
+
             return result
         else:
             if bot.SHOW_ERRORS:
