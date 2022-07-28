@@ -18,7 +18,7 @@ def wait_and_set(text, clipboard_sleep_time):
     pyperclip.copy(text)
 
 def release_clipboard():
-    if f":{bot.BOT_TOKEN}:" in pyperclip.paste():
+    if f":{bot.BOT_PK}:" in pyperclip.paste():
         pyperclip.copy(':f:')
 
 # Manejo de chats
