@@ -53,7 +53,7 @@
     "chat_separator_class": "_2wUmf V-zSs focusable-list-item",
     "attach_inbound_class": "_1q25n",
     "encrypted_chat": ".//span[@data-testid='lock-small']",
-    "reaction_bubble": ".//button[@data-a8n='reaction-bubble']",
+    "reaction_bubble": ".//button[@data-testid='reaction-bubble']",
     "reaction_bubble_class": "g0rxnol2 blj1rie1 px10qoeu ltyqj8pj n8sohn9f dhq51u3o qpocut9d kpdgp91a focusable-list-item",
 
     "chat_info": "//span[@class='_3NUK1 VWPRY _1lF7t']",
