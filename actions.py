@@ -721,7 +721,7 @@ def get_inbounds(driver, selectors):
             reference_elem = driver.switch_to.active_element
 
             # Reacción
-            reaction = reference_elem.get_attribute("data-a8n")
+            reaction = reference_elem.get_attribute("data-testid")
             is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
             print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
 
@@ -737,7 +737,7 @@ def get_inbounds(driver, selectors):
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
 
-                reaction = reference_elem.get_attribute("data-a8n")
+                reaction = reference_elem.get_attribute("data-testid")
                 is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
                 print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
                 if is_reaction_bubble: # Si el último elemento del chat es una reacción
@@ -797,7 +797,7 @@ def get_inbounds(driver, selectors):
                 is_chat_item = selectors["chat_item_class"] in first_msg.get_attribute("class")
                 is_unread_sign = selectors["unread_class"] in first_msg.get_attribute("class")
                 is_shared_contact_action = selectors["shared_contact_action_class"] in first_msg.get_attribute("class")
-                reaction = first_msg.get_attribute("data-a8n")
+                reaction = first_msg.get_attribute("data-testid")
                 is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
                 print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
                 print(f"Es una acción de contacto: {'SI' if (is_shared_contact_action) else 'NO'} ")
@@ -830,7 +830,7 @@ def get_inbounds(driver, selectors):
                     first_msg.send_keys(Keys.ARROW_DOWN)
                     first_msg = driver.switch_to.active_element
 
-                    reaction = first_msg.get_attribute("data-a8n")
+                    reaction = first_msg.get_attribute("data-testid")
                     is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
                     print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
                     if is_reaction_bubble: # Si el último elemento del chat es una reacción
@@ -876,7 +876,7 @@ def get_inbounds(driver, selectors):
                     # Condiciones
                     not_msg_out = not(selectors["message_out_class"] in next_msg.get_attribute('class'))
                     has_data_id = next_msg.get_attribute("data-id")
-                    reaction = first_msg.get_attribute("data-a8n")
+                    reaction = first_msg.get_attribute("data-testid")
                     not_reaction_bubble = not(("reaction-bubble" in reaction) if reaction else False)
                     print(f"Es una reaction: {'NO' if (not_reaction_bubble) else 'SI'} ")
 
