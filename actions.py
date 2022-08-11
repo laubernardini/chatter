@@ -159,31 +159,6 @@ def search(driver, selectors, text):
     
     return result
 
-def archive(driver, selectors, text):
-    r = search(driver, selectors, text)
-    if r:
-        chat = driver.switch_to.active_element
-        chat.send_keys(Keys.ARROW_RIGHT)
-        time.sleep(1)
-        try:
-            driver.find_element_by_xpath(selectors["archive"]).click()
-        except Exception as e:
-            if bot.SHOW_ERRORS:
-                print("El chat ya está archivado")
-                print(e)
-                print(repr(e))
-                print(e.args)
-            r.click()
-            r.clear()
-            return True
-    else:
-        if bot.SHOW_EX_PRINTS:
-            print("No se encontro el contacto")
-        clear_elem(driver, selectors, "search")
-        return True
-
-    clear_elem(driver, selectors, "search")
-
 def get_inbound_file():
     loaded = None
     dpath = f'inbound_file_cache{bot.OS_SLASH}{str(bot.BOT_PK)}{bot.OS_SLASH}'
@@ -409,9 +384,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
 
                 # Actualizar elementos html para adjuntar
                 driver.find_element_by_xpath(selectors["search"]).click()
-
-                #driver.find_element_by_xpath(selectors["preview"]).click()
-                
+               
                 send_file = False
                 if attach_type == 'multimedia':
                     if masive or len(mensaje) < 1000:
@@ -481,15 +454,21 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
 
             # Revisar si hay algún mensaje sin leer
             try:
-                if driver.find_elements_by_css_selector(selectors["message_in_container"])[-1].get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"]:
+                message_in_container = None
+                for selector in selectors["message_in_container"]:
+                    try:
+                        message_in_container = driver.find_elements_by_css_selector(selector)[-1]
+                        break
+                    except:pass
+
+                if message_in_container.get_attribute("data-id") != bot.CURRENT_CHAT["last_msg"]:
                     # Revisar en el chat
                     check_current_chat(driver, selectors, chat=bot.CURRENT_CHAT)
             except:
                 pass
             #print("Revisando pendientes")
             # Archivar el chat
-            #archive(driver, selectors, celular)
-            
+
             if bot.SHOW_EX_PRINTS:
                 print("Buscando wa_id de mensaje enviado, esperando 15s para ignorar...")
             
@@ -498,8 +477,14 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
             sleep_counter = 0
             while (not done) and (sleep_counter < 15):
                 try:
-                    last_send = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
-                    done = True
+                    last_send = None
+                    for selector in selectors["message_out_container"]:
+                        try:
+                            last_send = driver.find_elements_by_css_selector(selector)[-1]
+                            break
+                        except:pass
+                    if last_send:
+                        done = True
                 except:
                     time.sleep(1)
                     sleep_counter = sleep_counter + 1
@@ -725,14 +710,30 @@ def get_inbounds(driver, selectors):
             is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
             print(f"Es una reacción: {'SI' if is_reaction_bubble else 'NO'}")
 
-            if selectors["chat_separator_class"] in reference_elem.get_attribute("class"):
-                reference_elem = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
+            is_chat_separator = False
+            for selector in selectors["chat_separator_class"]:
+                if selector in reference_elem.get_attribute("class"):
+                    is_chat_separator = True
+                    break
+
+            if is_chat_separator:
+                try:
+                    reference_elem = reference_elem.find_elements_by_xpath(selectors["missed_call_container"])[-1]
+                except:pass
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
             if selectors["message_out_class"] in driver.switch_to.active_element.get_attribute("class"):
-                reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
-                reference_elem.send_keys(Keys.ARROW_DOWN)
-                reference_elem = driver.switch_to.active_element
+                message_out_container = None
+                for selector in selectors["message_out_container"]:
+                    try:
+                        message_out_container = driver.find_element_by_xpath(selector)[-1]
+                        break
+                    except:
+                        pass
+                if message_out_container:
+                    reference_elem = message_out_container
+                    reference_elem.send_keys(Keys.ARROW_DOWN)
+                    reference_elem = driver.switch_to.active_element
             if is_reaction_bubble: # Reacción
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
@@ -756,14 +757,34 @@ def get_inbounds(driver, selectors):
                     print("Hay mensajes no leidos")
             except:
                 try:
-                    reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
-                    reference_elem.send_keys(Keys.ARROW_DOWN)
-                    reference_elem = driver.switch_to.active_element
+                    message_out_container = None
+                    for selector in selectors["message_out_container"]:
+                        try:
+                            message_out_container = driver.find_element_by_xpath(selector)[-1]
+                            break
+                        except:
+                            pass
+                    print(f"Es un mensaje saliente: {'SI' if message_out_container else 'NO'}")
+                    if message_out_container:
+                        reference_elem = message_out_container
+                        reference_elem.send_keys(Keys.ARROW_DOWN)
+                        reference_elem = driver.switch_to.active_element
+                    else:
+                        int("s")
                     if bot.SHOW_EX_PRINTS:
                         print("Navegando a primer mensaje desde ultimo mensaje saliente")
                 except:
                     try:
-                        first_msg = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
+                        message_in_container = None
+                        for selector in selectors["message_in_container"]:
+                            try:
+                                message_in_container = driver.find_elements_by_css_selector(selector)[0]
+                                break
+                            except:pass
+                        first_msg = message_in_container
+
+                        if not first_msg:
+                            int("s")
                         if bot.SHOW_EX_PRINTS:
                             print("Obteniendo primer mensaje entrante del chat")
                     except:
@@ -794,7 +815,11 @@ def get_inbounds(driver, selectors):
                 # Comprobar si es un elemento del chat
 
                 # Condiciones
-                is_chat_item = selectors["chat_item_class"] in first_msg.get_attribute("class")
+                is_chat_item = False
+                for selector in selectors["chat_item_class"]:
+                    if selector in first_msg.get_attribute("class"):
+                        is_chat_item = True
+                        break
                 is_unread_sign = selectors["unread_class"] in first_msg.get_attribute("class")
                 is_shared_contact_action = selectors["shared_contact_action_class"] in first_msg.get_attribute("class")
                 reaction = first_msg.get_attribute("data-testid")
@@ -1006,12 +1031,22 @@ def make_inbound_messages(driver, selectors, messages):
             except:
                 try:
                     m.find_element_by_xpath(selectors["thumbnail"])
-                    if not(selectors["attach_inbound_class"] in m.get_attribute('class')):
+                    is_attach_inbound = False
+                    for selector in selectors["attach_inbound_class"]:
+                        if selector in m.get_attribute('class'):
+                            is_attach_inbound = True
+                            break
+                    if not(is_attach_inbound):
                         wait_time = datetime.now() + timedelta(seconds=10)
                         done = None
                         while not done:
                             if datetime.now() < wait_time:
-                                if selectors["attach_inbound_class"] in m.get_attribute('class'):
+                                is_attach_inbound = False
+                                for selector in selectors["attach_inbound_class"]:
+                                    if selector in m.get_attribute('class'):
+                                        is_attach_inbound = True
+                                        break
+                                if is_attach_inbound:
                                     done = True
                                 else:
                                     time.sleep(1)
@@ -1030,10 +1065,7 @@ def make_inbound_messages(driver, selectors, messages):
                     try:
                         try:
                             # Revisando si es un video a partir de un enlace
-                            try:
-                                html = m.find_element_by_xpath(selectors["message_text"]).get_attribute("innerHTML")
-                            except:
-                                html = m.find_element_by_xpath(selectors["message_text1"]).get_attribute("innerHTML")
+                            html = m.find_element_by_xpath(selectors["message_text"]).get_attribute("innerHTML")
                             if '<a' in html:
                                 is_link = True
                         except:
@@ -1045,6 +1077,12 @@ def make_inbound_messages(driver, selectors, messages):
                     except:
                         pass
             
+            is_attach_inbound = False
+            for selector in selectors["attach_inbound_class"]:
+                if selector in m.get_attribute('class'):
+                    is_attach_inbound = True
+                    break
+
             if is_image or is_audio:
                 time.sleep(2)
                 m.send_keys(Keys.ARROW_RIGHT)
@@ -1078,13 +1116,13 @@ def make_inbound_messages(driver, selectors, messages):
                     else:
                         time.sleep(2)
 
-            elif selectors["attach_inbound_class"] in m.get_attribute("class"):
+            elif is_attach_inbound:
                 try:
                     m.find_element_by_xpath(selectors["attach_inbound_download"]).click()
                 except:
                     is_link = True
 
-            if (is_video or is_audio or is_image or (selectors["attach_inbound_class"] in m.get_attribute("class"))) and not(is_link):
+            if (is_video or is_audio or is_image or is_attach_inbound) and not(is_link):
                 if bot.SHOW_EX_PRINTS:
                     print("Descargando...")
                 archivo = get_inbound_file()
@@ -1092,11 +1130,7 @@ def make_inbound_messages(driver, selectors, messages):
 
             # Obtener texto
             try:
-                try:
-                    text = m.find_element_by_xpath(selectors["message_text"])
-                except:
-                    text = m.find_element_by_xpath(selectors["message_text1"])
-                
+                text = m.find_element_by_xpath(selectors["message_text"])
                 html = text.get_attribute("innerHTML")
                 # Obtener emojis
                 text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL)
@@ -1106,7 +1140,7 @@ def make_inbound_messages(driver, selectors, messages):
                 # Formatear cursiva
                 text = text.replace('<em class="i0jNr selectable-text copyable-text" data-app-text-template="_${appText}_"', '_').replace('</em', '_')
                 # Eliminar link
-                text = re.sub('<a.*?copyable-text"','',text, flags=re.DOTALL).replace('</a>', '')
+                text = re.sub('<a.*?copyable-text">','',text, flags=re.DOTALL).replace('</a>', '')
                 text = re.sub('<a.*?">','',text, flags=re.DOTALL).replace('</a>', '')
             except:
                 try:
