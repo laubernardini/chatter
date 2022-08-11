@@ -804,6 +804,12 @@ def get_inbounds(driver, selectors):
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
             except:pass
+            # Comprobar si es el mensaje de "mensajes temporales"
+            try:
+                first_msg.find_element_by_xpath(selectors["temporal_chat"])[-1] 
+                first_msg.send_keys(Keys.ARROW_DOWN)
+                first_msg = driver.switch_to.active_element
+            except:pass
 
             # Buscar primer mensaje
             while not first_msg.get_attribute("data-id"):
@@ -917,6 +923,9 @@ def get_inbounds(driver, selectors):
                     done = True
             except:
                 done = True
+
+        if messages == [None]:
+            messages = []
 
         print("No hay más mensajes nuevos")
 
