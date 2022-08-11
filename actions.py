@@ -381,6 +381,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 # Enviar path del archivo temporal
                 attach.send_keys(file_path)
                 time.sleep(1)
+                print("Archivo cargado")
 
                 # Actualizar elementos html para adjuntar
                 driver.find_element_by_xpath(selectors["search"]).click()
@@ -389,13 +390,16 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 if attach_type == 'multimedia':
                     if masive or len(mensaje) < 1000:
                         # Obtener input de mensaje
+                        print("Obteniendo input de mensaje adjunto")
                         e = None
                         while not e:
-                            try:
-                                message = driver.find_element_by_xpath(selectors["message_attached"])
-                                new_message_input = False
-                                e = True
-                            except:
+                            for selector in selectors["message_attached"]:
+                                try:
+                                    message = driver.find_element_by_xpath(selector)
+                                    new_message_input = False
+                                    e = True
+                                except:pass
+                            if not e:
                                 time.sleep(1)
                                 driver.find_element_by_xpath(selectors["search"]).click()
                     else:

@@ -25,7 +25,7 @@
 
     "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='10']",
     "message1": "//div[@data-testid='conversation-compose-box-input']",
-    "message_attached": "//div[@data-testid='pluggable-input-body']",
+    "message_attached": ["//div[@data-testid='pluggable-input-body']", "//div[@data-testid='media-caption-input-container']"],
     "attachments": "//div[@title='Adjuntar']",
 
     "download": "//li[@data-testid='mi-msg-download']/div[1]",
