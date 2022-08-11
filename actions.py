@@ -1140,7 +1140,7 @@ def make_inbound_messages(driver, selectors, messages):
                 # Formatear cursiva
                 text = text.replace('<em class="i0jNr selectable-text copyable-text" data-app-text-template="_${appText}_"', '_').replace('</em', '_')
                 # Eliminar link
-                text = re.sub('<a.*?copyable-text"','',text, flags=re.DOTALL).replace('</a', '')
+                text = re.sub('<a.*?copyable-text','',text, flags=re.DOTALL).replace('</a', '')
             except:
                 try:
                     emojis = m.find_elements_by_xpath(selectors["emogi_container"])
