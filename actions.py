@@ -489,6 +489,8 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                         except:pass
                     if last_send:
                         done = True
+                    else:
+                        int("s")
                 except:
                     time.sleep(1)
                     sleep_counter = sleep_counter + 1
