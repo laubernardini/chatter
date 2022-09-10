@@ -24,6 +24,17 @@ MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime'
 START_DATE = None
 FORCED_ACTIVITY_FREQUENCY = 240 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
+REGISTERED_PHONE = ""
+INVALID_PHONE_MESSAGE = '''
+======================================================
+¡EL NÚMERO SUMINISTRADO NO COINCIDE CON EL REGISTRADO!
+======================================================
+'''
+INVALID_REGISTERED_PHONE_MESSAGE = '''
+===================================
+¡EL BOT NO TIENE NÚMERO REGISTRADO!
+===================================
+'''
 
 # Log
 SHOW_ERRORS = True
@@ -42,13 +53,14 @@ SLEEP_TIME = 0
 CLIPBOARD_SLEEP_TIME = 0
 
 # Funciones
-def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1"):
-    global RESPONDE, MASIVO, AUTO, THREAD
+def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1", registered_phone=""):
+    global RESPONDE, MASIVO, AUTO, THREAD, REGISTERED_PHONE
     
     RESPONDE = responde
     MASIVO = masivo
     AUTO = auto
     THREAD = thread
+    REGISTERED_PHONE = registered_phone
     
 def set_error():
     global STATE, THREAD

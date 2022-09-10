@@ -166,7 +166,12 @@ def driver_connect_chrome(url=""):
     return driver
 
 def send_report():
-    asyncio.run(apis.status())
+    apis.status()
+    if not bot.REGISTERED_PHONE or bot.REGISTERED_PHONE == '':
+        raise_phone_error(error='registered')
+    if bot.PHONE != '':
+        if bot.REGISTERED_PHONE != 'ALL' and bot.REGISTERED_PHONE != bot.PHONE:
+            raise_phone_error(error='phone')
 
 def sync(driver, selectors):
     #if bot.SHOW_EX_PRINTS:
@@ -229,6 +234,8 @@ def sync(driver, selectors):
     bot.CURRENT_CHAT = {}
 
 def get_own_phone(driver, selectors):
+    time.sleep(3)
+    print("Intentando entrar al perfil...")
     driver.find_element_by_xpath(selectors["profile"]).click()
     time.sleep(3)
     done = None
@@ -239,9 +246,18 @@ def get_own_phone(driver, selectors):
         except:
             time.sleep(1)
     bot.PHONE = actions.cel_formatter(celular)
+    if bot.REGISTERED_PHONE != 'ALL' and bot.REGISTERED_PHONE != bot.PHONE:
+        raise_phone_error(error='phone')
     print(f"PK: {bot.BOT_PK}, PHONE: {bot.PHONE}")
     
     driver.find_element_by_xpath(selectors["back_button"]).click()
+
+def raise_phone_error(error):
+    if error == 'phone':
+        print(bot.INVALID_PHONE_MESSAGE)
+    elif error == 'registered':
+        print(bot.INVALID_REGISTERED_PHONE_MESSAGE)
+    exit()
 
 # Managers
 def manage_response(driver, selectors):

@@ -4,8 +4,7 @@ import bot
 #import getopt
 import sys
 
-from main import start
-from apis import status
+from main import start, raise_phone_error, send_report
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -38,5 +37,9 @@ bot.DOWNLOAD_PATH = bot.DOWNLOAD_PATH + str(bot.BOT_PK) + bot.OS_SLASH
 
 system("title BOT " + bot.BOT_PK)
 
-asyncio.run(status())
+send_report()
+if bot.PHONE != "":
+    if bot.REGISTERED_PHONE != 'ALL' and bot.REGISTERED_PHONE != bot.PHONE:
+        raise_phone_error(error='phone')
+    
 start()

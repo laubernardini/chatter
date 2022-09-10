@@ -5,7 +5,7 @@ import os, urlfetch, urllib, json, asyncio, time
 import bot
 
 # Reporte
-async def status():
+def status():
     try:
         r = urlfetch.get(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/report?pk=" + str(bot.BOT_PK) + "&estado=" + str(bot.STATE), validate_certificate=False)
     except Exception as e:
@@ -31,7 +31,7 @@ async def status():
             content = json.loads(r.content)
             content = content[0]
 
-            bot.set_config(responde = content["responde"], masivo = content["masivo"], auto = content["auto"], thread = content["thread"])
+            bot.set_config(responde = content["responde"], masivo = content["masivo"], auto = content["auto"], thread = content["thread"], registered_phone = content["phone"])
         else:
             if bot.SHOW_ERRORS:
                 print("Error enviando estado")
