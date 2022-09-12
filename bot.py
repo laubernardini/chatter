@@ -63,8 +63,8 @@ def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1", regist
     REGISTERED_PHONE = registered_phone
     
 def set_error():
-    global STATE, THREAD
+    global STATE, THREAD, REGISTERED_PHONE
 
     STATE = 'ERROR'
-    set_config(thread=THREAD)
+    set_config(thread=THREAD, registered_phone=REGISTERED_PHONE)
 
