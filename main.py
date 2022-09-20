@@ -271,7 +271,7 @@ def manage_response(driver, selectors):
             
             result = actions.send_message(
                 mensaje=r.get("mensaje", ""), 
-                celular=r.get("celular", ""), 
+                celular=actions.cel_formatter(r.get("celular", "")), 
                 archivo=r.get("archivo", ""),
                 driver=driver, 
                 selectors=selectors
@@ -290,7 +290,7 @@ def manage_response(driver, selectors):
             if r:
                 result = actions.send_message(
                     mensaje=r.get("mensaje", ""), 
-                    celular=r.get("celular", ""), 
+                    celular=actions.cel_formatter(r.get("celular", "")), 
                     archivo=r.get("archivo", ""), 
                     last_msg=r.get("last_msg", ""),
                     driver=driver, 

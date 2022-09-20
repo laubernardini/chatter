@@ -41,6 +41,9 @@ def cel_formatter(celular): # Formatear celular
     chars_to_delete = [' ', '+', '-', '(', ')']
     for c in chars_to_delete:
         celular = celular.replace(c, '')
+    
+    if celular.startswith('0'):
+        celular = celular[1:]
 
     return celular
 
