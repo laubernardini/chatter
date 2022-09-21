@@ -62,7 +62,7 @@
     "shared_contact_name1": "//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 i0jNr selectable-text invisible-space copyable-text']",
     "shared_contact_phone": "//div[@class='tviruh8d bze30y65 i0jNr selectable-text copyable-text']/span[1]",
     "shared_contact_phone1": "//div[@class='tviruh8d bze30y65 i0jNr selectable-text invisible-space copyable-text']/span[1]",
-    "shared_contact_action_class": "p357zi0d ggj6brxn gndfcl4n ac2vgrno emrlamx0 gfz4du6o r7fjleex f8jlpxt4 r5qsrrlp o0rubyzf qfejxiq4 lhj4utae le5p0ye3 ei53l81b ln8gz9je ckm995li focusable-list-item",
+    "shared_contact_action_class": "p357zi0d ggj6brxn gndfcl4n ac2vgrno n1yiu2zv gfz4du6o r7fjleex f8jlpxt4 r5qsrrlp o0rubyzf qfejxiq4 lhj4utae le5p0ye3 ei53l81b ln8gz9je s8gyl5p1 focusable-list-item",
 
     "audio_button": ".//span[@data-testid='audio-play']",
     "audio_status": ".//span[@data-testid='ptt-status']",
