@@ -21,6 +21,9 @@ def release_clipboard():
     if f":{bot.BOT_PK}:" in pyperclip.paste() or pyperclip.paste() == '':
         pyperclip.copy(':f:')
 
+def get_parent(element):
+    return element.find_element_by_xpath('..')
+
 # Manejo de chats
 def get_chat_by_chat_name(chat_name): # Usar 'celular' UNICAMENTE
     chat = None
@@ -724,10 +727,14 @@ def get_inbounds(driver, selectors):
                 if selector in reference_elem.get_attribute("class"):
                     is_chat_separator = True
                     break
-
+            print(f"Es un separador de chat: {'SI' if is_chat_separator else 'NO'}")
             if is_chat_separator:
                 try:
                     reference_elem = reference_elem.find_elements_by_xpath(selectors["missed_call_container"])[-1]
+                    print("Is missed_call")
+                    print("Buscando elemento de mensaje padre")
+                    while not reference_elem.get_attribute("data-id"):
+                        reference_elem = get_parent(reference_elem)
                 except:pass
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
@@ -756,7 +763,8 @@ def get_inbounds(driver, selectors):
 
             if bot.SHOW_EX_PRINTS:
                 print("Mensaje en caché ", bot.CURRENT_CHAT["last_msg"])
-        except:
+        except Exception as e:
+            print(e)
             try:
                 reference_elem = driver.find_element_by_xpath(selectors["unread"])
                 reference_elem.click()
@@ -801,6 +809,10 @@ def get_inbounds(driver, selectors):
                             first_msg = driver.find_elements_by_xpath(selectors["missed_call_container"])[-1]
                             if bot.SHOW_EX_PRINTS:
                                 print("Obteniendo llamada perdida")
+
+                            print("Buscando elemento de mensaje padre")
+                            while not first_msg.get_attribute("data-id"):
+                                first_msg = get_parent(first_msg)
                         except:
                             done = True
         
