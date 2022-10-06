@@ -1,4 +1,4 @@
-import sys, os, shutil, re, time, asyncio, pyperclip
+import sys, os, shutil, re, time, pyperclip
 
 import bot, apis
 from datetime import datetime, timedelta
@@ -688,10 +688,8 @@ def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes
         if messages != []:
             try:
                 messages = make_inbound_messages(driver, selectors, messages)
-                if bot.SHOW_EX_PRINTS:
-                    print("Subiendo mensajes nuevos")
                 
-                asyncio.run(apis.send_inbounds(messages))
+                apis.send_inbounds(messages)
             except Exception as e:
                 if bot.SHOW_ERRORS:
                     print("Error al obtener mensajes nuevos")

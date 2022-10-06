@@ -7,12 +7,13 @@ STATE = "INICIANDO"
 RESPONDE = "NO"
 MASIVO = "NO"
 AUTO = "NO"
+READ = "NO"
 PHONE = ""
 VERSION = "2.0"
 
 # Datos del server
-SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost:8060/thread-"#
-FILE_SERVER = "https://apicloud.com.ar"#"http://localhost:8000"#
+SERVER_URL = "http://localhost/thread-"#"https://apicloud.com.ar/thread-"#
+FILE_SERVER = "http://localhost:8000"#"https://apicloud.com.ar"#
 FILE_SERVER_2 = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
 
 # Variables de ejecución
@@ -53,12 +54,13 @@ SLEEP_TIME = 0
 CLIPBOARD_SLEEP_TIME = 0
 
 # Funciones
-def set_config(responde = "NO", masivo = "NO", auto = "NO", thread = "1", registered_phone=""):
-    global RESPONDE, MASIVO, AUTO, THREAD, REGISTERED_PHONE
+def set_config(responde = "NO", masivo = "NO", auto = "NO", read="NO", thread = "1", registered_phone=""):
+    global RESPONDE, MASIVO, AUTO, READ, THREAD, REGISTERED_PHONE
     
     RESPONDE = responde
     MASIVO = masivo
     AUTO = auto
+    READ = read
     THREAD = thread
     REGISTERED_PHONE = registered_phone
     

@@ -1,8 +1,5 @@
-import asyncio
 from os import system
-import bot
-#import getopt
-import sys
+import bot, sys
 
 from main import start, raise_phone_error, send_report
 

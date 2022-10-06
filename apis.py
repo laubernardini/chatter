@@ -1,88 +1,108 @@
 # Packages
-import os, urlfetch, urllib, json, asyncio, time
+import os, urlfetch, urllib, json, time
 
 # Application
 import bot
 
+# Prints
+def print_api_response(content, name="", data=None, status_code=None):
+    data_text = ""
+    if data:
+        data_text = "Data:"
+        for key, value in data.items():
+            data_text += f"\n    {key}={value}"
+
+    print(f'''\nAPI {name} status: {status_code}\n{data_text}\nResponse: {content}''')
+
+def print_api_status_error(where="", status_code=None, exception=None, detail=None):
+    exception_text = ""
+    status_code_text = ""
+
+    if exception:
+        exception_text = f'''Exception:
+        {exception}
+        {repr(exception)}
+        {exception.args}
+        '''
+    if status_code:
+        status_code_text = f'''Detalle:
+        La petición tuvo un estado distinto a 200: {status_code}
+        '''
+
+    print(f'''Error {where}:\n{status_code_text}\n{exception_text}\n{f'Detalle: {detail}' if detail else ""}\n''')
+
 # Reporte
 def status():
-    try:
-        r = urlfetch.get(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/report?pk=" + str(bot.BOT_PK) + "&estado=" + str(bot.STATE), validate_certificate=False)
-    except Exception as e:
-        if bot.SHOW_ERRORS:
-            print("Error enviando estado")
-            print("     Detalle: ")
-            print(e)
-            print(repr(e))
-            print(e.args)
-        
-        r = e
-        bot.set_error()
+    print("Reportandose...")
+    done = None
+    while not done:
+        try:
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/report?pk={bot.BOT_PK}&estado={bot.STATE}', validate_certificate=False, timeout=3)
+            print(f'request_time {r.total_time}')
+            if bot.SHOW_API_RESPONSES:
+                print_api_response(content=r.content, name="report", data={"pk": bot.BOT_PK, "estado": bot.STATE}, status_code=r.status_code)
 
-    if type(r) != urlfetch.UrlfetchException:
-        if bot.SHOW_API_RESPONSES:
-            print("API status: " + str(r.status_code))
-            print("Data:")
-            print("     pk=" + str(bot.BOT_PK))
-            print("     estado=" + str(bot.STATE))
-            print("Response: " + str(r.content))
+            if r.status_code == 200:
+                content = json.loads(r.content)
+                content = content[0]
 
-        if r.status_code == 200:
-            content = json.loads(r.content)
-            content = content[0]
-
-            bot.set_config(responde = content["responde"], masivo = content["masivo"], auto = content["auto"], thread = content["thread"], registered_phone = content["phone"])
-        else:
+                bot.set_config(responde = content["responde"], masivo = content["masivo"], read= content["read"], auto = content["auto"], thread = content["thread"], registered_phone = content["phone"])
+                
+                done = True
+                print("Reporte completo")
+            else:
+                if bot.SHOW_ERRORS:
+                    print_api_status_error(where="en reporte", status_code=r.status_code)
+                bot.set_error()
+                time.sleep(3)
+                print("Reintentando...")
+        except Exception as e:
             if bot.SHOW_ERRORS:
-                print("Error enviando estado")
-                print("  Detalle: ")
-                print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
-
+                print_api_status_error(where="en reporte", exception=e)
             bot.set_error()
+            time.sleep(3)
+            print("Reintentando...")
 
+# Obtener último mensaje del chat
 def get_last_msg(celular):
-    try:
-        r = urlfetch.get(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/get-last-msg?token=" + str(bot.BOT_PK) + "&celular=" + str(celular), validate_certificate=False)
-    except Exception as e:
-        if bot.SHOW_ERRORS:
-            print("Error obteniendo chats")
-            print("     Detalle: ")
-            print(e)
-            print(repr(e))
-            print(e.args)
-        
-        r = e
-        bot.set_error()
+    print("Buscando último mensaje en DB...")
 
     result = None
-    if type(r) != urlfetch.UrlfetchException:
-        if bot.SHOW_API_RESPONSES:
-            print("API get_chats: " + str(r.status_code))
-            print("Data:")
-            print("     token=" + str(bot.BOT_PK))
-            print("Response: " + str(r.content))
-        
-        if r.status_code == 200:
-            content = json.loads(r.content)
-            if content["request_status"] == 'success':
-                if content["detail"]:
-                    result = content["detail"]
-            else:
-                r = ""
-                if bot.SHOW_ERRORS:
-                    print("Error obteniendo chats")
-                    print("  Detalle: ")
-                    print("    " + str(content["detail"]))
+    done = None
+    while not done:
+        try:
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/get-last-msg?token={bot.BOT_PK}&celular={celular}', validate_certificate=False, timeout=5)
+            print(f'request_time {r.total_time}')
 
+            if bot.SHOW_API_RESPONSES:
+                print_api_response(content=r.content, name="get_chats", data={"pk": bot.BOT_PK}, status_code=r.status_code)
+            
+            if r.status_code == 200:
+                content = json.loads(r.content)
+                if content["request_status"] == 'success':
+                    if content["detail"]:
+                        result = content["detail"]
+
+                    done = True
+                    print(f"Mensaje obtenido: {result}")
+                else:
+                    if bot.SHOW_ERRORS:
+                        print_api_status_error(where="obteniendo último mensaje", detail=content["detail"])
                     bot.set_error()
-            
-        else:
+                    time.sleep(3)
+                    print("Reintentando...")
+            else:
+                if bot.SHOW_ERRORS:
+                    print_api_status_error(where="obteniendo último mensaje", status_code=r.status_code)
+                bot.set_error()
+                time.sleep(3)
+                print("Reintentando...")
+        except Exception as e:
             if bot.SHOW_ERRORS:
-                print("Error obteniendo chats")
-                print("  Detalle: ")
-                print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
-            
-            bot.set_error()
+                print_api_status_error(where="obteniendo último mensaje", exception=e)
+            bot.set_error()    
+            time.sleep(3)
+            print("Reintentando...")    
 
     return result
 
@@ -91,29 +111,27 @@ def get_file(url):
     if bot.SHOW_EX_PRINTS:
         print("Obteniendo archivo...")
     
-    done = None
     s = bot.FILE_SERVER
+    done = None
     while not done:
         try:
             if bot.SHOW_EX_PRINTS:
                 print("Intentando con " + s + url)
-
-            r = urlfetch.get(s + url, validate_certificate=False)
+            
+            r = urlfetch.get(f'{s}{url}', validate_certificate=False, timeout=30)
+            print(f'request_time {r.total_time}')
 
             if r.status_code == 200:
                 done = True
             else:
                 if bot.SHOW_ERRORS:
-                    print("Error obteniendo archivo")
-                    print("  Detalle: ")
-                    print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
+                    print_api_status_error(where="obteniendo archivo", status_code=r.status_code)
                 
                 if s == bot.FILE_SERVER:
                     s = bot.FILE_SERVER_2
                 else:
                     s = bot.FILE_SERVER
                 time.sleep(2)
-            
         except Exception as e:
             if s == bot.FILE_SERVER:
                 s = bot.FILE_SERVER_2
@@ -121,7 +139,7 @@ def get_file(url):
                 s = bot.FILE_SERVER
 
             if bot.SHOW_ERRORS:
-                print(e)
+                print_api_status_error(where="obteniendo archivo", exception=e)
             
             time.sleep(2)
     
@@ -135,212 +153,208 @@ def get_file(url):
 
 # Respuestas manuales
 def get_response():
-    try:
-        r = urlfetch.get(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/respuesta?token=" + str(bot.BOT_PK), validate_certificate=False)
-    except Exception as e:
-        if bot.SHOW_ERRORS:
-            print("Error obteniendo respuesta")
-            print("     Detalle: ")
-            print(e)
-            print(repr(e))
-            print(e.args)
-        
-        r = e
-        bot.set_error()
+    print("Buscando respuestas manuales...")
+    done = None
+    result = {}
+    while not done:
+        try:
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/respuesta?token={bot.BOT_PK}', validate_certificate=False, timeout=3)
+            print(f'request_time {r.total_time}')
 
-    if type(r) != urlfetch.UrlfetchException:
-        if bot.SHOW_API_RESPONSES:
-            print("API get_response: " + str(r.status_code))
-            print("Data:")
-            print("     pk=" + str(bot.BOT_PK))
-            print("Response: " + str(r.content))
-        
-        if r.status_code == 200:
-            content = json.loads(r.content)
-            if content["request_status"] == 'success':
-                r = content["detail"]
+            if bot.SHOW_API_RESPONSES:
+                print_api_response(content=r.content, name="get_response", data={"pk": bot.BOT_PK}, status_code=r.status_code)
+            
+            if r.status_code == 200:
+                content = json.loads(r.content)
+                if content["request_status"] == 'success':
+                    result = content["detail"]
+                
+                done = True
+                print(f"Respuesta manual obtenida: {result}")
             else:
-                r = {}
-
-        else:
+                if bot.SHOW_ERRORS:
+                    print_api_status_error(where="obteniendo respuesta manual", status_code=r.status_code)
+                bot.set_error()
+                print("Reintentando...")
+                time.sleep(3)
+        except Exception as e:
             if bot.SHOW_ERRORS:
-                print("Error obteniendo respuesta")
-                print("  Detalle: ")
-                print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
-            
+                print_api_status_error(where="obteniendo respuesta manual", exception=e)
             bot.set_error()
-            r = {}
-    else:
-        r = {}
+            print("Reintentando...")
+            time.sleep(3)
 
-    return r
+    return result
 
-async def post_response(pk, estado, wa_id):
-    try:
-        headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
-        fields = {}
-        fields["token"] = bot.BOT_PK
-        fields["pk"] = pk
-        fields["estado"] = estado
-        fields["wa_id"] = wa_id
-        data = urllib.parse.urlencode(fields)
-        
-        r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/respuesta", validate_certificate=False, headers=headers, data=data)
-    
-    except Exception as e:
-        if bot.SHOW_ERRORS:
-            print("Error confirmando respuesta")
-            print("     Detalle: ")
-            print(e)
-            print(repr(e))
-            print(e.args)
-        
-        r = e
-        bot.set_error()
+def post_response(pk, estado, wa_id):
+    print("Confirmando respuesta manual...")
 
-    if type(r) != urlfetch.UrlfetchException:
-        if bot.SHOW_API_RESPONSES:
-            print("API post_response: " + str(r.status_code))
-            print("Data:")
-            print("     pk=" + str(bot.BOT_PK))
-            print("     pk_respuesta=" + str(pk))
-            print("Response: " + str(r.content))
+    # Data
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    fields = {
+        "token": bot.BOT_PK,
+        "pk": pk,
+        "estado": estado,
+        "wa_id": wa_id
+    }
+    data = urllib.parse.urlencode(fields)
 
-        if r.status_code != 200:
+    done = None
+    while not done:
+        try:
+            r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/respuesta', validate_certificate=False, headers=headers, data=data, timeout=8)
+            print(f'request_time {r.total_time}')
+
+            if bot.SHOW_API_RESPONSES:
+                print_api_response(content=r.content, name="post_response", data=fields, status_code=r.status_code)
+
+            if r.status_code == 200:
+                done = True
+                print("Respuesta manual confirmada")            
+            else:
+                if bot.SHOW_ERRORS:
+                    print_api_status_error(where="enviando respuesta", status_code=r.status_code)
+                bot.set_error()
+                print("Reintentando...")
+                time.sleep(3)
+        except Exception as e:
             if bot.SHOW_ERRORS:
-                print("Error confirmando respuesta")
-                print("  Detalle: ")
-                print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
-            
+                print_api_status_error(where="enviando respuesta", exception=e)
             bot.set_error()
+            print("Reintentando...")
+            time.sleep(3)
 
 # Respuestas automáticas
-async def post_auto_response(pk, celular, wa_id, tipo, mensaje=None):
-    try:
-        files = {}
-        fields = {
-            "token": bot.BOT_PK,
-            "pk": pk,
-            "celular": celular,
-            "wa_id": wa_id,
-            "tipo": tipo,
-            "mensaje": mensaje
-        }
-        r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/r-auto", data=fields, validate_certificate=False)
-    except Exception as e:
-        if bot.SHOW_ERRORS:
-            print("Error confirmando respuesta automática")
-            print("     Detalle: ")
-            print(e)
-            print(repr(e))
-            print(e.args)
-        
-        r = e
-        bot.set_error()
+def post_auto_response(pk, contacto_id, wa_id, tipo, mensaje, celular):
+    print("Confirmando respuesta automática...")
 
-    if type(r) != urlfetch.UrlfetchException:
-        if bot.SHOW_API_RESPONSES:
-            print("API post_auto_response: " + str(r.status_code))
-            print("Data:")
-            print("     pk=" + str(bot.BOT_PK))
-            print("Response: " + str(r.content))
-        
-        if r.status_code != 200:
-            if bot.SHOW_ERRORS:
-                print("Error confirmando respuesta automática")
-                print("  Detalle: ")
-                print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
+    # Data
+    fields = {
+        "token": bot.BOT_PK,
+        "pk": pk,
+        "contacto_id": contacto_id,
+        "wa_id": wa_id,
+        "tipo": tipo,
+        "mensaje": mensaje,
+        "celular": celular
+    }
+
+    done = None
+    while not done:
+        try:
+            r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/r-auto', data=fields, validate_certificate=False, timeout=8)
+            print(f'request_time {r.total_time}')
+
+            if bot.SHOW_API_RESPONSES:
+                print_api_response(content=r.content, name="post_auto_response", data=fields, status_code=r.status_code)
             
+            if r.status_code == 200:
+                done = True
+                print("Respuesta automática confirmada")            
+            else:
+                if bot.SHOW_ERRORS:
+                    print_api_status_error(where="confirmando respuesta automática", status_code=r.status_code)
+                bot.set_error()
+                print("Reintentando...")
+                time.sleep(3)
+
+        except Exception as e:
+            if bot.SHOW_ERRORS:
+                print_api_status_error(where="confirmando respuesta automática", exception=e)
             bot.set_error()
+            print("Reintentando...")
+            time.sleep(3)
 
 # Mensajes masivos
 def get_masiv():
-    try:
-        r = urlfetch.get(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/m-masivos?token=" + str(bot.BOT_PK), validate_certificate=False)
-    except Exception as e:
-        if bot.SHOW_ERRORS:
-            print("Error obteniendo masivo")
-            print("     Detalle: ")
-            print(e)
-            print(repr(e))
-            print(e.args)
-        r = e
-        bot.set_error()
+    print("Buscando mensaje masivo")
 
-    if type(r) != urlfetch.UrlfetchException:
-        if bot.SHOW_API_RESPONSES:
-            print("API get_response: " + str(r.status_code))
-            print("Data:")
-            print("     pk=" + str(bot.BOT_PK))
-            print("Response: " + str(r.content))
+    result = {}
+    done = None
+    while not done:
+        try:
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/m-masivos?token={bot.BOT_PK}', validate_certificate=False, timeout=5)
+            print(f'request_time {r.total_time}')
 
-        if r.status_code == 200:
-            content = json.loads(r.content)
-            if content["request_status"] == 'success':
-                r = content["detail"]
+            if bot.SHOW_API_RESPONSES:
+                print_api_response(content=r.content, name="get_masiv", data={"pk": bot.BOT_PK}, status_code=r.status_code)
+
+            if r.status_code == 200:
+                content = json.loads(r.content)
+                if content["request_status"] == 'success':
+                    result = content["detail"]
+                
+                done = True
+                print(f"Mensaje masivo obtenido: {result}")
             else:
-                r = {}
-        else:
+                if bot.SHOW_ERRORS:
+                    print_api_status_error(where="obteniendo mensaje masivo", status_code=r.status_code)
+                bot.set_error()
+                print("Reintentando...")
+                time.sleep(3)
+        except Exception as e:
             if bot.SHOW_ERRORS:
-                print("Error obteniendo mensaje masivo")
-                print("  Detalle: ")
-                print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
-            
+                print_api_status_error(where="obteniendo mensaje masivo", exception=e)
             bot.set_error()
-            r = {}
-    else:
-        r = {}
+            print("Reintentando...")
+            time.sleep(3)
 
-    return r
+    return result
 
-async def post_masiv(pk, estado, wa_id, intentos, errores):
-    try:
-        headers = {
-            "Content-Type": "application/json"
-        }
-        fields = {
-            "token": bot.BOT_PK,
-            "pk": pk,
-            "estado": estado,
-            "wa_id": wa_id,
-            "intentos": intentos,
-            "errores": errores
-        }
-        data = json.dumps(fields)
-        
-        r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/m-masivos", validate_certificate=False, headers=headers, data=data)
-    except Exception as e:
-        if bot.SHOW_ERRORS:
-            print("Error confirmando masivo")
-            print("     Detalle: ")
-            print(e)
-            print(repr(e))
-            print(e.args)
-        r = e
-        bot.set_error()
+def post_masiv(pk, estado, wa_id, intentos, errores):    
+    print("Confirmando mensaje masivo")
 
-    if type(r) != urlfetch.UrlfetchException:
-        if bot.SHOW_API_RESPONSES:
-            print("API post_response: " + str(r.status_code))
-            print("Data:")
-            print("     pk=" + str(bot.BOT_PK))
-            print("     pk_mensaje=" + str(pk))
-            print("     estado=" + str(estado))
-            print("Response: " + str(r.content))
+    # Data
+    headers = {
+        "Content-Type": "application/json"
+    }
+    fields = {
+        "token": bot.BOT_PK,
+        "pk": pk,
+        "estado": estado,
+        "wa_id": wa_id,
+        "intentos": intentos,
+        "errores": errores
+    }
+    data = json.dumps(fields)
 
-        if r.status_code != 200:
+    done = None
+    while not done:
+        try:
+            r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/m-masivos', validate_certificate=False, headers=headers, data=data, timeout=8)
+            print(f'request_time {r.total_time}')
+
+            if bot.SHOW_API_RESPONSES:
+                print_api_response(content=r.content, name="post_masiv", data=fields, status_code=r.status_code)
+
+            if r.status_code == 200:
+                done = True
+                print("Mensaje masivo confirmado")
+            else:
+                if bot.SHOW_ERRORS:
+                    print_api_status_error(where="confirmando mensaje masivo", status_code=r.status_code)
+                bot.set_error()
+                print("Reintentando...")
+                time.sleep(3)
+        except Exception as e:
             if bot.SHOW_ERRORS:
-                print("Error confirmando masivo")
-                print("  Detalle: ")
-                print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
-            
+                print_api_status_error(where="confirmando mensaje masivo", exception=e)
             bot.set_error()
+            print("Reintentando...")
+            time.sleep(3)
 
 # Mensajes entrantes
-async def send_inbounds(messages):
+def send_inbounds(messages):
+    print("Subiendo mensajes entrantes...")
+    
+    cant = len(messages)
+    count = 1
     for m in messages:
+        print(f"Subiendo: {count}/{cant}")
+        timeout = 8
+        files = {}
         fields = {
             "token": bot.BOT_PK,
             "celular": m["celular"],
@@ -348,68 +362,51 @@ async def send_inbounds(messages):
             "mensaje": m["mensaje"],
             "wa_id": m["wa_id"],
         }
-
         if m["respuesta"] != {}:
             fields["respuesta_grupo"] = m["respuesta"]["grupo"],
             fields["respuesta_mensaje"] = m["respuesta"]["mensaje"]
-
-        files = {}
         if m["archivo"] != "":
+            timeout = 15
             files = {
                 "archivo": open(m["archivo"], "rb")
             }
         
-        try:
-            r = urlfetch.post(str(bot.SERVER_URL) + str(bot.THREAD) + "/api/bots/recepcion", validate_certificate=False, data=fields, files=files)
+        done = None
+        while not done:
+            try:
+                r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/recepcion', validate_certificate=False, data=fields, files=files, timeout = timeout)
+                print(f'request_time {r.total_time}')
 
-            # Guardar respuesta automática
-            if r.status_code == 200:
-                content = json.loads(r.content)
-                if content["request_status"] == 'success':
-                    if content["detail"]:
-                        bot.AUTO_RESPONSES.append(content['detail'])
+                if bot.SHOW_API_RESPONSES:
+                    print_api_response(content=r.content, name="send_inbound", data={"pk": bot.BOT_PK, "mensajes": messages}, status_code=r.status_code)
+
+                # Guardar respuesta automática
+                if r.status_code == 200:
+                    content = json.loads(r.content)
+                    if content["request_status"] == 'success':
+                        if content["detail"]:
+                            bot.AUTO_RESPONSES.append(content['detail'])
+
+                        done = True
+                        print("Entrante subido")
+                    else:
+                        if bot.SHOW_ERRORS:
+                            print_api_status_error(where="registrando entrante", detail=content["detail"])
+                            bot.set_error()
+                            print("Reintentando...")
+                            time.sleep(3)
                 else:
                     if bot.SHOW_ERRORS:
-                        print("Error registrando entrante")
-                        print("  Detalle: ")
-                        print("    " + str(content["detail"]))
-
-                        bot.set_error()
-                        r = {}
-            else:
+                        print_api_status_error(where="registrando entrante", status_code=r.status_code)
+                    bot.set_error()
+                    print("Reintentando...")
+                    time.sleep(3)
+            except Exception as e:
                 if bot.SHOW_ERRORS:
-                    print("Error registrando entrante")
-                    print("  Detalle: ")
-                    print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
-                
+                    print_api_status_error(where="registrando entrante", exception=e)
                 bot.set_error()
-                r = {}
-        except Exception as e:
-            if bot.SHOW_ERRORS:
-                print("Error registrando entrante")
-                print("     Detalle: ")
-                print(e)
-                print(repr(e))
-                print(e.args)
-            
-            r = e
-            bot.set_error()
-        
-        if type(r) != urlfetch.UrlfetchException:
-            if bot.SHOW_API_RESPONSES:
-                print("API post_response: " + str(r.status_code))
-                print("Data:")
-                print("     pk=" + str(bot.BOT_PK))
-                print("     mensajes:")
-                print(messages)
-                print("Response: " + str(r.content))
-            
-            if r.status_code != 200:
-                if bot.SHOW_ERRORS:
-                    print("Error registrando entrante")
-                    print("  Detalle: ")
-                    print("    La petición tuvo un estado distinto a 200: " + str(r.status_code))
-
-                bot.set_error()
+                print("Reintentando...")
+                time.sleep(3)
 
         time.sleep(0.25)
+        count += 1

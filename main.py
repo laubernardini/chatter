@@ -1,5 +1,5 @@
 # Packages
-import os, sys, json, time, asyncio
+import os, sys, json, time
 from datetime import datetime, timedelta
 
 # Webdriver
@@ -70,11 +70,11 @@ def start():
 
         if not phone_disconected:
             # Outbounds
-            if (bot.RESPONDE == "SI" or bot.AUTO == "SI") and bot.STATE != 'ERROR':
+            if bot.STATE != 'ERROR':
                 manage_response(driver=driver, selectors=selectors)
             
             # Masive
-            if bot.MASIVO == "SI" and bot.STATE != 'ERROR':
+            if bot.STATE != 'ERROR':
                 manage_masiv(driver=driver, selectors=selectors)
                 time.sleep(1)
         else:
@@ -278,7 +278,14 @@ def manage_response(driver, selectors):
             )
             
             if result["estado"] != "ERROR":
-                asyncio.run(apis.post_auto_response(mensaje=r.get("mensaje", "") if r.get("tipo", "") == "missed_call" else None, celular=r.get("celular", ""), tipo=r.get("tipo", ""), wa_id=result.get("wa_id", ""), pk=r.get("pk", "")))
+                apis.post_auto_response(
+                    mensaje=r.get("mensaje", "") if r.get("tipo", "") == "missed_call" else None, 
+                    contacto_id=r.get("contacto_id", ""), 
+                    celular=r.get("celular", ""), 
+                    tipo=r.get("tipo", ""), 
+                    wa_id=result.get("wa_id", ""), 
+                    pk=r.get("pk", "")
+                )
 
         bot.AUTO_RESPONSES = []
     if bot.RESPONDE == "SI":
@@ -296,91 +303,92 @@ def manage_response(driver, selectors):
                     driver=driver, 
                     selectors=selectors
                 )
-            
-                asyncio.run(apis.post_response(pk=r.get("pk", ""), estado=result["estado"], wa_id=result["wa_id"]))
+
+                apis.post_response(pk=r.get("pk", ""), estado=result["estado"], wa_id=result["wa_id"])
             else:
                 if bot.SHOW_EX_PRINTS:
                     print("Sin respuestas pendientes")
-                
                 done = True
             counter -= 1
 
 def manage_masiv(driver, selectors):
-    r = apis.get_masiv()
-    actions.release_clipboard()
-    if r:
-        # Preparar mensaje masivo
-        cel_list = r.get("celular", "{}")
-        mensaje = r.get("mensaje", "")
-        archivo = r.get("archivo", "")
-        last_msg = r.get("last_msg", "")
-        pk = r.get("pk", "")
+    if bot.MASIVO == 'SI':
+        r = apis.get_masiv()
+        actions.release_clipboard()
+        if r:
+            # Preparar mensaje masivo
+            cel_list = r.get("celular", "{}")
+            mensaje = r.get("mensaje", "")
+            archivo = r.get("archivo", "")
+            last_msg = r.get("last_msg", "")
+            pk = r.get("pk", "")
 
-        intentos = [] 
-        errores = 0
-        for clave, item in cel_list.items():
-            result = actions.send_message(
-                mensaje=mensaje, 
-                celular=item["cel"], 
-                archivo=archivo,
-                last_msg=last_msg,
-                driver=driver, 
-                selectors=selectors,
-                masive=True,
-            )
-            intentos.append({
-                "clave": clave,
-                "cel": item["cel"],
-                "estado": ("ERROR" if result["estado"] == "ERROR" else "OK")
-            })
-            if result["estado"] == 'ENVIADO':
-                break
-            else:
-                errores = errores + 1
-        
-        estado = ('ERROR' if result["estado"] == "ERROR" else 'FINALIZADO')
-        wa_id = result["wa_id"]
+            intentos = [] 
+            errores = 0
+            for clave, item in cel_list.items():
+                result = actions.send_message(
+                    mensaje=mensaje, 
+                    celular=item["cel"], 
+                    archivo=archivo,
+                    last_msg=last_msg,
+                    driver=driver, 
+                    selectors=selectors,
+                    masive=True,
+                )
+                intentos.append({
+                    "clave": clave,
+                    "cel": item["cel"],
+                    "estado": ("ERROR" if result["estado"] == "ERROR" else "OK")
+                })
+                if result["estado"] == 'ENVIADO':
+                    break
+                else:
+                    errores = errores + 1
+            
+            estado = ('ERROR' if result["estado"] == "ERROR" else 'FINALIZADO')
+            wa_id = result["wa_id"]
 
-        asyncio.run(apis.post_masiv(pk=pk, wa_id=wa_id, estado=estado, intentos=intentos, errores=errores))
-    else:
-        if bot.SHOW_EX_PRINTS:
-            print("Sin campañas pendientes")
+            apis.post_masiv(pk=pk, wa_id=wa_id, estado=estado, intentos=intentos, errores=errores)
+        else:
+            if bot.SHOW_EX_PRINTS:
+                print("Sin campañas pendientes")
 
 def manage_inbounds(driver, selectors):
-    # Revisar en el chat
-    if bot.STATE != 'ERROR':
-        chat_name_header = ''
-        try:
-            chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+    if bot.READ == 'SI':
+        # Revisar en el chat
+        if bot.STATE != 'ERROR':
+            chat_name_header = ''
             try:
-                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"]).text
+                chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+                try:
+                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"]).text
+                except:
+                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"]).text
             except:
-                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"]).text
-        except:
-            pass
-        
-        if actions.cel_formatter(chat_name_header) != bot.PHONE:
-            if bot.SHOW_EX_PRINTS:
-                print("Revisando chat")
-            actions.check_current_chat(driver, selectors, chat=bot.CURRENT_CHAT)
-
-    # Obtener mensajes desde notificación
-    if bot.STATE != 'ERROR':
-        if bot.SHOW_EX_PRINTS:
-            print("Buscando notificaciones")
-        done = None
-        while not done:
-            n = actions.notification_clicker(driver, selectors)
-            if n:
-                actions.check_current_chat(driver, selectors)
-
-                if bot.STATE == 'ERROR':
-                    done = True
-                
-                time.sleep(1)
-            else:
+                pass
+            
+            if actions.cel_formatter(chat_name_header) != bot.PHONE:
                 if bot.SHOW_EX_PRINTS:
-                    print("No hay notificaciones")
-                done = True
-    
-    time.sleep(1)
+                    print("Revisando chat")
+                actions.check_current_chat(driver, selectors, chat=bot.CURRENT_CHAT)
+
+        # Obtener mensajes desde notificación
+        if bot.STATE != 'ERROR':
+            if bot.SHOW_EX_PRINTS:
+                print("Buscando notificaciones")
+            done = None
+            while not done:
+                n = actions.notification_clicker(driver, selectors)
+                if n:
+                    actions.check_current_chat(driver, selectors)
+
+                    if bot.STATE == 'ERROR':
+                        done = True
+                    
+                    time.sleep(1)
+                else:
+                    if bot.SHOW_EX_PRINTS:
+                        print("No hay notificaciones")
+                    done = True
+        
+        time.sleep(1)
