@@ -12,8 +12,8 @@ PHONE = ""
 VERSION = "2.0"
 
 # Datos del server
-SERVER_URL = "http://localhost/thread-"#"https://apicloud.com.ar/thread-"#
-FILE_SERVER = "http://localhost:8000"#"https://apicloud.com.ar"#
+SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost/thread-"#
+FILE_SERVER = "https://apicloud.com.ar"#"http://localhost:8000"#
 FILE_SERVER_2 = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
 
 # Variables de ejecución
