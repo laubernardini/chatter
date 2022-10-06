@@ -9,7 +9,7 @@ MASIVO = "NO"
 AUTO = "NO"
 READ = "NO"
 PHONE = ""
-VERSION = "2.0"
+VERSION = "3.0"
 
 # Datos del server
 SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost/thread-"#
