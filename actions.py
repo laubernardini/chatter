@@ -740,7 +740,7 @@ def get_inbounds(driver, selectors):
                 message_out_container = None
                 for selector in selectors["message_out_container"]:
                     try:
-                        message_out_container = driver.find_element_by_xpath(selector)[-1]
+                        message_out_container = driver.find_elements_by_css_selector(selector)[-1]
                         break
                     except:
                         pass
@@ -775,7 +775,7 @@ def get_inbounds(driver, selectors):
                     message_out_container = None
                     for selector in selectors["message_out_container"]:
                         try:
-                            message_out_container = driver.find_element_by_xpath(selector)[-1]
+                            message_out_container = driver.find_elements_by_css_selector(selector)[-1]
                             break
                         except:
                             pass
