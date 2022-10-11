@@ -158,7 +158,7 @@ def get_response():
     result = {}
     while not done:
         try:
-            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/respuesta?token={bot.BOT_PK}', validate_certificate=False, timeout=3)
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/respuesta?token={bot.BOT_PK}', validate_certificate=False, timeout=6)
             print(f'request_time {r.total_time}')
 
             if bot.SHOW_API_RESPONSES:
@@ -275,7 +275,7 @@ def get_masiv():
     done = None
     while not done:
         try:
-            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/m-masivos?token={bot.BOT_PK}', validate_certificate=False, timeout=5)
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/m-masivos?token={bot.BOT_PK}', validate_certificate=False, timeout=6)
             print(f'request_time {r.total_time}')
 
             if bot.SHOW_API_RESPONSES:

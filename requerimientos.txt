@@ -11,3 +11,4 @@ selenium==3.141.0
 six==1.15.0
 urlfetch==1.2.2
 urllib3==1.25.11
+websocket-client==1.4.1

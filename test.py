@@ -1,10 +1,13 @@
-def print_api_response(content, name="", data=None, status_code=None):
-    data_text = ""
-    if data:
-        data_text = "Data:"
-        for key, value in data.items():
-            data_text += f"\n       {key}={value}"
+from websocket import create_connection
+import time
 
-    print(f'''\nAPI {name} status: {status_code}\n{data_text}\nResponse: {content}''')
-
-print_api_response(content="0", name="report", data={"pk": 12, "estado": "OK"}, status_code=200)
+ws = create_connection("ws://localhost:8000/bots/apicloud/")
+print(ws.recv())
+print("Sending 'Hello, World'...")
+ws.send("Hello, World")
+print("Sent")
+print("Receiving...")
+result =  ws.recv()
+print("Received '%s'" % result)
+time.sleep(30)
+#ws.close()
