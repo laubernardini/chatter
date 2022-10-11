@@ -37,7 +37,7 @@ def status():
     done = None
     while not done:
         try:
-            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/report?pk={bot.BOT_PK}&estado={bot.STATE}', validate_certificate=False, timeout=3)
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/report?pk={bot.BOT_PK}&estado={bot.STATE}', validate_certificate=False, timeout=10)
             print(f'request_time {r.total_time}')
             if bot.SHOW_API_RESPONSES:
                 print_api_response(content=r.content, name="report", data={"pk": bot.BOT_PK, "estado": bot.STATE}, status_code=r.status_code)
@@ -71,7 +71,7 @@ def get_last_msg(celular):
     done = None
     while not done:
         try:
-            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/get-last-msg?token={bot.BOT_PK}&celular={celular}', validate_certificate=False, timeout=5)
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/get-last-msg?token={bot.BOT_PK}&celular={celular}', validate_certificate=False, timeout=15)
             print(f'request_time {r.total_time}')
 
             if bot.SHOW_API_RESPONSES:
@@ -118,7 +118,7 @@ def get_file(url):
             if bot.SHOW_EX_PRINTS:
                 print("Intentando con " + s + url)
             
-            r = urlfetch.get(f'{s}{url}', validate_certificate=False, timeout=30)
+            r = urlfetch.get(f'{s}{url}', validate_certificate=False, timeout=40)
             print(f'request_time {r.total_time}')
 
             if r.status_code == 200:
@@ -158,7 +158,7 @@ def get_response():
     result = {}
     while not done:
         try:
-            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/respuesta?token={bot.BOT_PK}', validate_certificate=False, timeout=6)
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/respuesta?token={bot.BOT_PK}', validate_certificate=False, timeout=25)
             print(f'request_time {r.total_time}')
 
             if bot.SHOW_API_RESPONSES:
@@ -204,7 +204,7 @@ def post_response(pk, estado, wa_id):
     done = None
     while not done:
         try:
-            r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/respuesta', validate_certificate=False, headers=headers, data=data, timeout=8)
+            r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/respuesta', validate_certificate=False, headers=headers, data=data, timeout=30)
             print(f'request_time {r.total_time}')
 
             if bot.SHOW_API_RESPONSES:
@@ -244,7 +244,7 @@ def post_auto_response(pk, contacto_id, wa_id, tipo, mensaje, celular):
     done = None
     while not done:
         try:
-            r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/r-auto', data=fields, validate_certificate=False, timeout=8)
+            r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/r-auto', data=fields, validate_certificate=False, timeout=30)
             print(f'request_time {r.total_time}')
 
             if bot.SHOW_API_RESPONSES:
@@ -275,7 +275,7 @@ def get_masiv():
     done = None
     while not done:
         try:
-            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/m-masivos?token={bot.BOT_PK}', validate_certificate=False, timeout=15)
+            r = urlfetch.get(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/m-masivos?token={bot.BOT_PK}', validate_certificate=False, timeout=25)
             print(f'request_time {r.total_time}')
 
             if bot.SHOW_API_RESPONSES:
@@ -323,7 +323,7 @@ def post_masiv(pk, estado, wa_id, intentos, errores):
     done = None
     while not done:
         try:
-            r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/m-masivos', validate_certificate=False, headers=headers, data=data, timeout=8)
+            r = urlfetch.post(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/m-masivos', validate_certificate=False, headers=headers, data=data, timeout=15)
             print(f'request_time {r.total_time}')
 
             if bot.SHOW_API_RESPONSES:
@@ -353,7 +353,7 @@ def send_inbounds(messages):
     count = 1
     for m in messages:
         print(f"Subiendo: {count}/{cant}")
-        timeout = 8
+        timeout = 15
         files = {}
         fields = {
             "token": bot.BOT_PK,
@@ -366,7 +366,7 @@ def send_inbounds(messages):
             fields["respuesta_grupo"] = m["respuesta"]["grupo"],
             fields["respuesta_mensaje"] = m["respuesta"]["mensaje"]
         if m["archivo"] != "":
-            timeout = 15
+            timeout = 40
             files = {
                 "archivo": open(m["archivo"], "rb")
             }
