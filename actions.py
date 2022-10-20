@@ -402,7 +402,10 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                             for selector in selectors["message_attached"]:
                                 try:
                                     message = driver.find_element_by_xpath(selector)
-                                    new_message_input = False
+                                    if message.get_attribute("data-lexical-editor") == "true":
+                                        new_message_input = True
+                                    else:
+                                        new_message_input = False
                                     e = True
                                 except:pass
                             if not e:
