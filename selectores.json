@@ -51,7 +51,7 @@
     "temporal_chat": ".//span[@data-testid='disappearing']",
 
     "chat_info": "//span[@class='_3NUK1 VWPRY _1lF7t']",
-    "chat_info_close": "//button[@class='_18eKe']",
+    "chat_info_close": ["//button[@class='_18eKe']", "//div[@data-testid='btn-closer-drawer']"],
     "chat_init": "//div[@class='_1bpDE']",
 
     "in_response_group_class": "div.hooVq",

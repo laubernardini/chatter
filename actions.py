@@ -113,7 +113,10 @@ def get_data_by_chat_info(driver, selectors):
     print(result)
 
     # Cerrar info del contacto
-    driver.find_element_by_xpath(selectors["chat_info_close"]).click()
+    for selector in selectors["chat_info_close"]:
+        try:
+            driver.find_element_by_xpath(selector).click()
+        except:pass
 
     return result
 
@@ -1207,8 +1210,11 @@ def make_inbound_messages(driver, selectors, messages):
                     except Exception as e:
                         print(e)
                         pass
-
-                m.find_element_by_xpath(selectors["chat_info_close"]).click()
+                for selector in selectors["chat_info_close"]:
+                    try:
+                        m.find_element_by_xpath(selector).click()
+                    except:pass
+                
                 time.sleep(2)
                 
                 if shared_contact_phone != '': 
