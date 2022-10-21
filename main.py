@@ -249,8 +249,11 @@ def get_own_phone(driver, selectors):
     if bot.REGISTERED_PHONE != 'ALL' and bot.REGISTERED_PHONE != bot.PHONE:
         raise_phone_error(error='phone')
     print(f"PK: {bot.BOT_PK}, PHONE: {bot.PHONE}")
-    
-    driver.find_element_by_xpath(selectors["back_button"]).click()
+
+    for selector in selectors["back_button"]:
+        try:
+            driver.find_element_by_xpath(selector).click()
+        except:pass
 
 def raise_phone_error(error):
     if error == 'phone':

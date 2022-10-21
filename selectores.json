@@ -10,7 +10,7 @@
     "searching": "//div[@class='cm280p3y p357zi0d tvf2evcx f8m0rgwh gndfcl4n fhf7t426 bvcnfjzh cihm0v32 td5bf8pq ctv2fiom l3k7h4x6 hp667wtd qfejxiq4 oq44ahr5 lb5m6g5c']",
     "search_result_text": ".//span[@class='i0jNr']",
     "chat_class": "lhggkp7q ln8gz9je rx9719la",
-    "back_button": "//button[@class='_18eKe']",
+    "back_button": ["//button[@class='_18eKe']", "//div[@data-testid='btn-closer-drawer']"],
 
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
     "business_alert": "//div[@class='ggj6brxn m0h2a7mj lb5m6g5c kv6wexeh gfz4du6o r7fjleex lhj4utae le5p0ye3']",
