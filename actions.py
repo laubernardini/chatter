@@ -971,6 +971,7 @@ def make_inbound_messages(driver, selectors, messages):
         done = None
 
         # Instanciar mensaje
+        count = 0
         while not done:
             try:
                 m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
@@ -980,8 +981,11 @@ def make_inbound_messages(driver, selectors, messages):
                     driver.find_element_by_xpath(selectors["message"]).click()
                 except:
                     driver.find_element_by_xpath(selectors["message1"]).click()
-                
-                time.sleep(0.8)
+                count += 1
+                if count < 10:
+                    time.sleep(0.8)
+                else:
+                    continue
 
         # Variables de ejecución
         nombre = bot.CURRENT_CHAT["nombre"]
@@ -1130,13 +1134,15 @@ def make_inbound_messages(driver, selectors, messages):
                         loaded = True
                     except:
                         try:
+                            driver.find_element_by_xpath(selectors["download_options"]).click()
+                        except:pass
+                        try:
                             m.find_element_by_xpath(selectors["message_checkbox"])
                             m.find_element_by_xpath(selectors["close_message_selection"]).click()
                             m.send_keys(Keys.ARROW_RIGHT)
-                        except:
-                            pass
+                        except:pass
+
                     time.sleep(1)
-                
                 if downl:
                     downl.click()
 

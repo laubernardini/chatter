@@ -70,6 +70,7 @@
     "audio_icon_ptt": ".//span[@data-testid='ptt-file']",
     "audio_download": ".//button[@aria-label='Descargar mensaje de voz']",
     "audio_loading": ".//button[@class='_1cZGZ']",
+    "download_options": ".//div[@data-testid='icon-down-context']",
 
     "missed_call_container": "//div[@data-testid='msg-notification-container']",
     "missed_call": ".//span[@data-testid='miss']",
