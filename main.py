@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 # Webdriver
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-
 # Application
 import bot, apis, actions
 
@@ -23,7 +22,9 @@ def start():
         if bot.BROWSER == 'chrome':
             driver = driver_connect_chrome("https://web.whatsapp.com")#
         elif bot.BROWSER == 'firefox':
-            driver = driver_connect("https://web.whatsapp.com")
+            driver = driver_connect_firefox("https://web.whatsapp.com")
+        elif bot.BROWSER == 'opera':
+            driver = driver_connect_opera("https://web.whatsapp.com")
     
     driver.execute_script(f"document.title = 'BOT {bot.BOT_PK}'")
 
@@ -110,7 +111,7 @@ def start():
             bot.STATE = "ERROR"
         
 # Funciones de inicio  
-def driver_connect(url=""):
+def driver_connect_firefox(url=""):
     profile = webdriver.FirefoxProfile()
     profile.set_preference("browser.download.folderList", 2)
     profile.set_preference("browser.download.dir", bot.DOWNLOAD_PATH)
@@ -156,6 +157,39 @@ def driver_connect_chrome(url=""):
         options.add_argument("--window-size=950,700")
 
     driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
+
+    driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
+    params = {'cmd':'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': bot.DOWNLOAD_PATH}}
+    driver.execute("send_command", params)
+
+    try:
+        driver.get(url)
+        bot.STATE = "OK"
+    except Exception as e:
+        if bot.SHOW_ERRORS:
+            print("Error abriendo WhatsApp")
+            print("     Detalle: ")
+            print(e)
+            print(repr(e))
+            print(e.args)
+        bot.STATE = "ERROR"
+        time.sleep(5)
+
+    return driver
+
+def driver_connect_opera(url=""):
+    options = webdriver.chrome.options.Options()
+    prefs = {
+        "download.default_directory" : bot.DOWNLOAD_PATH,
+        "download.prompt_for_download": False,
+        "download.always_open_panel": False
+    }
+    options.add_experimental_option("prefs", prefs)
+
+    if bot.VERSION == "3.0":
+        options.add_argument("--window-size=950,700")
+
+    driver = webdriver.Chrome(executable_path='operadriver.exe', chrome_options=options)
 
     driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
     params = {'cmd':'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': bot.DOWNLOAD_PATH}}

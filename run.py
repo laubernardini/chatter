@@ -22,7 +22,7 @@ if args.server == 'cat' or args.server == 'CAT':
     bot.FILE_SERVER = "https://cat-technologies.apicloud.com.ar"
     bot.FILE_SERVER_2 = "http://cat-technologies.apicloud.com.ar:8080"
 if args.browser:
-    bot.BROWSER = "firefox" if args.browser else "chrome"
+    bot.BROWSER = "firefox" if args.browser == 'f' else ("opera" if args.browser else "chrome")
 
 bot.VERSION = "3.0"
 print(f"PK: {bot.BOT_PK}, PHONE: {bot.PHONE}")

@@ -5,7 +5,7 @@ cls
 set /p bot_pk=Indica BOT_PK: 
 set /p bot_phone=Indica CELULAR (se puede dejar en blanco si es business): 
 set /p bot_server=Indica SERVER (dejar en blanco si no es CAT): 
-set /p bot_browser=Indica BROWSER ("f" si es firefox): 
+set /p bot_browser=Indica BROWSER ("f" para firefox "o" para opera): 
 if not "%bot_phone%" == "" (
 	set phone=-c %bot_phone%
 )
