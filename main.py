@@ -20,7 +20,10 @@ def start():
 
     # Abrir WhatsApp
     while bot.STATE != "OK":
-        driver = driver_connect_chrome("https://web.whatsapp.com")#driver_connect("https://web.whatsapp.com")
+        if bot.BROWSER == 'chrome':
+            driver = driver_connect_chrome("https://web.whatsapp.com")#
+        elif bot.BROWSER == 'firefox':
+            driver = driver_connect("https://web.whatsapp.com")
     
     driver.execute_script(f"document.title = 'BOT {bot.BOT_PK}'")
 
@@ -114,10 +117,18 @@ def driver_connect(url=""):
     profile.set_preference("browser.download.useDownloadDir", True)
     profile.set_preference("browser.download.viewableInternally.enabledTypes", "")
     profile.set_preference("browser.helperApps.neverAsk.saveToDisk", bot.MIME_TYPES)
+    profile.set_preference("browser.download.manager.alertOnEXEOpen", False)
+    profile.set_preference("browser.download.manager.focusWhenStarting", False)
+    profile.set_preference("browser.download.manager.useWindow", False)
+    profile.set_preference("browser.download.manager.showAlertOnComplete", False)
+    profile.set_preference("browser.download.manager.closeWhenDone", False)
+    profile.set_preference("browser.download.alwaysOpenPanel", False)
     profile.set_preference("pdfjs.disabled", True)
     #options = webdriver.firefox.options.Options()
     #options.headless = True
-    driver = webdriver.Firefox(profile)#, options=options)
+    driver = webdriver.Firefox(profile, executable_path=bot.FIREFOX_DRIVER_PATH)#, options=options)
+    driver.set_window_position(0, 0)
+    driver.set_window_size(800, 800)
     try:
         driver.get(url)
         bot.STATE = "OK"

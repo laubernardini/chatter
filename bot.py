@@ -18,8 +18,10 @@ FILE_SERVER_2 = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
 
 # Variables de ejecución
 OS_SLASH = "\\" # / -> linux \\ -> windows
+BROWSER = "chrome"
 DOWNLOAD_PATH = os.getcwd() + OS_SLASH + 'inbound_file_cache' + OS_SLASH
 DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
+FIREFOX_DRIVER_PATH = "geckodriver.exe"
 MIME_TYPES = "" # Los tipos incluidos se descargarán sin confirmación
 MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime', '.mp3', '.ogg', '.m4a'] # Estos archivos se envían por el botón "galería"
 START_DATE = None

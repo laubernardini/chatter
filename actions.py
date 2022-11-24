@@ -211,6 +211,12 @@ def get_inbound_file():
         except Exception as e:
             print(e)
             time.sleep(2)
+    
+    time.sleep(2)
+    try:
+        driver.find_element_by_xpath("message1")
+    except:pass
+    
     return archivo
 
 def chat_init(driver, selectors, celular):

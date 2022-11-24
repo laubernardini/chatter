@@ -8,6 +8,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-b","--bot", help="Bot PK")
 parser.add_argument("-c", "--celular", help="Celular")
 parser.add_argument("-s", "--server", help="Server")
+parser.add_argument("-br", "--browser", help="Browser")
 args = parser.parse_args()
 
 if args.bot:
@@ -20,6 +21,8 @@ if args.server == 'cat' or args.server == 'CAT':
     bot.SERVER_URL = "https://cat-technologies.apicloud.com.ar/thread-"
     bot.FILE_SERVER = "https://cat-technologies.apicloud.com.ar"
     bot.FILE_SERVER_2 = "http://cat-technologies.apicloud.com.ar:8080"
+if args.browser:
+    bot.BROWSER = "firefox" if args.browser else "chrome"
 
 bot.VERSION = "3.0"
 print(f"PK: {bot.BOT_PK}, PHONE: {bot.PHONE}")
