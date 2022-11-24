@@ -253,7 +253,9 @@ def chat_init(driver, selectors, celular):
             time.sleep(1)
     
     time.sleep(1)
-    own_chat_message.send_keys("https://wa.me/" + celular)
+    link = f"https://wa.me/{celular}"
+    for char in link:
+        own_chat_message.send_keys(char)
     own_chat_message.send_keys(Keys.ENTER)
     
     # Esperar link
