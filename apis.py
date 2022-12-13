@@ -33,6 +33,7 @@ def print_api_status_error(where="", status_code=None, exception=None, detail=No
 
 # Reporte
 def status():
+    print(f'{bot.SERVER_URL}{bot.THREAD}/api/bots/report?pk={bot.BOT_PK}&estado={bot.STATE}')
     print("Reportandose...")
     done = None
     while not done:
