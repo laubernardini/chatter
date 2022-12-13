@@ -12,8 +12,8 @@ PHONE = ""
 VERSION = "2.0"
 
 # Datos del server
-SERVER_URL = "http://dev.apicloud.com.ar"#"http://localhost/thread-"#"https://apicloud.com.ar/thread-"
-FILE_SERVER = "http://dev.apicloud.com.ar"#"http://localhost:8000"#"https://apicloud.com.ar"
+SERVER_URL = "https://apicloud.com.ar/thread-"#"http://dev.apicloud.com.ar"#"http://localhost/thread-"#
+FILE_SERVER = "https://apicloud.com.ar"#"http://dev.apicloud.com.ar"#"http://localhost:8000"#
 FILE_SERVER_2 = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
 
 # Variables de ejecución
@@ -64,7 +64,7 @@ def set_config(responde = "NO", masivo = "NO", auto = "NO", read="NO", thread = 
     MASIVO = masivo
     AUTO = auto
     READ = read
-    THREAD = ''#thread
+    THREAD = thread
     REGISTERED_PHONE = registered_phone
     
 def set_error():
