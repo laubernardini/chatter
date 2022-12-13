@@ -376,6 +376,10 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 for ext in bot.MULTIMEDIA_EXT:
                     if ext in archivo:
                         attach_type = 'multimedia'
+                        for ext in bot.AUDIO_EXT:
+                            if ext in archivo:
+                                attach_type = 'audio'
+
                 
                 # Descargar archivo temporalmente y obtener path
                 try:
@@ -390,7 +394,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                 time.sleep(1)
 
                 # Obtener input para adjuntar correspondiente al tipo de archivo
-                if attach_type == 'multimedia':
+                if attach_type == 'multimedia' or attach_type == 'audio':
                     attach = driver.find_element_by_xpath(selectors["attach_multimedia"])
                 else:
                     attach = driver.find_element_by_xpath(selectors["attach_file"])
@@ -1142,7 +1146,7 @@ def make_inbound_messages(driver, selectors, messages):
                         loaded = True
                     except:
                         try:
-                            driver.find_element_by_xpath(selectors["download_options"]).click()
+                            m.find_element_by_xpath(selectors["download_options"]).click()
                         except:pass
                         try:
                             m.find_element_by_xpath(selectors["message_checkbox"])

@@ -2,7 +2,7 @@ import os
 
 # Datos del bot
 BOT_PK = "1"
-THREAD = "1"
+THREAD = ""#"1"
 STATE = "INICIANDO"
 RESPONDE = "NO"
 MASIVO = "NO"
@@ -12,8 +12,8 @@ PHONE = ""
 VERSION = "2.0"
 
 # Datos del server
-SERVER_URL = "https://apicloud.com.ar/thread-"#"http://localhost/thread-"#
-FILE_SERVER = "https://apicloud.com.ar"#"http://localhost:8000"#
+SERVER_URL = "http://dev.apicloud.com.ar"#"http://localhost/thread-"#"https://apicloud.com.ar/thread-"
+FILE_SERVER = "http://dev.apicloud.com.ar"#"http://localhost:8000"#"https://apicloud.com.ar"
 FILE_SERVER_2 = "http://apicloud.com.ar:8080"#"http://localhost:8000"#
 
 # Variables de ejecución
@@ -24,6 +24,7 @@ DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
 FIREFOX_DRIVER_PATH = "geckodriver.exe"
 MIME_TYPES = "" # Los tipos incluidos se descargarán sin confirmación
 MULTIMEDIA_EXT = ['.png', '.jpg', '.gif', '.jpeg', '.mp4', '.3gpp', '.quicktime', '.mp3', '.ogg', '.m4a'] # Estos archivos se envían por el botón "galería"
+AUDIO_EXT = ['.3gpp', '.mp3', '.ogg', '.m4a']
 START_DATE = None
 FORCED_ACTIVITY_FREQUENCY = 240 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 CALL_RESPONSE = "*IMPORTANTE*\nEn este número *no recibimos llamadas*. Si así lo prefiere, puede redactar o enviarnos un mensaje de audio.\nDisculpe las molestias, muchas gracias."
@@ -63,7 +64,7 @@ def set_config(responde = "NO", masivo = "NO", auto = "NO", read="NO", thread = 
     MASIVO = masivo
     AUTO = auto
     READ = read
-    THREAD = thread
+    THREAD = ''#thread
     REGISTERED_PHONE = registered_phone
     
 def set_error():

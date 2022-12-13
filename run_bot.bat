@@ -21,8 +21,8 @@ if "%bot_server%" == "" (
 if not "%bot_browser%" == "" (
 	set browser=-br %bot_browser%
 )
-if "%browser%" == "" (
-	set bot_browser= 
+if "%bot_browser%" == "" (
+	set browser= 
 )
 timeout /t 2 /nobreak > nul
 cmd /k "cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python run.py -b %bot_pk% %phone% %server% %browser%"
