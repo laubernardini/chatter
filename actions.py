@@ -1244,14 +1244,18 @@ def make_inbound_messages(driver, selectors, messages):
                 for selector in selectors["emogi_container"]:
                     try:
                         emojis = m.find_elements_by_xpath(selector)
+                        break
                     except:pass
 
                 text = ''
                 if emojis:
+                    print(f"Hay emojis {emojis}")
                     try:
                         for ec in emojis:
+                            print(ec)
                             text += ec.find_element_by_xpath(".//img").get_attribute("data-plain-text")
-                    except:pass
+                    except Exception as e:
+                        print(e)
             
             # Obtener contacto compartido
             try:
@@ -1260,25 +1264,16 @@ def make_inbound_messages(driver, selectors, messages):
                 shared_contact_name = ''
                 shared_contact_phone = ''
                 driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
-                try:
-                    shared_contact_name = driver.find_element_by_xpath(selectors["shared_contact_name"]).text
-                except Exception as e:
-                    print(e)
+                for selector in selectors["shared_contact_name"]:
                     try:
-                        shared_contact_name = driver.find_element_by_xpath(selectors["shared_contact_name1"]).text
-                    except Exception as e:
-                        print(e)
-                        pass
+                        shared_contact_name = driver.find_element_by_xpath(selector).text
+                    except:pass
 
-                try:
-                    shared_contact_phone = driver.find_element_by_xpath(selectors["shared_contact_phone"]).text
-                except Exception as e:
-                    print(e)
+                for selector in selectors["shared_contact_phone"]:
                     try:
-                        shared_contact_phone = driver.find_element_by_xpath(selectors["shared_contact_phone1"]).text
-                    except Exception as e:
-                        print(e)
-                        pass
+                        shared_contact_phone = driver.find_element_by_xpath(selector).text
+                    except:pass
+
                 for selector in selectors["chat_info_close"]:
                     try:
                         m.find_element_by_xpath(selector).click()
