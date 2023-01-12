@@ -145,9 +145,9 @@ def get_data_by_chat_info(driver, selectors):
     }
     print(result)
     try:
-        int(celular)
+        int(result["celular"])
     except:
-        raise Exception("'Celular' no es un número de téfono válido")
+        raise Exception(f"result['celular'] no es un número de téfono válido --> {result['celular']}")
     
     return result
 
