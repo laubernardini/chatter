@@ -89,18 +89,25 @@ def get_data_by_chat_info(driver, selectors):
                 celular = driver.find_element_by_xpath(selector).text
             except:pass
         if not celular:
-            try:
-                celular = driver.find_element_by_xpath(selectors["contact_name"]).text
-            except:pass
+            for selector in selectors["contact_name"]:
+                try:
+                    celular = driver.find_element_by_xpath(selector).text
+                except:pass
 
-        if '~' in celular and celular:
-            nombre = celular.replace('~', '')
-            celular = driver.find_element_by_xpath(selectors["contact_name"]).text
-        else:
-            try:
-                nombre = driver.find_element_by_xpath(selectors["contact_name"]).text
-            except:
-                nombre = celular
+        if celular:
+            if '~' in celular:
+                nombre = celular.replace('~', '')
+                for selector in selectors["contact_name"]:
+                    try:
+                        celular = driver.find_element_by_xpath(selector).text
+                    except:pass
+            else:
+                for selector in selectors["contact_name"]:
+                    try:
+                        nombre = driver.find_element_by_xpath(selector).text
+                    except:pass
+                if not nombre:
+                    nombre = celular
     else:
         for i in info:
             try:
@@ -1210,10 +1217,10 @@ def make_inbound_messages(driver, selectors, messages):
 
             # Obtener texto
             try:
-                text = ""
+                text = None
                 for selector in selectors["message_text"]:
                     try:
-                        m.find_element_by_xpath(selector)
+                        text = m.find_element_by_xpath(selector)
                     except:pass
                 if not text:
                     raise Exception("No se pudo obtener texto")
@@ -1332,6 +1339,8 @@ def make_inbound_messages(driver, selectors, messages):
         bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
 
         bot.CURRENT_CHAT["last_msg"] = wa_id
+
+    print(result)
 
     return result
 

@@ -15,7 +15,7 @@
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
     "business_alert": "//div[@class='ggj6brxn m0h2a7mj lb5m6g5c kv6wexeh gfz4du6o r7fjleex lhj4utae le5p0ye3']",
     "phone": ["//span[@class='AjtLy _1FXE6 _1lF7t']", "//span[@class='_10kwi _1BX24 dd2Ow']"],
-    "contact_name": "//span[@class='l7jjieqr cw3vfol9 i0jNr selectable-text copyable-text']",
+    "contact_name": ["//span[@class='l7jjieqr cw3vfol9 i0jNr selectable-text copyable-text']", "//span[@class='l7jjieqr cw3vfol9 _11JPr selectable-text copyable-text']"],
     "business_name": ["//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 cw3vfol9 i0jNr']", "//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 cw3vfol9 i0jNr selectable-text copyable-text']"],
     "agended_business_name": ["//span[@class='l7jjieqr cw3vfol9 i0jNr']", "//span[@class='l7jjieqr _11JPr selectable-text copyable-text']"],
     "group_name": "//div[@class='_1UWac czcZD']/div[1]",
@@ -57,11 +57,9 @@
     "in_response_group_class": "div.hooVq",
     "in_response_text": ".//span[@class='quoted-mention i0jNr']",
 
-    "shared_contact_button": ".//div[@class='_2GhDW'][@role='button']",
-    "shared_contact_name": "//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 i0jNr selectable-text copyable-text']",
-    "shared_contact_name1": "//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 i0jNr selectable-text invisible-space copyable-text']",
-    "shared_contact_phone": "//div[@class='tviruh8d bze30y65 i0jNr selectable-text copyable-text']/span[1]",
-    "shared_contact_phone1": "//div[@class='tviruh8d bze30y65 i0jNr selectable-text invisible-space copyable-text']/span[1]",
+    "shared_contact_button": ".//div[@data-testid='vcard-msg'][@role='button']",
+    "shared_contact_name": ["//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 i0jNr selectable-text copyable-text']", "//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 _11JPr selectable-text copyable-text']"],
+    "shared_contact_phone": ["//div[@class='tviruh8d bze30y65 i0jNr selectable-text copyable-text']/span[1]", "//div[@class='tviruh8d bze30y65 _11JPr selectable-text copyable-text']/span[1]"],
     "shared_contact_action_class": "p357zi0d ggj6brxn gndfcl4n ac2vgrno n1yiu2zv gfz4du6o r7fjleex f8jlpxt4 r5qsrrlp o0rubyzf qfejxiq4 lhj4utae le5p0ye3 ei53l81b ln8gz9je s8gyl5p1 focusable-list-item",
 
     "audio_button": ".//span[@data-testid='audio-play']",
