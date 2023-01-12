@@ -48,11 +48,6 @@ def cel_formatter(celular): # Formatear celular
     if celular.startswith('0'):
         celular = celular[1:]
     
-    try:
-        int(celular)
-    except:
-        raise Exception("'Celular' no es un número de téfono válido")
-
     return celular
 
 def create_chat_by_data(nombre, celular, last_msg):
@@ -149,6 +144,10 @@ def get_data_by_chat_info(driver, selectors):
         "celular": cel_formatter(celular),
     }
     print(result)
+    try:
+        int(celular)
+    except:
+        raise Exception("'Celular' no es un número de téfono válido")
     
     return result
 
