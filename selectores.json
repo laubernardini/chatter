@@ -14,13 +14,13 @@
 
     "chat_name": "//div[@class='_24-Ff'][@role='button']",
     "business_alert": "//div[@class='ggj6brxn m0h2a7mj lb5m6g5c kv6wexeh gfz4du6o r7fjleex lhj4utae le5p0ye3']",
-    "phone": "//span[@class='AjtLy _1FXE6 _1lF7t']",
+    "phone": ["//span[@class='AjtLy _1FXE6 _1lF7t']", "//span[@class='_10kwi _1BX24 dd2Ow']"],
     "contact_name": "//span[@class='l7jjieqr cw3vfol9 i0jNr selectable-text copyable-text']",
-    "business_name": "//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 cw3vfol9 i0jNr']",
-    "agended_business_name": "//span[@class='l7jjieqr cw3vfol9 i0jNr']",
+    "business_name": ["//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 cw3vfol9 i0jNr']", "//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 cw3vfol9 i0jNr selectable-text copyable-text']"],
+    "agended_business_name": ["//span[@class='l7jjieqr cw3vfol9 i0jNr']", "//span[@class='l7jjieqr _11JPr selectable-text copyable-text']"],
     "group_name": "//div[@class='_1UWac czcZD']/div[1]",
     "chat_header": "//header[@class='_23P3O']",
-    "chat_name_header": ".//div[@class='_21nHd']/span[1]",
+    "chat_name_header": ".//span[@data-testid='conversation-info-header-chat-title']",
     "chat_name_header_1": ".//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 l7jjieqr i0jNr']",
 
     "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='10']",
@@ -35,7 +35,7 @@
     "close_media": "//div[@title='Cerrar'][@role='button']",
     "attach_multimedia": "//input[@accept='image/*,video/mp4,video/3gpp,video/quicktime']",
     "attach_file": "//input[@accept='*']",
-    "file_submit": "//div[@class='_165_h _2HL9j'][@role='button']",
+    "send_button_icon": "//span[@data-testid='send']",
 
     "unread": "//div[@class='_5ML0C focusable-list-item']",
     "unread_class": "_5ML0C",
@@ -50,7 +50,7 @@
     "encrypted_chat": ".//span[@data-testid='lock-small']",
     "temporal_chat": ".//span[@data-testid='disappearing']",
 
-    "chat_info": "//span[@class='_3NUK1 VWPRY _1lF7t']",
+    "chat_info": ["//span[@class='_3NUK1 VWPRY _1lF7t']", "//span[@class='_3LrrN _2qKga dd2Ow']"],
     "chat_info_close": ["//button[@class='_18eKe']", "//div[@data-testid='btn-closer-drawer']"],
     "chat_init": "//div[@class='_1bpDE']",
 
@@ -80,23 +80,24 @@
     "video_button": ".//span[@data-testid='media-play']",
     "thumbnail": ".//img[@class='jciay5ix tvf2evcx oq44ahr5 lb5m6g5c fsmudgz7']",
 
-    "attach_inbound_download": ".//button[@class='i5tg98hk f9ovudaz przvwfww gx1rr48f shdiholb phqmzxqs gtscxtjd ajgl1lbb thr4l2wc cc8mgx9x eta5aym1 d9802myq e4xiuwjv cm280p3y p357zi0d f8m0rgwh elxb2u3l ln8gz9je gfz4du6o r7fjleex tffp5ko5 l8fojup5 paxyh2gw']",
-    "no_file_ok_button": "//div[@class='_20C5O _2Zdgs'][@role='button']",
+    "attach_inbound_download": ".//button[@data-testid='document-thumb']",
     "modal": "//div[@class='_3J6wB']",
     "modal_backdrop": "//div[@class='lhggkp7q qq0sjtgm ebjesfe0 jxacihee tkdu00h0'][@role='dialog']",
-    "modal_backdrop1": "//div[@class='_209uk'][@role='dialog']",
+    "modal_backdrop1": "//div[@data-testid='confirm-popup']",
+    "modal_ok_button": "//div[@data-testid='popup-controls-ok']",
     "modal_text": "//div[@data-testid='popup-contents']",
 
-    "emogi_container": ".//span[@class='_3R6rC']",
-    "message_text": ".//span[@class='i0jNr selectable-text copyable-text']/span[1]",
-    "message_link": ".//a[@class='i0jNr selectable-text copyable-text']",
+    "emogi_container": [".//span[@class='_3R6rC']", ".//span[@class='Ov-s3']"],
+    "message_text": [".//span[@class='i0jNr selectable-text copyable-text']/span[1]", ".//span[@class='_11JPr selectable-text copyable-text']/span[1]"],
+    "message_text_class": ["i0jNr selectable-text copyable-text", "_11JPr selectable-text copyable-text"],
+    "message_link": [".//a[@class='i0jNr selectable-text copyable-text']", ".//a[@class='_11JPr selectable-text copyable-text']"],
 
     "notification": "//div[@class='_1pJ9J']",
     "sender_name": ".//span[@class='l7jjieqr i0jNr']",
     "conversation_name": ".//span[@class='_3q9s6']/span[1]",
     "writing": ".//span[@class='_16h0X ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 i0jNr']",
     "group_event": ".//span[@class='Hy9nV']",
-    "no_spam_button": ".//div[@class='_3E-9Z']/div[3]/div[1]",
+    "no_spam_button": ".//div[@data-testid='no-spam-btn']/button[1]",
 
     "readed_chat": "//div[@class='_3m_Xw']"
 }

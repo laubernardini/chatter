@@ -47,6 +47,11 @@ def cel_formatter(celular): # Formatear celular
     
     if celular.startswith('0'):
         celular = celular[1:]
+    
+    try:
+        int(celular)
+    except:
+        raise Exception("'Celular' no es un número de téfono válido")
 
     return celular
 
@@ -66,24 +71,34 @@ def get_data_by_chat_info(driver, selectors):
     # Navegar a la info del contacto
     driver.find_element_by_xpath(selectors["chat_name"]).click()
     time.sleep(2)
-    info = driver.find_elements_by_xpath(selectors["chat_info"])
     
     # Obtener tipo
     try:
         if ('empresa' in driver.find_element_by_xpath(selectors["business_alert"]).text) or ('business' in driver.find_element_by_xpath(selectors["business_alert"]).text):
             tipo = 'business'
+        # Chat info items (para obtener celular)
+        info = None
+        for selector in selectors["chat_info"]:
+            try:
+                info = driver.find_elements_by_xpath(selector)
+            except:pass
     except:
         tipo = 'common'
     print(f"Tipo de chat: {tipo}")
     
     # Obtener celular y nombre
+    celular = nombre = None
     if tipo == 'common':
-        try:
-            celular = driver.find_element_by_xpath(selectors["phone"]).text
-        except:
-            celular = driver.find_element_by_xpath(selectors["contact_name"]).text
+        for selector in selectors["phone"]:
+            try:
+                celular = driver.find_element_by_xpath(selector).text
+            except:pass
+        if not celular:
+            try:
+                celular = driver.find_element_by_xpath(selectors["contact_name"]).text
+            except:pass
 
-        if '~' in celular:
+        if '~' in celular and celular:
             nombre = celular.replace('~', '')
             celular = driver.find_element_by_xpath(selectors["contact_name"]).text
         else:
@@ -98,26 +113,43 @@ def get_data_by_chat_info(driver, selectors):
                     celular = i.text
                     break
             except:pass
-        try:
-            nombre = driver.find_element_by_xpath(selectors["business_name"]).text
-        except:
+
+        if not celular:
+            for selector in selectors["agended_business_name"]:
+                try:
+                    if '+' in driver.find_element_by_xpath(selector).text:
+                        celular = driver.find_element_by_xpath(selector)
+                except:pass
+
+        for selector in selectors["agended_business_name"]:
             try:
-                nombre = driver.find_element_by_xpath(selectors["agended_business_name"]).text
-            except:
-                nombre = celular
+                nombre = driver.find_element_by_xpath(selector).text
+            except:pass
 
-    result = {
-        "nombre": nombre,
-        "celular": cel_formatter(celular),
-    }
-    print(result)
-
+        if not nombre:
+            for selector in selectors["business_name"]:
+                try:
+                    nombre = driver.find_element_by_xpath(selector).text
+                except:pass
+   
+        if not nombre:
+            nombre = celular
+    
     # Cerrar info del contacto
     for selector in selectors["chat_info_close"]:
         try:
             driver.find_element_by_xpath(selector).click()
         except:pass
 
+    if not celular:
+        raise Exception(f"No se pudo encotrar celular ({tipo} contact)")
+
+    result = {
+        "nombre": nombre,
+        "celular": cel_formatter(celular),
+    }
+    print(result)
+    
     return result
 
 # Búsqueda
@@ -273,26 +305,25 @@ def chat_init(driver, selectors, celular):
         try:
             try:
                 driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
-            except:
+            except Exception as e:
                 driver.find_element_by_xpath(selectors["modal_backdrop1"]).click()
 
             # Comprobar número inválido
             try:
                 driver.find_element_by_xpath(selectors["chat_init"])
                 if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
-                    driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                    driver.find_element_by_xpath(selectors["modal_ok_button"]).click()
                     elem = None
                     done = True
                     print("Número inválido")
             except:
                 try:
                     if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
-                        driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                        driver.find_element_by_xpath(selectors["modal_ok_button"]).click()
                         elem = None
                         done = True
                         print("Número inválido")
-                except:
-                    pass
+                except:pass
         except:
             elem = True
             done = True
@@ -436,7 +467,7 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                     e = None
                     while not e:
                         try:
-                            driver.find_element_by_xpath(selectors["file_submit"]).click()
+                            get_parent(driver.find_element_by_xpath(selectors["send_button_icon"])).click()
                             e = True
                         except:
                             time.sleep(1)
@@ -715,8 +746,9 @@ def check_current_chat(driver, selectors, chat=None): # Obtener y subir mensajes
         else:
             if bot.SHOW_EX_PRINTS:
                 print("No hay mensajes nuevos en este chat")
-    except:
+    except Exception as e:
         if bot.SHOW_EX_PRINTS:
+            print(e)
             print("No hay chat abierto")
 
 def get_inbounds(driver, selectors):
@@ -1041,10 +1073,7 @@ def make_inbound_messages(driver, selectors, messages):
 
                 if no_spam:
                     print("Marcado como no-spam")
-                    celular = bot.CURRENT_CHAT["celular"]
-                    open_chat(driver, selectors, celular=bot.PHONE, tipo='ENTRANTE')
-                    clear_elem(driver, selectors, "search")
-                    time.sleep(2)
+                    driver.send_keys(Keys.ESCAPE)
                     open_chat(driver, selectors, celular=celular, tipo='ENTRANTE')
                     time.sleep(2)
                     clear_elem(driver, selectors, "search")
@@ -1105,7 +1134,7 @@ def make_inbound_messages(driver, selectors, messages):
                                 m.find_element_by_xpath(selectors["thumbnail"]).click()
                                 time.sleep(2)
                                 try:
-                                    driver.find_element_by_xpath(selectors["no_file_ok_button"]).click()
+                                    driver.find_element_by_xpath(selectors["modal_ok_button"]).click()
                                     continue # Continuar con el siguiente elemento
                                 except:
                                     driver.find_element_by_xpath(selectors["close_media"]).click()
@@ -1182,25 +1211,41 @@ def make_inbound_messages(driver, selectors, messages):
 
             # Obtener texto
             try:
-                text = m.find_element_by_xpath(selectors["message_text"])
+                text = ""
+                for selector in selectors["message_text"]:
+                    try:
+                        m.find_element_by_xpath(selector)
+                    except:pass
+                if not text:
+                    raise Exception("No se pudo obtener texto")
+
                 html = text.get_attribute("innerHTML")
                 # Obtener emojis
                 text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL)
                 text = re.sub('" style.*?;"','',text, flags=re.DOTALL).replace('>', '')
                 # Formatear negrita
-                text = text.replace('<strong class="i0jNr selectable-text copyable-text" data-app-text-template="*${appText}*"', '*').replace('</strong', '*')
+                for selector in selectors["message_text_class"]:
+                    text = text.replace('<strong class="' + selector + '" data-app-text-template="*${appText}*"', '*')
+                text.replace('</strong', '*')
                 # Formatear cursiva
-                text = text.replace('<em class="i0jNr selectable-text copyable-text" data-app-text-template="_${appText}_"', '_').replace('</em', '_')
+                for selector in selectors["message_text_class"]:
+                    text = text.replace('<em class="' + selector + '" data-app-text-template="_${appText}_"', '_')
+                text.replace('</em', '_')
                 # Eliminar link
                 text = re.sub('<a.*?copyable-text','',text, flags=re.DOTALL).replace('</a', '')
             except:
-                try:
-                    emojis = m.find_elements_by_xpath(selectors["emogi_container"])
-                    text = ''
-                    for ec in emojis:
-                        text += ec.find_element_by_xpath(".//img").get_attribute("data-plain-text")
-                except:
-                    pass
+                emojis = None
+                for selector in selectors["emogi_container"]:
+                    try:
+                        emojis = m.find_elements_by_xpath(selector)
+                    except:pass
+
+                text = ''
+                if emojis:
+                    try:
+                        for ec in emojis:
+                            text += ec.find_element_by_xpath(".//img").get_attribute("data-plain-text")
+                    except:pass
             
             # Obtener contacto compartido
             try:
