@@ -316,16 +316,18 @@ def chat_init(driver, selectors, celular):
     done = None
     while not done:
         try:
+            # Instanciar modal
             modal = driver.find_elements_by_xpath(selectors["modal"])
-
             for m in modal:
                 if m.get_attribute("tabindex") != "-1":
                     modal = m
                     break
-
+            
+            # Click en modal
             try:
                 modal.find_element_by_xpath(selectors["modal_backdrop"]).click()
             except Exception as e:
+                print(e)
                 modal.find_element_by_xpath(selectors["modal_backdrop1"]).click()
 
             # Comprobar número inválido
@@ -352,7 +354,6 @@ def chat_init(driver, selectors, celular):
             print("Nuevo chat iniciado")
         time.sleep(1)
     
-
     return elem
 
 def open_chat(driver, selectors, celular, masive=False, tipo='SALIENTE'):
