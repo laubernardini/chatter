@@ -310,7 +310,7 @@ def chat_init(driver, selectors, celular):
             driver.find_element_by_xpath("//a[@href='https://wa.me/" + celular + "']").click()
             done = True
         except:
-            time.sleep(1)
+            time.sleep(2)
     
     # Popup
     done = None
@@ -320,38 +320,38 @@ def chat_init(driver, selectors, celular):
                 try:
                     driver.find_element_by_xpath(selector).click()
                 except:pass
-
-            # Instanciar modal
-            modal_elem_list = driver.find_elements_by_xpath(selectors["modal"])
-            print(f"Modal elem: {len(modal_elem_list)}")
-            modal = None
-            for m in modal_elem_list:
-                print(f"Modal tabindex: {m.get_attribute('tabindex')}")
-                if not m.get_attribute("tabindex") or m.get_attribute("tabindex") != '-1':
-                    modal = m
-                    break
             
-            print(f"Modal: {modal}")
-            if not modal:
-                modal = modal_elem_list[-1]
-                
-            # Click en modal
-            for selector in selectors["modal_body"]:
-                try:
-                    modal.find_element_by_xpath(selector).click()
-                except:pass
-
-            # Comprobar número inválido
+            loadig_confirm = False
             try:
-                modal.find_element_by_xpath(selectors["chat_init"])
-                if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
-                    modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
-                    elem = None
-                    done = True
-                    print("Número inválido")
-            except Exception as e:
-                print(e)
+                driver.find_element_by_xpath(selectors["modal_header"])
+                driver.find_element_by_xpath(selectors["modal_header"]).click()
+                loadig_confirm = True
+            except:pass
+
+            if not loadig_confirm:
+                # Instanciar modal
+                modal_elem_list = driver.find_elements_by_xpath(selectors["modal"])
+                print(f"Modal elem: {len(modal_elem_list)}")
+                modal = None
+                for m in modal_elem_list:
+                    print(f"Modal tabindex: {m.get_attribute('tabindex')}")
+                    if not m.get_attribute("tabindex") or m.get_attribute("tabindex") != '-1':
+                        modal = m
+                        break
+                
+                print(f"Modal: {modal}")
+                if not modal:
+                    modal = modal_elem_list[-1]
+
+                # Click en modal
+                for selector in selectors["modal_body"]:
+                    try:
+                        modal.find_element_by_xpath(selector).click()
+                    except:pass
+
+                # Comprobar número inválido
                 try:
+                    modal.find_element_by_xpath(selectors["modal_header"])
                     if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
                         modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
                         elem = None
@@ -359,6 +359,14 @@ def chat_init(driver, selectors, celular):
                         print("Número inválido")
                 except Exception as e:
                     print(e)
+                    try:
+                        if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
+                            modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
+                            elem = None
+                            done = True
+                            print("Número inválido")
+                    except Exception as e:
+                        print(e)
         except:
             elem = True
             done = True
