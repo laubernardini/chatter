@@ -2,13 +2,14 @@
     "qr": "//div[@class='_2UwZ_']",
     "refresh_qr": "//button[@class='_2znac']",
     "phone_disconected": "//span[@data-testid='alert-phone']",
-    "profile": "//div[@class='_3GlyB']",
-    "own_phone": "//div[@class='erpdyial i0jNr selectable-text copyable-text']",
+    "profile": ["//div[@class='_3GlyB dwbWf'][@role='button']", "//div[@class='_3g4Pn _2HcPg'][@role='button']"],
+    "own_phone": ["//div[@class='erpdyial i0jNr selectable-text copyable-text']", "//div[@class='erpdyial i0jNr selectable-text copyable-text']"],
 
     "side": "//div[@id='pane-side']",
     "search": "//div[@data-testid='chat-list-search']",
     "searching": "//div[@class='cm280p3y p357zi0d tvf2evcx f8m0rgwh gndfcl4n fhf7t426 bvcnfjzh cihm0v32 td5bf8pq ctv2fiom l3k7h4x6 hp667wtd qfejxiq4 oq44ahr5 lb5m6g5c']",
-    "search_result_text": ".//span[@class='i0jNr']",
+    "search_result_text": [".//span[@class='i0jNr']", ".//span[@class='_11JPr']"],
+    "no_chat_found": "//div[@data-testid='search-no-chats-or-contacts']",
     "chat_class": "lhggkp7q ln8gz9je rx9719la",
     "back_button": ["//button[@class='_18eKe']", "//div[@data-testid='btn-closer-drawer']"],
 

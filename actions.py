@@ -192,12 +192,10 @@ def search(driver, selectors, text):
         try:
             searching = driver.find_element_by_xpath(selectors["searching"])
             try:
-                search_result = searching.find_element_by_xpath(selectors["search_result_text"]).text
-                if 'No ' in search_result:
-                    no_result = True
-                    done = True
-            except:
-                pass
+                no_result = searching.find_element_by_xpath(selectors["no_chat_found"])
+                no_result = True
+                done = True
+            except:pass
         except:
             done = True
     
