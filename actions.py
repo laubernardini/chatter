@@ -125,7 +125,7 @@ def get_data_by_chat_info(driver, selectors):
             for selector in selectors["agended_business_name"]:
                 try:
                     if '+' in driver.find_element_by_xpath(selector).text:
-                        celular = driver.find_element_by_xpath(selector)
+                        celular = driver.find_element_by_xpath(selector).text
                         break
                 except:pass
 
