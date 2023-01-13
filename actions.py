@@ -1159,11 +1159,16 @@ def make_inbound_messages(driver, selectors, messages):
             except:
                 try:
                     m.find_element_by_xpath(selectors["thumbnail"])
+                    try:
+                        m.find_element_by_xpath(selectors["image_download"]).click()
+                        time.sleep(2)
+                    except:pass
                     is_attach_inbound = False
                     for selector in selectors["attach_inbound_class"]:
                         if selector in m.get_attribute('class'):
                             is_attach_inbound = True
                             break
+                    
                     if not(is_attach_inbound):
                         wait_time = datetime.now() + timedelta(seconds=10)
                         done = None
