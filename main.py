@@ -289,10 +289,11 @@ def get_own_phone(driver, selectors):
     time.sleep(3)
     done = None
     celular = None
+    print("Buscando numero propio...")
     while not done:
         for selector in selectors["own_phone"]:
             try:
-                celular = driver.find_element_by_xpath(selectors["own_phone"]).text
+                celular = driver.find_element_by_xpath(selector).text
                 break
             except:pass
         if celular:
