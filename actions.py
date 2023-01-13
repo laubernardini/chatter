@@ -316,8 +316,14 @@ def chat_init(driver, selectors, celular):
     done = None
     while not done:
         try:
+            for selector in selectors["modal_backdrop"]:
+                try:
+                    driver.find_element_by_xpath(selector).click()
+                except:pass
+
             # Instanciar modal
             modal_elem_list = driver.find_elements_by_xpath(selectors["modal"])
+            print(f"Modal elem: {len(modal_elem_list)}")
             modal = None
             for m in modal_elem_list:
                 print(f"Modal tabindex: {m.get_attribute('tabindex')}")
@@ -325,12 +331,15 @@ def chat_init(driver, selectors, celular):
                     modal = m
                     break
             
+            print(f"Modal: {modal}")
+            if not modal:
+                modal = modal_elem_list[-1]
+                
             # Click en modal
-            try:
-                modal.find_element_by_xpath(selectors["modal_backdrop"]).click()
-            except Exception as e:
-                print(e)
-                modal.find_element_by_xpath(selectors["modal_backdrop1"]).click()
+            for selector in selectors["modal_body"]:
+                try:
+                    modal.find_element_by_xpath(selector).click()
+                except:pass
 
             # Comprobar número inválido
             try:

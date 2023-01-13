@@ -53,7 +53,6 @@
 
     "chat_info": ["//span[@class='_3NUK1 VWPRY _1lF7t']", "//span[@class='_3LrrN _2qKga dd2Ow']"],
     "chat_info_close": ["//button[@class='_18eKe']", "//div[@data-testid='btn-closer-drawer']"],
-    "chat_init": "//div[@data-testid='popup-title']",
 
     "in_response_group_class": "div.hooVq",
     "in_response_text": ".//span[@class='quoted-mention i0jNr']",
@@ -81,10 +80,11 @@
 
     "attach_inbound_download": ".//button[@data-testid='document-thumb']",
     "modal": "//div[@data-testid='confirm-popup']",
-    "modal_backdrop": "//div[@class='lhggkp7q qq0sjtgm ebjesfe0 jxacihee tkdu00h0'][@role='dialog']",
-    "modal_backdrop1": "//div[@data-testid='confirm-popup']",
-    "modal_ok_button": "//div[@data-testid='popup-controls-ok']",
-    "modal_text": "//div[@data-testid='popup-contents']",
+    "modal_backdrop": ["//div[@class='lhggkp7q qq0sjtgm ebjesfe0 jxacihee tkdu00h0'][@role='dialog']", "//div[@data-testid='confirm-popup']", "//div[@data-animate-modal-backdrop='true']"],
+    "modal_header": ".//div[@data-testid='popup-title']",
+    "modal_body": [".//div[@data-animate-modal-popup='true']", ".//div[@data-animate-modal-body='true']"],
+    "modal_ok_button": ".//div[@data-testid='popup-controls-ok']",
+    "modal_text": ".//div[@data-testid='popup-contents']",
 
     "emogi_container": [".//span[@class='_3R6rC']", ".//span[@class='Ov-s3']"],
     "message_text": [".//span[@class='i0jNr selectable-text copyable-text']/span[1]", ".//span[@class='_11JPr selectable-text copyable-text']/span[1]"],
