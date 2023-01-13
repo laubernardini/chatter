@@ -317,9 +317,11 @@ def chat_init(driver, selectors, celular):
     while not done:
         try:
             # Instanciar modal
-            modal = driver.find_elements_by_xpath(selectors["modal"])
-            for m in modal:
-                if m.get_attribute("tabindex") != "-1":
+            modal_elem_list = driver.find_elements_by_xpath(selectors["modal"])
+            modal = None
+            for m in modal_elem_list:
+                print(f"Modal tabindex: {m.get_attribute("tabindex")}")
+                if not m.get_attribute("tabindex") or m.get_attribute("tabindex") != '-1':
                     modal = m
                     break
             
