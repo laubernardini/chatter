@@ -73,7 +73,7 @@
     "missed_call_container": "//div[@data-testid='msg-notification-container']",
     "missed_call": ".//span[@data-testid='miss']",
     "missed_video_call": ".//span[@data-testid='miss_video']",
-    "missed_call_text": ".//span[@class='i0jNr'][@dir='ltr']",
+    "missed_call_text": [".//span[@class='i0jNr'][@dir='ltr']", ".//span[@class='_11JPr'][@dir='ltr']"],
 
     "video_button": ".//span[@data-testid='media-play']",
     "thumbnail": ".//img[@class='jciay5ix tvf2evcx oq44ahr5 lb5m6g5c fsmudgz7']",

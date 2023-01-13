@@ -357,16 +357,14 @@ def chat_init(driver, selectors, celular):
                         elem = None
                         done = True
                         print("Número inválido")
-                except Exception as e:
-                    print(e)
+                except:
                     try:
                         if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
                             modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
                             elem = None
                             done = True
                             print("Número inválido")
-                    except Exception as e:
-                        print(e)
+                    except:
         except:
             elem = True
             done = True
@@ -1360,7 +1358,12 @@ def make_inbound_messages(driver, selectors, messages):
             except:
                 pass
         else:
-            text = "*" + m.find_element_by_xpath(selectors["missed_call_text"]).text + "*"
+            call_text = "Llamada perdida"
+            for selector in selectors["missed_call_text"]:
+                try:
+                    call_text = m.find_element_by_xpath(selectors["missed_call_text"]).text
+                except:pass
+            text = f"*{call_text}*"
 
             # Generar respuesta automática a llamada pedida
             bot.AUTO_RESPONSES.append({
