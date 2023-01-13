@@ -53,7 +53,7 @@
 
     "chat_info": ["//span[@class='_3NUK1 VWPRY _1lF7t']", "//span[@class='_3LrrN _2qKga dd2Ow']"],
     "chat_info_close": ["//button[@class='_18eKe']", "//div[@data-testid='btn-closer-drawer']"],
-    "chat_init": "//div[@class='_1bpDE']",
+    "chat_init": "//div[@data-testid='popup-title']",
 
     "in_response_group_class": "div.hooVq",
     "in_response_text": ".//span[@class='quoted-mention i0jNr']",
@@ -80,7 +80,7 @@
     "thumbnail": ".//img[@class='jciay5ix tvf2evcx oq44ahr5 lb5m6g5c fsmudgz7']",
 
     "attach_inbound_download": ".//button[@data-testid='document-thumb']",
-    "modal": "//div[@class='_3J6wB']",
+    "modal": "//div[@data-testid='confirm-popup']",
     "modal_backdrop": "//div[@class='lhggkp7q qq0sjtgm ebjesfe0 jxacihee tkdu00h0'][@role='dialog']",
     "modal_backdrop1": "//div[@data-testid='confirm-popup']",
     "modal_ok_button": "//div[@data-testid='popup-controls-ok']",

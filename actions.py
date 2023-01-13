@@ -316,27 +316,36 @@ def chat_init(driver, selectors, celular):
     done = None
     while not done:
         try:
+            modal = driver.find_elements_by_xpath(selectors["modal"])
+
+            for m in modal:
+                if m.get_attribute("tabindex") != "-1":
+                    modal = m
+                    break
+
             try:
-                driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
+                modal.find_element_by_xpath(selectors["modal_backdrop"]).click()
             except Exception as e:
-                driver.find_element_by_xpath(selectors["modal_backdrop1"]).click()
+                modal.find_element_by_xpath(selectors["modal_backdrop1"]).click()
 
             # Comprobar número inválido
             try:
-                driver.find_element_by_xpath(selectors["chat_init"])
-                if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
-                    driver.find_element_by_xpath(selectors["modal_ok_button"]).click()
+                modal.find_element_by_xpath(selectors["chat_init"])
+                if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
+                    modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
                     elem = None
                     done = True
                     print("Número inválido")
-            except:
+            except Exception as e:
+                print(e)
                 try:
-                    if "inválido" in driver.find_element_by_xpath(selectors["modal_text"]).text:
-                        driver.find_element_by_xpath(selectors["modal_ok_button"]).click()
+                    if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
+                        modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
                         elem = None
                         done = True
                         print("Número inválido")
-                except:pass
+                except Exception as e:
+                    print(e)
         except:
             elem = True
             done = True
