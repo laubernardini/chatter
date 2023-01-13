@@ -1180,9 +1180,21 @@ def make_inbound_messages(driver, selectors, messages):
                                     time.sleep(1)
                             else:
                                 # Revisar si es que el archivo ya no está disponible
-                                m.find_element_by_xpath(selectors["thumbnail"]).click()
-                                time.sleep(2)
                                 try:
+                                    m.find_element_by_xpath(selectors["image_download"]).click()
+                                except:
+                                    m.find_element_by_xpath(selectors["thumbnail"]).click()
+                                time.sleep(2)
+                                
+                                try:
+                                    for selector in selectors["modal_backdrop"]:
+                                        try:
+                                            driver.find_element_by_xpath(selector).click()
+                                        except:pass
+                                    for selector in selectors["modal_body"]:
+                                        try:
+                                            driver.find_element_by_xpath(selector).click()
+                                        except:pass
                                     driver.find_element_by_xpath(selectors["modal_ok_button"]).click()
                                     continue # Continuar con el siguiente elemento
                                 except:

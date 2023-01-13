@@ -76,7 +76,8 @@
     "missed_call_text": [".//span[@class='i0jNr'][@dir='ltr']", ".//span[@class='_11JPr'][@dir='ltr']"],
 
     "video_button": ".//span[@data-testid='media-play']",
-    "thumbnail": ".//img[@class='jciay5ix tvf2evcx oq44ahr5 lb5m6g5c fsmudgz7']",
+    "image_download": ".//div[@data-testid='media-state-download']",
+    "thumbnail": ".//div[@data-testid='image-thumb']",
 
     "attach_inbound_download": ".//button[@data-testid='document-thumb']",
     "modal": "//div[@data-testid='confirm-popup']",
