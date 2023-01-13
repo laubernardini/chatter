@@ -76,6 +76,7 @@ def get_data_by_chat_info(driver, selectors):
         for selector in selectors["chat_info"]:
             try:
                 info = driver.find_elements_by_xpath(selector)
+                break
             except:pass
     except:
         tipo = 'common'
@@ -87,11 +88,13 @@ def get_data_by_chat_info(driver, selectors):
         for selector in selectors["phone"]:
             try:
                 celular = driver.find_element_by_xpath(selector).text
+                break
             except:pass
         if not celular:
             for selector in selectors["contact_name"]:
                 try:
                     celular = driver.find_element_by_xpath(selector).text
+                    break
                 except:pass
 
         if celular:
@@ -100,11 +103,13 @@ def get_data_by_chat_info(driver, selectors):
                 for selector in selectors["contact_name"]:
                     try:
                         celular = driver.find_element_by_xpath(selector).text
+                        break
                     except:pass
             else:
                 for selector in selectors["contact_name"]:
                     try:
                         nombre = driver.find_element_by_xpath(selector).text
+                        break
                     except:pass
                 if not nombre:
                     nombre = celular
@@ -121,17 +126,20 @@ def get_data_by_chat_info(driver, selectors):
                 try:
                     if '+' in driver.find_element_by_xpath(selector).text:
                         celular = driver.find_element_by_xpath(selector)
+                        break
                 except:pass
 
         for selector in selectors["agended_business_name"]:
             try:
                 nombre = driver.find_element_by_xpath(selector).text
+                break
             except:pass
 
         if not nombre:
             for selector in selectors["business_name"]:
                 try:
                     nombre = driver.find_element_by_xpath(selector).text
+                    break
                 except:pass
    
         if not nombre:
@@ -141,6 +149,7 @@ def get_data_by_chat_info(driver, selectors):
     for selector in selectors["chat_info_close"]:
         try:
             driver.find_element_by_xpath(selector).click()
+            break
         except:pass
 
     if not celular:
@@ -450,16 +459,19 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
                         # Obtener input de mensaje
                         print("Obteniendo input de mensaje adjunto")
                         e = None
+                        message = None
                         while not e:
                             for selector in selectors["message_attached"]:
                                 try:
                                     message = driver.find_element_by_xpath(selector)
-                                    if message.get_attribute("data-lexical-editor") == "true":
-                                        new_message_input = True
-                                    else:
-                                        new_message_input = False
-                                    e = True
+                                    break
                                 except:pass
+                            if message:
+                                if message.get_attribute("data-lexical-editor") == "true":
+                                    new_message_input = True
+                                else:
+                                    new_message_input = False
+                                e = True
                             if not e:
                                 time.sleep(1)
                                 driver.find_element_by_xpath(selectors["search"]).click()
@@ -798,8 +810,7 @@ def get_inbounds(driver, selectors):
                     try:
                         message_out_container = driver.find_elements_by_css_selector(selector)[-1]
                         break
-                    except:
-                        pass
+                    except:pass
                 if message_out_container:
                     reference_elem = message_out_container
                     reference_elem.send_keys(Keys.ARROW_DOWN)
@@ -820,7 +831,11 @@ def get_inbounds(driver, selectors):
         except Exception as e:
             print(e)
             try:
-                reference_elem = driver.find_element_by_xpath(selectors["unread"])
+                for selector in selectors["unread"]:
+                    try:
+                        reference_elem = driver.find_element_by_xpath(selectors["unread"])
+                        break
+                    except:pass
                 reference_elem.click()
                 reference_elem.send_keys(Keys.ARROW_DOWN)
                 reference_elem = driver.switch_to.active_element
@@ -833,8 +848,7 @@ def get_inbounds(driver, selectors):
                         try:
                             message_out_container = driver.find_elements_by_css_selector(selector)[-1]
                             break
-                        except:
-                            pass
+                        except:pass
                     print(f"Es un mensaje saliente: {'SI' if message_out_container else 'NO'}")
                     if message_out_container:
                         reference_elem = message_out_container
@@ -901,7 +915,11 @@ def get_inbounds(driver, selectors):
                     if selector in first_msg.get_attribute("class"):
                         is_chat_item = True
                         break
-                is_unread_sign = selectors["unread_class"] in first_msg.get_attribute("class")
+                is_unread_sign = False 
+                for selector in selectors["unread_class"]:
+                    if selector in first_msg.get_attribute("class"):
+                        is_unread_sign = True
+                        break
                 is_shared_contact_action = selectors["shared_contact_action_class"] in first_msg.get_attribute("class")
                 reaction = first_msg.get_attribute("data-testid")
                 is_reaction_bubble = ("reaction-bubble" in reaction) if reaction else False
@@ -1221,6 +1239,7 @@ def make_inbound_messages(driver, selectors, messages):
                 for selector in selectors["message_text"]:
                     try:
                         text = m.find_element_by_xpath(selector)
+                        break
                     except:pass
                 if not text:
                     raise Exception("No se pudo obtener texto")
@@ -1267,16 +1286,19 @@ def make_inbound_messages(driver, selectors, messages):
                 for selector in selectors["shared_contact_name"]:
                     try:
                         shared_contact_name = driver.find_element_by_xpath(selector).text
+                        break
                     except:pass
 
                 for selector in selectors["shared_contact_phone"]:
                     try:
                         shared_contact_phone = driver.find_element_by_xpath(selector).text
+                        break
                     except:pass
 
                 for selector in selectors["chat_info_close"]:
                     try:
                         m.find_element_by_xpath(selector).click()
+                        break
                     except:pass
                 
                 time.sleep(2)

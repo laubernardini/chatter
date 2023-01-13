@@ -37,8 +37,8 @@
     "attach_file": "//input[@accept='*']",
     "send_button_icon": "//span[@data-testid='send']",
 
-    "unread": "//div[@class='_5ML0C focusable-list-item']",
-    "unread_class": "_5ML0C",
+    "unread": ["//div[@class='_5ML0C focusable-list-item']", "//div[@class='_1Yy5A focusable-list-item']"],
+    "unread_class": ["_5ML0C", "_1Yy5A"],
 
     "message_in_container": ["div._2wUmf.message-in", "div._1-FMR.message-in"],
     "message_in_class": "message-in",
