@@ -671,11 +671,20 @@ def notification_clicker(driver, selectors):
         notifications = driver.find_elements_by_xpath(selectors["notification"])
         for n in notifications:
             if n.get_attribute("aria-label") == None:
-                parent = n.find_element_by_xpath('.//..//..//..//..')
+                parent = get_parent(n)
+                done = None
+                while not done:
+                    parent_data_id = parent.get_attribute("data-id")
+                    if parent_data_id:
+                        if 'cell-frame-container' not in parent_data_id:
+                            parent = get_parent(parent)
+                        else:
+                            done = True
 
                 # Si es chat de grupo o chat propio, continuar con la siguiente notificación
                 is_own_chat = False
                 is_group = False
+                is_writing = False
 
                 try:
                     conversation_name = parent.find_element_by_xpath(selectors["conversation_name"]).text
@@ -690,26 +699,20 @@ def notification_clicker(driver, selectors):
                         is_group = True
                     except:
                         try:
-                            writing = parent.find_element_by_xpath(selectors["writing"])
-                            if ' escribiendo' in (writing.get_attribute("title")) or ' typing' in (writing.get_attribute("title")):
-                                is_group = True
+                            for selector in selectors["writing"]:
+                                try:
+                                    writing = parent.find_element_by_xpath(selectors["writing"])
+                                    is_writing = True
+                                except:pass
+                            if not is_writing:
+                                raise Exception('No está escribiendo')
                         except:
                             try:
-                                done_1 = None
-                                while not done_1:
-                                    try:
-                                        event = parent.find_element_by_xpath(selectors["group_event"])
-                                        e_title = event.get_attribute("title")
-                                        if e_title != '':
-                                            if (' unió a' in e_title) or (' añadió a' in e_title) or (' salió del grupo' in e_title):
-                                                is_group = True
-                                            done_1 = True
-                                    except:
-                                        pass
-                            except:
-                                pass
+                                parent.find_element_by_xpath(selectors["group_event"])
+                                is_group = True
+                            except:pass
 
-                if is_group or is_own_chat:
+                if is_group or is_own_chat or is_writing:
                     continue
                 
                 # Ingresar al chat
@@ -717,10 +720,7 @@ def notification_clicker(driver, selectors):
                 parent.click()
 
                 time.sleep(2)
-                done = True
-                if done:
-                    break
-
+                break
     except Exception as e:
         print(e)
         if bot.SHOW_EX_PRINTS:
@@ -1359,21 +1359,24 @@ def make_inbound_messages(driver, selectors, messages):
                 bot.CURRENT_CHAT["last_msg"] = wa_id
                 continue
 
-            # Obtener 'en respuesta a...'
+            # Obtener mención
             try:
                 # Obtener grupo
-                group_elem = m.find_element_by_css_selector(selectors["in_response_group_class"])
-                in_response_group = group_elem.find_element_by_xpath(".//span[1]").text.replace("Tú · ", "")
-
-                # Obtener mensaje
-                in_response_text = m.find_element_by_xpath(selectors["in_response_text"]).text
+                group_elem = m.find_element_by_xpath(selectors["quoted_message"])
+                quoted_text_elements = group_elem.find_elements_by_tag_name("span")
+                quoted_group = ""
+                quoted_text = ""
+                for t in quoted_text_elements:
+                    if not 'color' in t.get_attribute("class") and not selectors["quoted_message_text_class"] in t.get_attribute("class"):
+                        in_response_group = t.text.replace("Tú", "").replace(" · ", "")
+                    if selectors["quoted_message_text_class"] in t.get_attribute("class"):
+                        in_response_text = t.text
 
                 in_response = {
-                    "grupo": in_response_group,
-                    "mensaje": in_response_text 
+                    "grupo": quoted_group,
+                    "mensaje": quoted_text 
                 }
-            except:
-                pass
+            except:pass
         else:
             call_text = "Llamada perdida"
             for selector in selectors["missed_call_text"]:

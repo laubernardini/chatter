@@ -221,40 +221,43 @@ def send_report():
 def sync(driver, selectors):
     #if bot.SHOW_EX_PRINTS:
     print("\nWhatsApp abierto")
+    waiting_qr = True
+    waiting_wpp = False
     
-    # Sincronización
     try:
         driver.find_element_by_xpath(selectors["search"])
-        done = True
-    except:
-        print('\nEsperando escaneo de QR')
+        waiting_qr = False
+    except:pass
+    
+    # Sincronización
+    if waiting_qr:
+        print("\nEsperando escaneo de QR")
         done = None
-    
-    while not done:
-        time.sleep(2)
-        try:
-            driver.find_element_by_xpath(selectors["qr"])
-            sys.stdout.write(".")
-            sys.stdout.flush()
-        except:
+        while not done:
             try:
-                time.sleep(0.5)
-                driver.find_element_by_xpath(selectors["refresh_qr"]).click()
-            except:
+                driver.find_element_by_xpath(selectors["search"])
+                waiting_qr = False
+                print("\nQR Escaneado")
                 done = True
-    
-    print('\nEsperando a WhatsApp')
-
-    done = None
-    while not done:
-        try:
-            driver.find_element_by_xpath(selectors["search"])
-            done = True
-        except:
-            sys.stdout.write(".")
-            sys.stdout.flush()
-            time.sleep(2)
-    
+            except:
+                time.sleep(2)
+                qr = None
+                try:
+                    qr = driver.find_element_by_xpath(selectors["qr"])
+                except:pass
+                if qr:
+                    try:
+                        qr.find_element_by_xpath(selectors["refresh_qr"]).click()
+                        print("QR Refrescado")
+                    except:pass
+                else:
+                    if not waiting_wpp:
+                        waiting_wpp = True
+                        print("\nEsperando a WhatsApp")
+                
+                sys.stdout.write(".")
+                sys.stdout.flush()
+            
     #if bot.SHOW_EX_PRINTS:
     print("\nSincronización completada!")
     send_report()
@@ -281,11 +284,13 @@ def sync(driver, selectors):
 def get_own_phone(driver, selectors):
     time.sleep(3)
     print("Intentando entrar al perfil...")
-    for selector in selectors["profile"]:
-        try:
-            driver.find_element_by_xpath(selector).click()
-            break
-        except:pass
+    profile = get_parent(driver.find_element_by_xpath(selectors["profile_pic"]))
+    done = None
+    while not done:
+        if profile.get_attribute("role") == 'button':
+            profile.click()
+            done = True
+
     time.sleep(3)
     done = None
     celular = None
