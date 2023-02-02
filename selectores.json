@@ -1,8 +1,9 @@
 {
-    "qr": "//div[@class='_2UwZ_']",
-    "refresh_qr": "//button[@class='_2znac']",
+    "qr": "//div[@data-testid='qrcode']",
+    "refresh_qr": ".//button",
     "phone_disconected": "//span[@data-testid='alert-phone']",
-    "profile_pic": "//dic[@data-testid='chatlist-header']/img[1]",
+    "main_header": "//header[@data-testid='chatlist-header']",
+    "profile_pic": "//header[@data-testid='chatlist-header']/div[1]/div[1]/img[1]",
     "own_phone": ["//div[@class='erpdyial i0jNr selectable-text copyable-text']", "//div[@class='erpdyial _11JPr selectable-text copyable-text']"],
 
     "side": "//div[@id='pane-side']",
@@ -94,10 +95,9 @@
 
     "notification": "//span[@data-testid='icon-unread-count']",
     "sender_name": ".//span[@data-testid='last-msg-status']/span[@dir='auto']",
-    "conversation_name": ".//div[@role='gridcell'][@aria-colindex='2']/span[@dir='auto']",
+    "conversation_name": ".//div[@role='gridcell'][@aria-colindex='2']",
     "writing": [".//span[@title='escribiendo...']", ".//span[@title='typing...']"],
-    "group_event": ".//span[@data-testid='subtype-description']",
-    "no_spam_button": "//div[@data-testid='no-spam-btn']/button[1]",
+    "no_spam_button": "//div[@data-testid='not-spam-btn']/div[@role='button']",
 
     "readed_chat": "//div[@class='_3m_Xw']"
 }

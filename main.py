@@ -284,13 +284,15 @@ def sync(driver, selectors):
 def get_own_phone(driver, selectors):
     time.sleep(3)
     print("Intentando entrar al perfil...")
-    profile = get_parent(driver.find_element_by_xpath(selectors["profile_pic"]))
+    #profile_button = driver.find_element_by_xpath(selectors["main_header"]).find_element_by_xpath(".//div[@role='button']")
+    #profile_button.click()
+    profile = actions.get_parent(driver.find_element_by_xpath(selectors["profile_pic"]))
     done = None
     while not done:
         if profile.get_attribute("role") == 'button':
             profile.click()
             done = True
-
+    
     time.sleep(3)
     done = None
     celular = None
