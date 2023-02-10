@@ -79,6 +79,11 @@
     "video_button": ".//span[@data-testid='media-play']",
     "image_download": ".//div[@data-testid='media-state-download']",
     "thumbnail": ".//div[@data-testid='image-thumb']",
+    "image_menu_icon": ".//span[@data-testid='menu']",
+    "image_download_menu": ".//div[@aria-label='Descargar'][@role='button']",
+    "next_image_icon": ".//span[@data-testid='chevron-right']",
+    "media_modal": "//div[@data-testid='media-viewer-modal']",
+    "media_modal_text": [".//span[@dir='auto'][@class='_2Naut _11JPr']"],
 
     "attach_inbound_download": ".//button[@data-testid='document-thumb']",
     "modal": "//div[@data-testid='confirm-popup']",

@@ -76,7 +76,8 @@ def get_data_by_chat_info(driver, selectors):
         for selector in selectors["chat_info"]:
             try:
                 info = driver.find_elements_by_xpath(selector)
-                break
+                if len(info) > 0:
+                    break
             except:pass
     except:
         tipo = 'common'
@@ -1111,197 +1112,44 @@ def make_inbound_messages(driver, selectors, messages):
         is_video = False
         is_call = False
         is_link = False
-        
-        # Revisar si es llamada perdida
-        try:
-            m.find_element_by_xpath(selectors["missed_call"])
-            is_call = True
-        except:
-            try:
-                m.find_element_by_xpath(selectors["missed_video_call"])
-                is_call = True
-            except:
-                pass
-        
-        if not is_call:
-            # Buscar archivo
-            try:
-                try:
-                    m.find_element_by_xpath(selectors["audio_icon"])
-                except:
-                    try:
-                        m.find_element_by_xpath(selectors["audio_status"])
-                    except:
-                        m.find_element_by_xpath(selectors["audio_icon_ptt"])
 
-                no_spam = False
-                try:
-                    driver.find_element_by_xpath(selectors["no_spam_button"]).click()
-                    no_spam = True
-                except:pass
-
-                if no_spam:
-                    print("Marcado como no-spam")
-                    # Cerrar y abrir chat
-                    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-                    open_chat(driver, selectors, celular=celular, tipo='ENTRANTE')
-                    time.sleep(2)
-                    clear_elem(driver, selectors, "search")
-                    
-                    # Instanciar mensaje
-                    done = None
-                    while not done:
-                        try:
-                            m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
-                            done = True
-                        except:
-                            try:
-                                driver.find_element_by_xpath(selectors["message"]).click()
-                            except:
-                                driver.find_element_by_xpath(selectors["message1"]).click()
-                            time.sleep(0.8)
-                    print(f"Mensaje re-instanciado: {m}")
-                                
-                done = None
-                while not done:
-                    try:
-                        m.find_element_by_xpath(selectors["audio_button"])
-                        done = True
-                    except:
-                        try:
-                            m.find_element_by_xpath(selectors["audio_download"]).click()
-                            if bot.SHOW_EX_PRINTS:
-                                print("Forzando descarga de audio")
-                            time.sleep(2)
-                        except Exception as e:
-                            print(e)
-                            time.sleep(1)
-                is_audio = True
+        # Revisar si es album multimedia
+        if 'album' in wa_id:
+            try:
+                m.find_element_by_xpath(selectors["image_download"]).click()
             except:
-                try:
-                    m.find_element_by_xpath(selectors["thumbnail"])
-                    try:
-                        m.find_element_by_xpath(selectors["image_download"]).click()
-                        time.sleep(2)
-                    except:pass
-                    is_attach_inbound = False
-                    for selector in selectors["attach_inbound_class"]:
-                        if selector in m.get_attribute('class'):
-                            is_attach_inbound = True
-                            break
-                    
-                    if not(is_attach_inbound):
-                        wait_time = datetime.now() + timedelta(seconds=10)
-                        done = None
-                        while not done:
-                            if datetime.now() < wait_time:
-                                is_attach_inbound = False
-                                for selector in selectors["attach_inbound_class"]:
-                                    if selector in m.get_attribute('class'):
-                                        is_attach_inbound = True
-                                        break
-                                if is_attach_inbound:
-                                    done = True
-                                else:
-                                    time.sleep(1)
-                            else:
-                                # Revisar si es que el archivo ya no está disponible
-                                try:
-                                    m.find_element_by_xpath(selectors["image_download"]).click()
-                                except:
-                                    m.find_element_by_xpath(selectors["thumbnail"]).click()
-                                time.sleep(2)
-                                
-                                try:
-                                    for selector in selectors["modal_backdrop"]:
-                                        try:
-                                            driver.find_element_by_xpath(selector).click()
-                                        except:pass
-                                    for selector in selectors["modal_body"]:
-                                        try:
-                                            driver.find_element_by_xpath(selector).click()
-                                        except:pass
-                                    driver.find_element_by_xpath(selectors["modal_ok_button"]).click()
-                                    continue # Continuar con el siguiente elemento
-                                except:
-                                    driver.find_element_by_xpath(selectors["close_media"]).click()
-                                    wait_time = datetime.now() + timedelta(seconds=10)
-                    is_image = True
-                except:
-                    try:
-                        try:
-                            # Revisando si es un video a partir de un enlace
-                            html = m.find_element_by_xpath(selectors["message_text"]).get_attribute("innerHTML")
-                            if '<a' in html:
-                                is_link = True
-                        except:
-                            pass
-                        
-                        if not is_link:
-                            m.find_element_by_xpath(selectors["video_button"]).click()
-                            is_video = True
-                    except:
-                        pass
+                m.find_element_by_xpath(selectors["thumbnail"]).click()
+            time.sleep(1)
             
-            is_attach_inbound = False
-            for selector in selectors["attach_inbound_class"]:
-                if selector in m.get_attribute('class'):
-                    is_attach_inbound = True
-                    break
+            modal = driver.find_element_by_xpath(selectors["media_modal"])
 
-            if is_image or is_audio:
-                time.sleep(2)
-                m.send_keys(Keys.ARROW_RIGHT)
-                
-                downl = None
-                loaded = None
-
-                while not loaded:
-                    try:
-                        downl = driver.find_element_by_xpath(selectors["download"])
-                        loaded = True
-                    except:
-                        try:
-                            m.find_element_by_xpath(selectors["download_options"]).click()
-                        except:pass
-                        try:
-                            m.find_element_by_xpath(selectors["message_checkbox"])
-                            m.find_element_by_xpath(selectors["close_message_selection"]).click()
-                            m.send_keys(Keys.ARROW_RIGHT)
-                        except:pass
-
-                    time.sleep(1)
-                if downl:
-                    downl.click()
-
-            elif is_video:
-                done = None
-                while not done:
+            # Obtener primera imagen
+            done = None
+            while not done:
+                try:
                     if driver.find_element_by_xpath(selectors["download_media"]).get_attribute("aria-disabled") == 'false':
                         driver.find_element_by_xpath(selectors["download_media"]).click()
-                        driver.find_element_by_xpath(selectors["close_media"]).click()
                         done = True
-                    else:
-                        time.sleep(2)
-
-            elif is_attach_inbound:
-                try:
-                    m.find_element_by_xpath(selectors["attach_inbound_download"]).click()
                 except:
-                    is_link = True
-
-            if (is_video or is_audio or is_image or is_attach_inbound) and not(is_link):
-                if bot.SHOW_EX_PRINTS:
-                    print("Descargando...")
-                archivo = get_inbound_file()
-
-
-            # Obtener texto
+                    try:
+                        get_parent(modal.find_element_by_xpath(selectors["image_menu_icon"])).click()
+                        loaded = None
+                        while not loaded:
+                            try:
+                                modal.find_element_by_xpath(selectors["image_download_menu"]).click()
+                                loaded = True
+                                done = True
+                            except:pass
+                    except:
+                        time.sleep(1)
+            
+            archivo = get_inbound_file()
+                    
             try:
                 text = None
-                for selector in selectors["message_text"]:
+                for selector in selectors["media_modal_text"]:
                     try:
-                        text = m.find_element_by_xpath(selector)
+                        text = modal.find_element_by_xpath(selector)
                         break
                     except:pass
                 if not text:
@@ -1322,113 +1170,411 @@ def make_inbound_messages(driver, selectors, messages):
                 # Eliminar link
                 text = re.sub('<a.*?copyable-text','',text, flags=re.DOTALL).replace('</a', '')
             except:
-                emojis = None
-                for selector in selectors["emogi_container"]:
-                    try:
-                        emojis = m.find_elements_by_xpath(selector)
-                        break
-                    except:pass
-
                 text = ''
-                if emojis:
-                    print(f"Hay emojis {emojis}")
-                    try:
-                        for ec in emojis:
-                            print(ec)
-                            text += ec.find_element_by_xpath(".//img").get_attribute("data-plain-text")
-                    except Exception as e:
-                        print(e)
             
-            # Obtener contacto compartido
-            try:
-                m.find_element_by_xpath(selectors["shared_contact_button"]).click()
-                time.sleep(2)
-                shared_contact_name = ''
-                shared_contact_phone = ''
-                driver.find_element_by_xpath(selectors["modal_backdrop"]).click()
-                for selector in selectors["shared_contact_name"]:
-                    try:
-                        shared_contact_name = driver.find_element_by_xpath(selector).text
-                        break
-                    except:pass
-
-                for selector in selectors["shared_contact_phone"]:
-                    try:
-                        shared_contact_phone = driver.find_element_by_xpath(selector).text
-                        break
-                    except:pass
-
-                for selector in selectors["chat_info_close"]:
-                    try:
-                        m.find_element_by_xpath(selector).click()
-                        break
-                    except:pass
-                
-                time.sleep(2)
-                
-                if shared_contact_phone != '': 
-                    text = "*Contacto*\n_Nombre:_ " + shared_contact_name + "\n_Celular:_ " + shared_contact_phone
-            except:pass
-
-            text = " " if text == '' else text
-
-            # Omitir mensaje vacío (eliminado)
-            if archivo == '' and text == ' ':
-                # Actualizar último mensaje del chat
-                bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
-
-                bot.CURRENT_CHAT["last_msg"] = wa_id
-                continue
-
-            # Obtener mención
-            try:
-                # Obtener grupo
-                group_elem = m.find_element_by_xpath(selectors["quoted_message"])
-                quoted_text_elements = group_elem.find_elements_by_tag_name("span")
-                quoted_group = ""
-                quoted_text = ""
-                for t in quoted_text_elements:
-                    if not 'color' in t.get_attribute("class") and not selectors["quoted_message_text_class"] in t.get_attribute("class"):
-                        in_response_group = t.text.replace("Tú", "").replace(" · ", "")
-                    if selectors["quoted_message_text_class"] in t.get_attribute("class"):
-                        in_response_text = t.text
-
-                in_response = {
-                    "grupo": quoted_group,
-                    "mensaje": quoted_text 
-                }
-            except:pass
-        else:
-            call_text = "Llamada perdida"
-            for selector in selectors["missed_call_text"]:
-                try:
-                    call_text = m.find_element_by_xpath(selectors["missed_call_text"]).text
-                except:pass
-            text = f"*{call_text}*"
-
-            # Generar respuesta automática a llamada pedida
-            bot.AUTO_RESPONSES.append({
-                "celular": bot.CURRENT_CHAT["celular"],
-                "mensaje": bot.CALL_RESPONSE, 
-                "archivo": "",
-                "tipo": "missed_call"
+            result.append({
+                "wa_id": wa_id,
+                "nombre": nombre,
+                "celular": celular,
+                "mensaje": text,
+                "archivo": archivo,
+                "respuesta": in_response
             })
-        
-        result.append({
-            "wa_id": wa_id,
-            "nombre": nombre,
-            "celular": celular,
-            "mensaje": text,
-            "archivo": archivo,
-            "respuesta": in_response
-        })
-        
-        # Actualizar último mensaje del chat
-        bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
+            
+            # Obtener siguientes imágenes
+            done = None        
+            while not done:
+                next_img = get_parent(modal.find_element_by_xpath(selectors["next_image_icon"]))
 
-        bot.CURRENT_CHAT["last_msg"] = wa_id
+                if next_img.get_attribute("aria-disabled") == 'true':
+                    done = True
+                else:
+                    next_img.click()
+                    done1 = None
+                    while not done1:
+                        try:
+                            if driver.find_element_by_xpath(selectors["download_media"]).get_attribute("aria-disabled") == 'false':
+                                driver.find_element_by_xpath(selectors["download_media"]).click()
+                                done1 = True
+                        except:
+                            try:
+                                get_parent(modal.find_element_by_xpath(selectors["image_menu_icon"])).click()
+                                loaded = None
+                                while not loaded:
+                                    try:
+                                        modal.find_element_by_xpath(selectors["image_download_menu"]).click()
+                                        loaded = True
+                                        done1 = True
+                                    except:pass
+                            except:
+                                time.sleep(1)
+                    archivo = get_inbound_file()
+                    
+                    try:
+                        text = None
+                        for selector in selectors["media_modal_text"]:
+                            try:
+                                text = modal.find_element_by_xpath(selector)
+                                break
+                            except:pass
+                        if not text:
+                            raise Exception("No se pudo obtener texto")
 
-    print(result)
+                        html = text.get_attribute("innerHTML")
+                        # Obtener emojis
+                        text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL)
+                        text = re.sub('" style.*?;"','',text, flags=re.DOTALL).replace('>', '')
+                        # Formatear negrita
+                        for selector in selectors["message_text_class"]:
+                            text = text.replace('<strong class="' + selector + '" data-app-text-template="*${appText}*"', '*')
+                        text.replace('</strong', '*')
+                        # Formatear cursiva
+                        for selector in selectors["message_text_class"]:
+                            text = text.replace('<em class="' + selector + '" data-app-text-template="_${appText}_"', '_')
+                        text.replace('</em', '_')
+                        # Eliminar link
+                        text = re.sub('<a.*?copyable-text','',text, flags=re.DOTALL).replace('</a', '')
+                    except:
+                        text = ''
+                    
+                    result.append({
+                        "wa_id": wa_id,
+                        "nombre": nombre,
+                        "celular": celular,
+                        "mensaje": text,
+                        "archivo": archivo,
+                        "respuesta": in_response
+                    })
+            
+            driver.find_element_by_xpath(selectors["close_media"]).click()
+
+             # Actualizar último mensaje del chat
+            bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
+
+            bot.CURRENT_CHAT["last_msg"] = wa_id
+
+            continue
+        else:
+            # Revisar si es llamada perdida
+            try:
+                m.find_element_by_xpath(selectors["missed_call"])
+                is_call = True
+            except:
+                try:
+                    m.find_element_by_xpath(selectors["missed_video_call"])
+                    is_call = True
+                except:
+                    pass
+            
+            if not is_call:
+                # Buscar archivo
+                try:
+                    try:
+                        m.find_element_by_xpath(selectors["audio_icon"])
+                    except:
+                        try:
+                            m.find_element_by_xpath(selectors["audio_status"])
+                        except:
+                            m.find_element_by_xpath(selectors["audio_icon_ptt"])
+
+                    no_spam = False
+                    try:
+                        driver.find_element_by_xpath(selectors["no_spam_button"]).click()
+                        no_spam = True
+                    except:pass
+
+                    if no_spam:
+                        print("Marcado como no-spam")
+                        # Cerrar y abrir chat
+                        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+                        open_chat(driver, selectors, celular=celular, tipo='ENTRANTE')
+                        time.sleep(2)
+                        clear_elem(driver, selectors, "search")
+                        
+                        # Instanciar mensaje
+                        done = None
+                        while not done:
+                            try:
+                                m = driver.find_element_by_xpath('//div[@data-id="' + wa_id + '"]')
+                                done = True
+                            except:
+                                try:
+                                    driver.find_element_by_xpath(selectors["message"]).click()
+                                except:
+                                    driver.find_element_by_xpath(selectors["message1"]).click()
+                                time.sleep(0.8)
+                        print(f"Mensaje re-instanciado: {m}")
+                                    
+                    done = None
+                    while not done:
+                        try:
+                            m.find_element_by_xpath(selectors["audio_button"])
+                            done = True
+                        except:
+                            try:
+                                m.find_element_by_xpath(selectors["audio_download"]).click()
+                                if bot.SHOW_EX_PRINTS:
+                                    print("Forzando descarga de audio")
+                                time.sleep(2)
+                            except Exception as e:
+                                print(e)
+                                time.sleep(1)
+                    is_audio = True
+                except:
+                    try:
+                        m.find_element_by_xpath(selectors["thumbnail"])
+                        try:
+                            m.find_element_by_xpath(selectors["image_download"]).click()
+                            time.sleep(2)
+                        except:pass
+                        is_attach_inbound = False
+                        for selector in selectors["attach_inbound_class"]:
+                            if selector in m.get_attribute('class'):
+                                is_attach_inbound = True
+                                break
+                        
+                        if not(is_attach_inbound):
+                            wait_time = datetime.now() + timedelta(seconds=10)
+                            done = None
+                            while not done:
+                                if datetime.now() < wait_time:
+                                    is_attach_inbound = False
+                                    for selector in selectors["attach_inbound_class"]:
+                                        if selector in m.get_attribute('class'):
+                                            is_attach_inbound = True
+                                            break
+                                    if is_attach_inbound:
+                                        done = True
+                                    else:
+                                        time.sleep(1)
+                                else:
+                                    # Revisar si es que el archivo ya no está disponible
+                                    try:
+                                        m.find_element_by_xpath(selectors["image_download"]).click()
+                                    except:
+                                        m.find_element_by_xpath(selectors["thumbnail"]).click()
+                                    time.sleep(2)
+                                    
+                                    try:
+                                        for selector in selectors["modal_backdrop"]:
+                                            try:
+                                                driver.find_element_by_xpath(selector).click()
+                                            except:pass
+                                        for selector in selectors["modal_body"]:
+                                            try:
+                                                driver.find_element_by_xpath(selector).click()
+                                            except:pass
+                                        driver.find_element_by_xpath(selectors["modal_ok_button"]).click()
+                                        continue # Continuar con el siguiente elemento
+                                    except:
+                                        driver.find_element_by_xpath(selectors["close_media"]).click()
+                                        wait_time = datetime.now() + timedelta(seconds=10)
+                        is_image = True
+                    except:
+                        try:
+                            try:
+                                # Revisando si es un video a partir de un enlace
+                                html = m.find_element_by_xpath(selectors["message_text"]).get_attribute("innerHTML")
+                                if '<a' in html:
+                                    is_link = True
+                            except:
+                                pass
+                            
+                            if not is_link:
+                                m.find_element_by_xpath(selectors["video_button"]).click()
+                                is_video = True
+                        except:
+                            pass
+                
+                is_attach_inbound = False
+                for selector in selectors["attach_inbound_class"]:
+                    if selector in m.get_attribute('class'):
+                        is_attach_inbound = True
+                        break
+
+                if is_image or is_audio:
+                    time.sleep(2)
+                    m.send_keys(Keys.ARROW_RIGHT)
+                    
+                    downl = None
+                    loaded = None
+
+                    while not loaded:
+                        try:
+                            downl = driver.find_element_by_xpath(selectors["download"])
+                            loaded = True
+                        except:
+                            try:
+                                m.find_element_by_xpath(selectors["download_options"]).click()
+                            except:pass
+                            try:
+                                m.find_element_by_xpath(selectors["message_checkbox"])
+                                m.find_element_by_xpath(selectors["close_message_selection"]).click()
+                                m.send_keys(Keys.ARROW_RIGHT)
+                            except:pass
+
+                        time.sleep(1)
+                    if downl:
+                        downl.click()
+
+                elif is_video:
+                    done = None
+                    while not done:
+                        if driver.find_element_by_xpath(selectors["download_media"]).get_attribute("aria-disabled") == 'false':
+                            driver.find_element_by_xpath(selectors["download_media"]).click()
+                            driver.find_element_by_xpath(selectors["close_media"]).click()
+                            done = True
+                        else:
+                            time.sleep(2)
+
+                elif is_attach_inbound:
+                    try:
+                        m.find_element_by_xpath(selectors["attach_inbound_download"]).click()
+                    except:
+                        is_link = True
+
+                if (is_video or is_audio or is_image or is_attach_inbound) and not(is_link):
+                    if bot.SHOW_EX_PRINTS:
+                        print("Descargando...")
+                    archivo = get_inbound_file()
+
+
+                # Obtener texto
+                try:
+                    text = None
+                    for selector in selectors["message_text"]:
+                        try:
+                            text = m.find_element_by_xpath(selector)
+                            break
+                        except:pass
+                    if not text:
+                        raise Exception("No se pudo obtener texto")
+
+                    html = text.get_attribute("innerHTML")
+                    # Obtener emojis
+                    text = re.sub('<img.*?data-plain-text="','',html, flags=re.DOTALL)
+                    text = re.sub('" style.*?;"','',text, flags=re.DOTALL).replace('>', '')
+                    # Formatear negrita
+                    for selector in selectors["message_text_class"]:
+                        text = text.replace('<strong class="' + selector + '" data-app-text-template="*${appText}*"', '*')
+                    text.replace('</strong', '*')
+                    # Formatear cursiva
+                    for selector in selectors["message_text_class"]:
+                        text = text.replace('<em class="' + selector + '" data-app-text-template="_${appText}_"', '_')
+                    text.replace('</em', '_')
+                    # Eliminar link
+                    text = re.sub('<a.*?copyable-text','',text, flags=re.DOTALL).replace('</a', '')
+                except:
+                    emojis = None
+                    for selector in selectors["emogi_container"]:
+                        try:
+                            emojis = m.find_elements_by_xpath(selector)
+                            break
+                        except:pass
+
+                    text = ''
+                    if emojis:
+                        print(f"Hay emojis {emojis}")
+                        try:
+                            for ec in emojis:
+                                print(ec)
+                                text += ec.find_element_by_xpath(".//img").get_attribute("data-plain-text")
+                        except Exception as e:
+                            print(e)
+                
+                # Obtener contacto compartido
+                try:
+                    m.find_element_by_xpath(selectors["shared_contact_button"]).click()
+                    time.sleep(2)
+                    shared_contact_name = ''
+                    shared_contact_phone = ''
+                    for selector in selectors["modal_backdrop"]:
+                        try:
+                            driver.find_element_by_xpath(selector).click()
+                            break
+                        except:pass
+
+                    for selector in selectors["shared_contact_name"]:
+                        try:
+                            shared_contact_name = driver.find_element_by_xpath(selector).text
+                            break
+                        except:pass
+
+                    for selector in selectors["shared_contact_phone"]:
+                        try:
+                            shared_contact_phone = driver.find_element_by_xpath(selector).text
+                            break
+                        except:pass
+
+                    for selector in selectors["chat_info_close"]:
+                        try:
+                            driver.find_element_by_xpath(selector).click()
+                            break
+                        except:pass
+                    
+                    time.sleep(2)
+                    
+                    if shared_contact_phone != '': 
+                        text = "*Contacto*\n_Nombre:_ " + shared_contact_name + "\n_Celular:_ " + shared_contact_phone
+                except:pass
+
+                text = " " if text == '' else text
+
+                # Omitir mensaje vacío (eliminado)
+                if archivo == '' and text == ' ':
+                    # Actualizar último mensaje del chat
+                    bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
+
+                    bot.CURRENT_CHAT["last_msg"] = wa_id
+                    continue
+
+                # Obtener mención
+                try:
+                    # Obtener grupo
+                    group_elem = m.find_element_by_xpath(selectors["quoted_message"])
+                    quoted_text_elements = group_elem.find_elements_by_tag_name("span")
+                    quoted_group = ""
+                    quoted_text = ""
+                    for t in quoted_text_elements:
+                        if not 'color' in t.get_attribute("class") and not selectors["quoted_message_text_class"] in t.get_attribute("class"):
+                            in_response_group = t.text.replace("Tú", "").replace(" · ", "")
+                        if selectors["quoted_message_text_class"] in t.get_attribute("class"):
+                            in_response_text = t.text
+
+                    in_response = {
+                        "grupo": quoted_group,
+                        "mensaje": quoted_text 
+                    }
+                except:pass
+            else:
+                call_text = "Llamada perdida"
+                for selector in selectors["missed_call_text"]:
+                    try:
+                        call_text = m.find_element_by_xpath(selectors["missed_call_text"]).text
+                    except:pass
+                text = f"*{call_text}*"
+
+                # Generar respuesta automática a llamada pedida
+                bot.AUTO_RESPONSES.append({
+                    "celular": bot.CURRENT_CHAT["celular"],
+                    "mensaje": bot.CALL_RESPONSE, 
+                    "archivo": "",
+                    "tipo": "missed_call"
+                })
+            
+            result.append({
+                "wa_id": wa_id,
+                "nombre": nombre,
+                "celular": celular,
+                "mensaje": text,
+                "archivo": archivo,
+                "respuesta": in_response
+            })
+            
+            # Actualizar último mensaje del chat
+            bot.CHATS[bot.CHATS.index(bot.CURRENT_CHAT)]["last_msg"] = wa_id
+
+            bot.CURRENT_CHAT["last_msg"] = wa_id
 
     return result
 
