@@ -399,7 +399,7 @@ def manage_masiv(driver, selectors):
                     last_msg=last_msg,
                     driver=driver, 
                     selectors=selectors,
-                    masive=True,
+                    masive=False,
                 )
                 intentos.append({
                     "clave": clave,

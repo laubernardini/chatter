@@ -259,9 +259,6 @@ def get_inbound_file():
             time.sleep(2)
     
     time.sleep(2)
-    try:
-        driver.find_element_by_xpath("message1")
-    except:pass
     
     return archivo
 
