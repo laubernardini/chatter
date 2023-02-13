@@ -174,16 +174,6 @@ def clear_elem(driver, selectors, id):
     driver.find_element_by_xpath(selectors[id]).send_keys(Keys.ESCAPE)
 
 def search(driver, selectors, text):
-    chat_name_header = None
-    try:
-        chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-        try:
-            chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
-        except:
-            chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
-    except:
-        pass
-
     print("Buscando: ", text)
     # Obtener input de búsqueda
     result = None
@@ -214,26 +204,24 @@ def search(driver, selectors, text):
         # Seleccionar la primera opción
         elem.send_keys(Keys.ARROW_DOWN)
         elem.send_keys(Keys.ENTER)
-        try:
-            chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+        if text != bot.PHONE:
+            result = True
+        else:
             try:
-                result_chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
-            except:
-                result_chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
-                
-            if (result_chat_name_header.text == text) or (result_chat_name_header.text != chat_name_header):
-                result = True
-        except:pass
-
-        #if driver.switch_to.active_element == elem: # Revisa si hubo resultados, sino devuelve None
-        #    elem.send_keys(Keys.TAB) # Prueba con TAB en caso de que no funcione ARROW_DOWN
-        #    driver.switch_to.active_element
-        #    elem.send_keys(Keys.ENTER)
-        #    if driver.switch_to.active_element.get_attribute('class') == selectors["chat_class"]:
-        #        result = driver.switch_to.active_element
-        #else:
-        #    result = driver.switch_to.active_element
-    
+                chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+                try:
+                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+                except:
+                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+                    
+                if chat_name_header.text == text:
+                    result = True
+                else:
+                    chat_data = get_data_by_chat_info(driver, selectors)
+                    if chat_data["celular"] == text:
+                        result = True
+            except:pass
+        
     return result
 
 def get_inbound_file():
@@ -430,12 +418,6 @@ def send_message(mensaje="", archivo="", celular="", masive=False, last_msg=None
 
         # Enviar mensaje
         if elem:
-            # Abrir chat (si es un chat vacío)
-            try:
-                elem.send_keys(Keys.ENTER)
-            except:
-                pass
-
             clear_elem(driver, selectors, "search")
 
             # Actualizar chat en ejecución
