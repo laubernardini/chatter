@@ -221,7 +221,7 @@ def search(driver, selectors, text):
             except:
                 result_chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
                 
-            if (result_chat_name_header == text) or result_chat_name_header != chat_name_header:
+            if (result_chat_name_header.text == text) or (result_chat_name_header.text != chat_name_header):
                 result = True
         except:pass
 
