@@ -174,6 +174,16 @@ def clear_elem(driver, selectors, id):
     driver.find_element_by_xpath(selectors[id]).send_keys(Keys.ESCAPE)
 
 def search(driver, selectors, text):
+    chat_name_header = None
+    try:
+        chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+        try:
+            chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+        except:
+            chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+    except:
+        pass
+
     print("Buscando: ", text)
     # Obtener input de búsqueda
     result = None
@@ -204,13 +214,25 @@ def search(driver, selectors, text):
         # Seleccionar la primera opción
         elem.send_keys(Keys.ARROW_DOWN)
         elem.send_keys(Keys.ENTER)
-        if driver.switch_to.active_element == elem: # Revisa si hubo resultados, sino devuelve None
-            elem.send_keys(Keys.TAB) # Prueba con TAB en caso de que no funcione ARROW_DOWN
-            elem.send_keys(Keys.ENTER)
-            if driver.switch_to.active_element.get_attribute('class') == selectors["chat_class"]:
-                result = driver.switch_to.active_element
-        else:
-            result = driver.switch_to.active_element
+        try:
+            chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+            try:
+                result_chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+            except:
+                result_chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+                
+            if (result_chat_name_header == text) or result_chat_name_header != chat_name_header:
+                result = True
+        except:pass
+
+        #if driver.switch_to.active_element == elem: # Revisa si hubo resultados, sino devuelve None
+        #    elem.send_keys(Keys.TAB) # Prueba con TAB en caso de que no funcione ARROW_DOWN
+        #    driver.switch_to.active_element
+        #    elem.send_keys(Keys.ENTER)
+        #    if driver.switch_to.active_element.get_attribute('class') == selectors["chat_class"]:
+        #        result = driver.switch_to.active_element
+        #else:
+        #    result = driver.switch_to.active_element
     
     return result
 
@@ -277,7 +299,7 @@ def chat_init(driver, selectors, celular):
             except:
                 chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
                 
-            if bot.PHONE == cel_formatter(chat_name_header.text):
+            if (bot.PHONE == cel_formatter(chat_name_header.text)) or (("(Tú)" in chat_name_header.text)):
                 done = True
         except:
             pass
