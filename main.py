@@ -55,6 +55,8 @@ def start():
 
         if sync_needed:    
             sync(driver, selectors)
+        else:
+            time.sleep(5)
 
         # Actividad forzada
         if datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
@@ -62,12 +64,6 @@ def start():
 
             bot.NEXT_FORCED_ACTIVITY = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
             print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
-
-        # Check sync
-        try:
-            driver.find_element_by_xpath(selectors["search"])
-        except:
-            bot.STATE = "ERROR"
         
 # Funciones de inicio  
 def driver_connect_chrome(url=""):

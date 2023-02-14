@@ -7,7 +7,7 @@ OS_SLASH = "\\" # / -> linux \\ -> windows
 BROWSER = "chrome"
 DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
 START_DATE = None
-FORCED_ACTIVITY_FREQUENCY = 5 # En minutos. Click para marcar al navegador como "activo" frente al SO 
+FORCED_ACTIVITY_FREQUENCY = 20 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 MESSAGE = ""
 
 # Log
