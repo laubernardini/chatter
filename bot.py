@@ -19,13 +19,7 @@ SHOW_EX_PRINTS = True
 NEXT_FORCED_ACTIVITY = None
 SLEEP_TIME = 0
 CLIPBOARD_SLEEP_TIME = 0
-GROUPS_LIST = [
-    'ApiCloud - Test 1',
-    'ApiCloud - Test 2',
-    'ApiCloud - Test 3',
-    'ApiCloud - Test 4',
-    'ApiCloud - Test 5'
-]
+GROUPS_LIST = []
 
 def calc_sleeptime():
     global PHONE, SLEEP_TIME, CLIPBOARD_SLEEP_TIME

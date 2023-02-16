@@ -12,8 +12,12 @@ def start():
     # Obtener selectores
     with open('selectores.json', 'rb') as selectors:
         selectors = json.load(selectors)
-    # Obtener MIME types
-
+    
+    # Obtener configuraciones
+    with open('config.json', 'rb') as config:
+        config = json.load(config)
+    bot.GROUPS_LIST = config["groupsList"]
+    
     # Abrir WhatsApp
     print("Intentando abrir navegador")
     done = driver = None
