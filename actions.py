@@ -177,6 +177,8 @@ def send_message(mensaje="", celular="", driver=None, selectors=None):
             if bot.SHOW_ERRORS:
                 print("Chat no encontrado")
             clear_elem(driver, selectors, "search")
+        
+        return "OK"
     except Exception as e:
         if bot.SHOW_ERRORS:
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -186,3 +188,5 @@ def send_message(mensaje="", celular="", driver=None, selectors=None):
             print(repr(e))
             print(e.args)
             print(os.path.split(exc_tb.tb_frame.f_code.co_filename)[1], ", linea ", exc_tb.tb_lineno)
+            
+        return "ERROR"

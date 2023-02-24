@@ -17,3 +17,4 @@ chromedriver
 chromedriver.exe
 geckodriver
 geckodriver.exe
+config.json

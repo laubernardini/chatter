@@ -21,6 +21,8 @@ def run():
             bot.PHONE = phone
             bot.calc_sleeptime()
             bot.MESSAGE = f"Hola! Soy chatter _*{bot.PHONE}*_"
+    if args.server == 'cat' or args.server == 'CAT':
+        bot.SERVER_URL = "https://cat-technologies.apicloud.com.ar"
 
     print(f"PHONE: {bot.PHONE}")
     system("title CHATTER " + bot.PHONE)

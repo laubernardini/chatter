@@ -1,5 +1,5 @@
 # Packages
-import sys, json, time
+import sys, json, time, urlfetch
 from datetime import datetime, timedelta
 
 # Webdriver
@@ -34,6 +34,7 @@ def start():
 
     # Sincronización
     sync(driver, selectors)
+    send_status("SINCRONIZADO")
     
     # Registrar inicio
     bot.START_DATE = datetime.now()
@@ -57,18 +58,90 @@ def start():
             except:
                 sync_needed = True
 
-        if sync_needed:    
+        if sync_needed:
+            send_status("BLOQUEADO")
+            bot.PHONE = ""
             sync(driver, selectors)
         else:
             time.sleep(5)
 
         # Actividad forzada
         if datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
-            send_groups(driver, selectors)
+            error = send_groups(driver, selectors)
+            if not error:
+                bot.NEXT_FORCED_ACTIVITY = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
+                print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
 
-            bot.NEXT_FORCED_ACTIVITY = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
-            print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
-        
+## Apis ##
+# Prints
+def print_api_response(content, name="", data=None, status_code=None):
+    data_text = ""
+    if data:
+        data_text = "Data:"
+        for key, value in data.items():
+            data_text += f"\n    {key}={value}"
+
+    print(f'''\nAPI {name} status: {status_code}\n{data_text}\nResponse: {content}''')
+
+def print_api_status_error(where="", status_code=None, exception=None, detail=None):
+    exception_text = ""
+    status_code_text = ""
+
+    if exception:
+        exception_text = f'''Exception:
+        {exception}
+        {repr(exception)}
+        {exception.args}
+        '''
+    if status_code:
+        status_code_text = f'''Detalle:
+        La petición tuvo un estado distinto a 200: {status_code}
+        '''
+
+    print(f'''Error {where}:\n{status_code_text}\n{exception_text}\n{f'Detalle: {detail}' if detail else ""}\n''')
+
+def send_status(status):
+    timeout = 15
+    headers = {
+        "Content-Type": "application/json"
+    }
+    fields = {
+        "phone": bot.PHONE,
+        "status": status
+    }
+    data=json.dumps(fields)
+    
+    done = None
+    while not done:
+        try:
+            r = urlfetch.post(f'{bot.SERVER_URL}/api/bots/chatter', validate_certificate=False, data=data, headers=headers, timeout = timeout)
+            print(f'request_time {r.total_time}')
+
+            if bot.SHOW_API_RESPONSES:
+                print_api_response(content=r.content, name="send_inbound", data=fields, status_code=r.status_code)
+
+            # Guardar respuesta automática
+            if r.status_code == 200:
+                content = json.loads(r.content)
+                if content["request_status"] == 'success':
+                    done = True
+                    print("Estado registrado")
+                else:
+                    if bot.SHOW_ERRORS:
+                        print_api_status_error(where="registrando estado")
+                        print("Reintentando...")
+                        time.sleep(3)
+            else:
+                if bot.SHOW_ERRORS:
+                    print_api_status_error(where="registrando estado", status_code=r.status_code)
+                print("Reintentando...")
+                time.sleep(3)
+        except Exception as e:
+            if bot.SHOW_ERRORS:
+                print_api_status_error(where="registrando estado", exception=e)
+            print("Reintentando...")
+            time.sleep(3)
+
 # Funciones de inicio  
 def driver_connect_chrome(url=""):
     options = webdriver.chrome.options.Options()
@@ -192,13 +265,18 @@ def get_own_phone(driver, selectors):
 # Managers
 def send_groups(driver, selectors):
     actions.release_clipboard()
+    error = False
     for group in bot.GROUPS_LIST: # Enviar mensaje a los grupos
-        actions.send_message(
+        result = actions.send_message(
             mensaje=bot.MESSAGE, 
             celular=group, 
             driver=driver, 
             selectors=selectors
         )
+        if result == 'ERROR':
+            error = True
+            break
 
         print("Esperando 1min para el siguiente envío")
         time.sleep(60)
+    return error

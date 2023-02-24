@@ -4,6 +4,7 @@ VERSION = "1.0"
 
 # Variables de ejecución
 OS_SLASH = "\\" # / -> linux \\ -> windows
+SERVER_URL = "https://apicloud.com.ar"#"http://localhost:8000"#
 BROWSER = "chrome"
 DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
 START_DATE = None
