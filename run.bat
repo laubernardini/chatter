@@ -17,5 +17,5 @@ if "%bot_server%" == "" (
 	set server= 
 )
 timeout /t 0 /nobreak > nul
-cmd /k "cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python run.py %phone% %server%"
-REM cmd /k "git reset --hard & git pull bot master & cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python run.py %phone% %server%"
+REM cmd /k "cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python run.py %phone% %server%"
+cmd /k "git reset --hard & git pull bot master & cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python run.py %phone% %server%"
