@@ -13,6 +13,7 @@ def run():
     parser.add_argument("-c", "--celular", help="Celular")
     parser.add_argument("-s", "--server", help="Server")
     parser.add_argument("-br", "--browser", help="Browser")
+    parser.add_argument("-d", "--desc", help="Descripcion")
     args = parser.parse_args()
 
     if args.celular:
@@ -23,6 +24,9 @@ def run():
             bot.MESSAGE = f"Hola! Soy chatter _*{bot.PHONE}*_"
     if args.server == 'cat' or args.server == 'CAT':
         bot.SERVER_URL = "https://cat-technologies.apicloud.com.ar"
+    if args.desc:
+        bot.DESCRIPCION = args.desc
+        print(f'Desc: {bot.DESCRIPCION}')
 
     print(f"PHONE: {bot.PHONE}")
     system("title CHATTER " + bot.PHONE)

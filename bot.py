@@ -10,6 +10,7 @@ DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
 START_DATE = None
 FORCED_ACTIVITY_FREQUENCY = 5 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 MESSAGE = ""
+DESCRIPCION = "-"
 
 # Log
 SHOW_ERRORS = True

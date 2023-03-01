@@ -107,7 +107,8 @@ def send_status(status):
     }
     fields = {
         "phone": bot.PHONE,
-        "status": status
+        "status": status,
+        "descripcion": bot.DESCRIPCION
     }
     data=json.dumps(fields)
     
