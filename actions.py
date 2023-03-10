@@ -35,8 +35,20 @@ def cel_formatter(celular): # Formatear celular
 
 # Búsqueda
 def clear_elem(driver, selectors, id):
-    driver.find_element_by_xpath(selectors[id]).clear()
-    driver.find_element_by_xpath(selectors[id]).send_keys(Keys.ESCAPE)
+    elem = driver.find_element_by_xpath(selectors[id])
+    if id == "search":
+        clear_search(driver, selectors, elem)
+    else:
+        elem.clear()
+        elem.send_keys(Keys.ESCAPE)
+
+def clear_search(driver, selectors, elem):
+    try:
+        cancel_icon = get_parent(get_parent(get_parent(elem))).find_element_by_xpath(selectors["clear_search"])
+        get_parent(cancel_icon).click()
+    except Exception as e:
+        print(e)
+        print("No se pudo limpiar el buscador")
 
 def search(driver, selectors, text):
     print("Buscando: ", text)
@@ -47,10 +59,10 @@ def search(driver, selectors, text):
     elem = side.find_element_by_xpath(selectors["search"])
     
     # Buscar
-    #elem.send_keys(text)
-    driver.execute_script("arguments[0].innerText = `{}`".format(text), elem)
-    elem.send_keys('.')
-    elem.send_keys(Keys.BACKSPACE)
+    elem.send_keys(text)
+    #driver.execute_script("arguments[0].innerText = `{}`".format(text), elem)
+    #elem.send_keys('.')
+    #elem.send_keys(Keys.BACKSPACE)
     time.sleep(2)
 
     done = None
@@ -74,10 +86,7 @@ def search(driver, selectors, text):
         else:
             try:
                 chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-                try:
-                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
-                except:
-                    chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
                     
                 if chat_name_header.text == text:
                     result = True
@@ -93,10 +102,7 @@ def open_chat(driver, selectors, celular):
     if elem:
         try:
             chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-            try:
-                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
-            except:
-                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header_1"])
+            chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
             print('Chat name: ', chat_name_header.text)
             if bot.PHONE == cel_formatter(chat_name_header.text):
                 elem = None
