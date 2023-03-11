@@ -4,7 +4,7 @@ timeout /t 1 /nobreak > nul
 cls
 set /p bot_phone=Indica CELULAR (si no es business): 
 set /p bot_server=Indica SERVER (dejar en blanco si no es CAT): 
-set /p bot_grupos=Indica si envía solo a GRUPOS (SI/NO): 
+set /p bot_grupos=Indica si envia solo a GRUPOS (SI/NO): 
 set /p bot_desc=DESCRIPCION: 
 if not "%bot_phone%" == "" (
 	set phone=-c %bot_phone%
