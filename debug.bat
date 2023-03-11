@@ -1,11 +1,11 @@
 @echo off
-echo Iniciando bot...
-timeout /t 2 /nobreak > nul
+echo Iniciando chatter...
+timeout /t 1 /nobreak > nul
 cls
-set /p bot_pk=Indica BOT_PK: 
-set /p bot_phone=Indica CELULAR (se puede dejar en blanco si es business): 
+set /p bot_phone=Indica CELULAR (si no es business): 
 set /p bot_server=Indica SERVER (dejar en blanco si no es CAT): 
-set /p bot_browser=Indica BROWSER ("f" para firefox "o" para opera): 
+set /p bot_grupos=Indica si envía solo a GRUPOS (SI/NO): 
+set /p bot_desc=DESCRIPCION: 
 if not "%bot_phone%" == "" (
 	set phone=-c %bot_phone%
 )
@@ -18,11 +18,17 @@ if not "%bot_server%" == "" (
 if "%bot_server%" == "" (
 	set server= 
 )
-if not "%bot_browser%" == "" (
-	set browser=-br %bot_browser%
+if not "%bot_grupos%" == "" (
+	set grupos=-g %bot_grupos%
 )
-if "%bot_browser%" == "" (
-	set browser= 
+if "%bot_grupos%" == "" (
+	set grupos= 
 )
-timeout /t 2 /nobreak > nul
-cmd /k "cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python -m debugpy --listen 0.0.0.0:5678 --wait-for-client ./run.py -b %bot_pk% %phone% %server% %browser%"
+if not "%bot_desc%" == "" (
+	set desc=-d ^"%bot_desc%"
+)
+if "%bot_desc%" == "" (
+	set desc= 
+)
+timeout /t 0 /nobreak > nul
+cmd /k "cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python -m debugpy --listen 0.0.0.0:5678 --wait-for-client ./run.py %phone% %server% %grupos% %desc%"

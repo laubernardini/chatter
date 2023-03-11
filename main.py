@@ -12,12 +12,7 @@ def start():
     # Obtener selectores
     with open('selectores.json', 'rb') as selectors:
         selectors = json.load(selectors)
-    
-    # Obtener configuraciones
-    with open('config.json', 'rb') as config:
-        config = json.load(config)
-    bot.GROUPS_LIST = config["groupsList"]
-    
+        
     # Abrir WhatsApp
     print("Intentando abrir navegador")
     done = driver = None
@@ -35,6 +30,14 @@ def start():
     # Sincronización
     sync(driver, selectors)
     send_status("SINCRONIZADO")
+
+    # Obtener configuraciones
+    if bot.GROUPS_ONLY:
+        with open('config.json', 'rb') as config:
+            config = json.load(config)
+        bot.GROUPS_LIST = config["groupsList"]
+    else:
+        bot.PHONES_LIST = get_phones_list()
     
     # Registrar inicio
     bot.START_DATE = datetime.now()
@@ -67,10 +70,12 @@ def start():
 
         # Actividad forzada
         if datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
-            error = send_groups(driver, selectors)
+            error = send_handler(driver, selectors)
             if not error:
                 bot.NEXT_FORCED_ACTIVITY = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
                 print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
+                if not bot.GROUPS_ONLY:
+                    bot.PHONES_LIST = get_phones_list()
 
 ## Apis ##
 # Prints
@@ -142,6 +147,46 @@ def send_status(status):
                 print_api_status_error(where="registrando estado", exception=e)
             print("Reintentando...")
             time.sleep(3)
+
+def get_phones_list():
+    print("Buscando lista de lineas...")
+
+    result = None
+    done = None
+    while not done:
+        try:
+            r = urlfetch.get(f'{bot.SERVER_URL}/api/bots/chatter-lines?phone={bot.PHONE}', validate_certificate=False, timeout=15)
+            print(f'request_time {r.total_time}')
+
+            if bot.SHOW_API_RESPONSES:
+                print_api_response(content=r.content, name="get_phones_list", data={"phone": bot.PHONE}, status_code=r.status_code)
+            
+            if r.status_code == 200:
+                content = json.loads(r.content)
+                if content["request_status"] == 'success':
+                    result = content.get("data", [])
+                    done = True
+                    print(f"Lista de lineas obtenidas: {len(result)} lineas")
+                else:
+                    if bot.SHOW_ERRORS:
+                        print_api_status_error(where="obteniendo lista de lineas", detail=content["detail"])
+                    bot.set_error()
+                    time.sleep(3)
+                    print("Reintentando...")
+            else:
+                if bot.SHOW_ERRORS:
+                    print_api_status_error(where="obteniendo lista de lineas", status_code=r.status_code)
+                bot.set_error()
+                time.sleep(3)
+                print("Reintentando...")
+        except Exception as e:
+            if bot.SHOW_ERRORS:
+                print_api_status_error(where="obteniendo lista de lineas", exception=e)
+            bot.set_error()    
+            time.sleep(3)
+            print("Reintentando...")    
+
+    return result
 
 # Funciones de inicio  
 def driver_connect_chrome(url=""):
@@ -251,7 +296,7 @@ def get_own_phone(driver, selectors):
         else:
             time.sleep(1)
     bot.PHONE = actions.cel_formatter(celular)
-    bot.MESSAGE = f"Hola! Soy chatter _*{bot.PHONE}*_"
+    bot.MESSAGE = f"Hola! Soy chatter _*{bot.PHONE}*_ (_cttr_)"
     
     print(f'PHONE: {bot.PHONE}')
 
@@ -263,21 +308,34 @@ def get_own_phone(driver, selectors):
             break
         except:pass
 
-# Managers
-def send_groups(driver, selectors):
+# Handlers
+def send_handler(driver, selectors):
     actions.release_clipboard()
+
+    return send(driver, selectors, list_for_send=bot.GROUPS_LIST) if bot.GROUPS_ONLY else send(driver, selectors, list_for_send=bot.PHONES_LIST, is_groups=False)
+
+def send(driver, selectors, list_for_send, is_groups=True):
     error = False
-    for group in bot.GROUPS_LIST: # Enviar mensaje a los grupos
+    counter = 0
+    for item in list_for_send: # Enviar mensaje a los grupos
+        if not is_groups:
+            if counter > 0 and counter % bot.SERIES == 0:
+                print(f"Pausa de {bot.FORCED_ACTIVITY_FREQUENCY}min")
+                time.sleep(bot.FORCED_ACTIVITY_FREQUENCY * 60)
+
         result = actions.send_message(
             mensaje=bot.MESSAGE, 
-            celular=group, 
+            celular=item, 
             driver=driver, 
-            selectors=selectors
+            selectors=selectors,
+            group=is_groups
         )
         if result == 'ERROR':
             error = True
             break
-
-        print("Esperando 1min para el siguiente envío")
-        time.sleep(60)
+        
+        counter += 1
+        print("Esperando 30sec para el siguiente envío")
+        time.sleep(30)
+    
     return error

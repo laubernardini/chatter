@@ -54,7 +54,7 @@ def search(driver, selectors, text):
     print("Buscando: ", text)
     # Obtener input de búsqueda
     result = None
-    no_result = False
+    has_results = True
     side = driver.find_element_by_xpath(selectors["side"]) 
     elem = side.find_element_by_xpath(selectors["search"])
     
@@ -70,14 +70,26 @@ def search(driver, selectors, text):
         try:
             searching = driver.find_element_by_xpath(selectors["searching"])
             try:
-                no_result = searching.find_element_by_xpath(selectors["no_chat_found"])
-                no_result = True
+                searching.find_element_by_xpath(selectors["no_chat_found"])
+                has_results = False
                 done = True
-            except:pass
+            except:
+                done = True
         except:
             done = True
     
-    if not no_result:
+    if has_results:
+        has_results = False
+        try:
+            section_headers = side.find_elements_by_xpath(selectors["section_header"])
+            for section in section_headers:
+                if 'chats' in section.text.lower() or 'contact' in section.text.lower():
+                    has_results = True
+                    break
+        except Exception as e:
+            print(e)
+    
+    if has_results:
         # Seleccionar la primera opción
         elem.send_keys(Keys.ARROW_DOWN)
         elem.send_keys(Keys.ENTER)
@@ -86,17 +98,125 @@ def search(driver, selectors, text):
         else:
             try:
                 chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-                chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
-                    
-                if chat_name_header.text == text:
-                    result = True
+                you_label = False
+                try:
+                    chat_header.find_element_by_xpath(selectors["chat_header_you_label"])
+                    you_label = True
+                except:
+                    you_label = (cel_formatter(chat_header.find_element_by_xpath(selectors["chat_name_header"]).text) == bot.PHONE)
+
+                result = you_label
             except:pass
+    else:
+        clear_elem(driver, selectors, "search")
         
     return result
 
-def open_chat(driver, selectors, celular):
+def chat_init(driver, selectors, celular):
+    clear_elem(driver, selectors, "search")
+
+    # Verificar chat propio abierto
+    done = None
+    while not done:
+        has_result = search(driver, selectors, bot.PHONE)
+        clear_elem(driver, selectors, "search")
+        done = has_result
+        time.sleep(1)
+
+    # Instanciar input mensaje
+    done = None
+    while not done:
+        try:
+            try:
+                own_chat_message = driver.find_element_by_xpath(selectors["message"])
+            except:
+                own_chat_message = driver.find_element_by_xpath(selectors["message1"])
+            done = True
+        except:
+            time.sleep(1)
+    
+    time.sleep(1)
+    link = f"https://wa.me/{celular}"
+    for char in link:
+        own_chat_message.send_keys(char)
+    own_chat_message.send_keys(Keys.ENTER)
+    
+    # Esperar link
+    done = None
+    while not done:
+        try:
+            driver.find_element_by_xpath("//a[@href='https://wa.me/" + celular + "']").click()
+            done = True
+        except:
+            time.sleep(2)
+    
+    # Popup
+    done = None
+    while not done:
+        try:
+            for selector in selectors["modal_backdrop"]:
+                try:
+                    driver.find_element_by_xpath(selector).click()
+                except:pass
+            
+            loadig_confirm = False
+            try:
+                driver.find_element_by_xpath(selectors["modal_header"])
+                driver.find_element_by_xpath(selectors["modal_header"]).click()
+                loadig_confirm = True
+            except:pass
+
+            if not loadig_confirm:
+                # Instanciar modal
+                modal_elem_list = driver.find_elements_by_xpath(selectors["modal"])
+                print(f"Modal elem: {len(modal_elem_list)}")
+                modal = None
+                for m in modal_elem_list:
+                    print(f"Modal tabindex: {m.get_attribute('tabindex')}")
+                    if not m.get_attribute("tabindex") or m.get_attribute("tabindex") != '-1':
+                        modal = m
+                        break
+                
+                print(f"Modal: {modal}")
+                if not modal:
+                    modal = modal_elem_list[-1]
+
+                # Click en modal
+                for selector in selectors["modal_body"]:
+                    try:
+                        modal.find_element_by_xpath(selector).click()
+                    except:pass
+
+                # Comprobar número inválido
+                try:
+                    modal.find_element_by_xpath(selectors["modal_header"])
+                    if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
+                        modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
+                        elem = None
+                        done = True
+                        print("Número inválido")
+                except:
+                    try:
+                        if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
+                            modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
+                            elem = None
+                            done = True
+                            print("Número inválido")
+                    except:pass
+        except:
+            elem = True
+            done = True
+            print("Nuevo chat iniciado")
+        time.sleep(1)
+    
+    return elem
+
+def open_chat(driver, selectors, celular, group):
     elem = None
     elem = search(driver, selectors, celular)
+
+    if not group and not elem:
+        elem = chat_init(driver, selectors, celular)
         
     # Descartar cruce de chat
     if elem:
@@ -108,12 +228,12 @@ def open_chat(driver, selectors, celular):
                 elem = None
         except:
             elem = None
-    
+
     return elem
 
-def send_message(mensaje="", celular="", driver=None, selectors=None):
+def send_message(mensaje="", celular="", driver=None, selectors=None, group=True):
     try:
-        elem = open_chat(driver, selectors, celular)
+        elem = open_chat(driver, selectors, celular, group)
         new_message_input = False
 
         # Enviar mensaje

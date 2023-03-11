@@ -12,6 +12,7 @@
     "search_result_text": [".//span[@class='i0jNr']", ".//span[@class='_11JPr']"],
     "no_chat_found": "//div[@data-testid='search-no-chats-or-contacts']",
     "clear_search": ".//span[@data-testid='x-alt']",
+    "section_header": ".//div[@data-testid='section-header']",
     "chat_class": "lhggkp7q ln8gz9je rx9719la",
     "back_button": ["//button[@class='_18eKe']", "//div[@data-testid='btn-closer-drawer']"],
 
@@ -25,6 +26,7 @@
     "group_name": "//div[@data-testid='group-info-drawer-subject-input']",
     "chat_header": "//header[@data-testid='conversation-header']",
     "chat_name_header": ".//span[@data-testid='conversation-info-header-chat-title']",
+    "chat_header_you_label": ".//span[@data-testid='you-label']",
 
     "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='10']",
     "message1": "//div[@data-testid='conversation-compose-box-input']",
