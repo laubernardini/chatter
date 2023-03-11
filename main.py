@@ -320,8 +320,8 @@ def send(driver, selectors, list_for_send, is_groups=True):
     for item in list_for_send: # Enviar mensaje a los grupos
         if not is_groups:
             if counter > 0 and counter % bot.SERIES == 0:
-                print(f"Pausa de {bot.FORCED_ACTIVITY_FREQUENCY}min")
-                time.sleep(bot.FORCED_ACTIVITY_FREQUENCY * 60)
+                print(f"Pausa de {bot.AWAIT_TIME}min")
+                time.sleep(bot.AWAIT_TIME * 60)
 
         result = actions.send_message(
             mensaje=bot.MESSAGE, 
