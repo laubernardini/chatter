@@ -4,16 +4,20 @@ VERSION = "1.0"
 
 # Variables de ejecución
 OS_SLASH = "\\" # / -> linux \\ -> windows
-SERVER_URL = "https://apicloud.com.ar"#"http://localhost:8000"#
+SERVER_URL = "http://localhost:8000"#"https://apicloud.com.ar"#
 BROWSER = "chrome"
 DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
+FORCED_ACTIVITY_FREQUENCY = 1 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 START_DATE = None
-FORCED_ACTIVITY_FREQUENCY = 5 # En minutos. Click para marcar al navegador como "activo" frente al SO 
+NEXT_SEND = None
 SERIES = 1
-AWAIT_TIME = 8
+AWAIT_TIME = 1
 MESSAGE = ""
 DESCRIPCION = "-"
 GROUPS_ONLY = False
+START_MSG_CODE = "Hola! Soy chatter"
+RESPONSE_MSG = "Ok, "
+CHATTER_CODE = 'cttr'
 
 # Log
 SHOW_ERRORS = True
@@ -25,7 +29,8 @@ NEXT_FORCED_ACTIVITY = None
 SLEEP_TIME = 0
 CLIPBOARD_SLEEP_TIME = 0
 GROUPS_LIST = []
-PHONES_LIST = []
+PHONES_LIST = ["5493513182948", "5493517558839"]
+LAST_SEND = None
 
 def calc_sleeptime():
     global PHONE, SLEEP_TIME, CLIPBOARD_SLEEP_TIME
@@ -35,3 +40,8 @@ def calc_sleeptime():
         sleep_time /= 2
     SLEEP_TIME = sleep_time
     CLIPBOARD_SLEEP_TIME = (sleep_time if sleep_time < 3 else sleep_time / 2) if (sleep_time > 1) else (sleep_time + 1)
+
+def set_message():
+    global PHONE, CHATTER_CODE, MESSAGE
+
+    MESSAGE = f"Hola! Soy chatter _*{PHONE}*_ (_{CHATTER_CODE}_)"

@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 
 # Webdriver
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 
 # Application
 import bot, actions
@@ -36,14 +38,13 @@ def start():
         with open('config.json', 'rb') as config:
             config = json.load(config)
         bot.GROUPS_LIST = config["groupsList"]
-    else:
-        bot.PHONES_LIST = get_phones_list()
+    #else:
+    #    bot.PHONES_LIST = get_phones_list()
     
     # Registrar inicio
-    bot.START_DATE = datetime.now()
+    bot.START_DATE = bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot. datetime.now()
 
     # Proximo reload
-    bot.NEXT_FORCED_ACTIVITY = bot.START_DATE
     print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
 
     # Loop principal
@@ -68,14 +69,14 @@ def start():
         else:
             time.sleep(5)
 
+        set_next_forced_activity = send_handler(driver, selectors)
+
         # Actividad forzada
-        if datetime.now() >= bot.NEXT_FORCED_ACTIVITY:
-            error = send_handler(driver, selectors)
-            if not error:
-                bot.NEXT_FORCED_ACTIVITY = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
-                print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
-                if not bot.GROUPS_ONLY:
-                    bot.PHONES_LIST = get_phones_list()
+        if set_next_forced_activity:
+            bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
+            print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
+            #if not bot.GROUPS_ONLY:
+            #    bot.PHONES_LIST = get_phones_list()
 
 ## Apis ##
 # Prints
@@ -296,7 +297,7 @@ def get_own_phone(driver, selectors):
         else:
             time.sleep(1)
     bot.PHONE = actions.cel_formatter(celular)
-    bot.MESSAGE = f"Hola! Soy chatter _*{bot.PHONE}*_ (_cttr_)"
+    bot.set_message()
     
     print(f'PHONE: {bot.PHONE}')
 
@@ -311,31 +312,71 @@ def get_own_phone(driver, selectors):
 # Handlers
 def send_handler(driver, selectors):
     actions.release_clipboard()
+    set_next_activity = False
 
-    return send(driver, selectors, list_for_send=bot.GROUPS_LIST) if bot.GROUPS_ONLY else send(driver, selectors, list_for_send=bot.PHONES_LIST, is_groups=False)
+    # Enviar
+    if datetime.now() >= bot.NEXT_SEND:
+        list_for_send = bot.GROUPS_LIST if bot.GROUPS_ONLY else bot.PHONES_LIST
+        if bot.LAST_SEND == '':
+            item = list_for_send[0]
+        else:
+            last_send_idx = list_for_send.index(bot.LAST_SEND)
+            item = list_for_send[last_send_idx + 1] if (last_send_idx + 1) <= len(list_for_send) else None
 
-def send(driver, selectors, list_for_send, is_groups=True):
+        if item:
+            send(driver, selectors, item, is_groups=bot.GROUPS_ONLY)
+            bot.LAST_SEND = item
+            bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.AWAIT_TIME)
+        else:
+            set_next_activity = True
+            bot.LAST_SEND = ""
+    else:
+        print(f"Sin mensajes para enviar, próximo: {bot.NEXT_SEND}")
+    
+    return set_next_activity
+
+def send(driver, selectors, item, is_groups=True):
     error = False
-    counter = 0
-    for item in list_for_send: # Enviar mensaje a los grupos
-        if not is_groups:
-            if counter > 0 and counter % bot.SERIES == 0:
-                print(f"Pausa de {bot.AWAIT_TIME}min")
-                time.sleep(bot.AWAIT_TIME * 60)
-
-        result = actions.send_message(
-            mensaje=bot.MESSAGE, 
-            celular=item, 
-            driver=driver, 
-            selectors=selectors,
-            group=is_groups
-        )
-        if result == 'ERROR':
-            error = True
-            break
-        
-        counter += 1
-        print("Esperando 30sec para el siguiente envío")
-        time.sleep(30)
+    
+    result = actions.send_message(
+        mensaje=bot.MESSAGE, 
+        celular=item, 
+        driver=driver, 
+        selectors=selectors,
+        init=not(is_groups)
+    )
+    if result == 'ERROR':
+        error = True
     
     return error
+
+def inbound_handler(driver, selectors):
+    if not bot.GROUPS_ONLY:
+        # Obtener mensajes desde notificación
+        if bot.SHOW_EX_PRINTS:
+            print("Buscando notificaciones")
+        done = None
+        while not done:
+            n = actions.notification_clicker(driver, selectors)
+            if n:
+                actions.close_confirm_popup(driver, selectors)
+                response = actions.get_inbounds(driver, selectors)
+                # Cerrar chat
+                webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+                
+                if response:
+                    item = response.split('@')[0].replace('true_', '').replace('false_', '')
+                    actions.send_message(
+                        mensaje=f'{bot.RESPONSE_MSG} _*{item}*_ _(cttr)_', 
+                        celular=item, 
+                        driver=driver, 
+                        selectors=selectors
+                    )
+                
+                time.sleep(1)
+            else:
+                if bot.SHOW_EX_PRINTS:
+                    print("No hay notificaciones")
+                done = True
+        
+        time.sleep(1)

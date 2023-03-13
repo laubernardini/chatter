@@ -33,6 +33,52 @@ def cel_formatter(celular): # Formatear celular
     
     return celular
 
+def get_msg_data_id(msg):
+    data_id = None
+    if not msg.get_attribute('data-id'):
+        msg_parent = get_parent(msg)
+        if msg_parent.get_attribute('data-id'):
+            data_id = msg_parent.get_attribute('data-id')
+    else:
+        data_id = msg.get_attribute('data-id')
+    return data_id
+
+def close_confirm_popup(driver, selectors):
+    # Instanciar modal
+    try:
+        modal_elem_list = driver.find_elements_by_xpath(selectors["modal"])
+        print(f"Modal elem: {len(modal_elem_list)}")
+        modal = None
+        for m in modal_elem_list:
+            print(f"Modal tabindex: {m.get_attribute('tabindex')}")
+            if not m.get_attribute("tabindex") or m.get_attribute("tabindex") != '-1':
+                modal = m
+                break
+        
+        print(f"Modal: {modal}")
+        if not modal:
+            modal = modal_elem_list[-1]
+
+        # Click en modal
+        for selector in selectors["modal_body"]:
+            try:
+                modal.find_element_by_xpath(selector).click()
+            except:pass
+        
+        modal.find_element_by_xpath("modal_ok_button").click()
+    except Exception as e:
+        print(e)
+        print("No hay popup")
+
+def set_tabindex(elem, driver, selectors):
+    if not elem.get_attribute('tabindex'):
+        driver.execute_script('arguments[0].setAttribute("tabindex", "-1")', elem)
+
+def set_focusable_item_class(elem, driver, selectors):
+    if elem.get_attribute('data-id'):
+        if selectors["navigation_item_class"] not in elem.get_attribute('class'):
+            driver.execute_script('arguments[0].classList.add("focusable-list-item")', elem)
+
 # Búsqueda
 def clear_elem(driver, selectors, id):
     elem = driver.find_element_by_xpath(selectors[id])
@@ -211,11 +257,11 @@ def chat_init(driver, selectors, celular):
     
     return elem
 
-def open_chat(driver, selectors, celular, group):
+def open_chat(driver, selectors, celular, init):
     elem = None
     elem = search(driver, selectors, celular)
 
-    if not group and not elem:
+    if init and not elem:
         elem = chat_init(driver, selectors, celular)
         
     # Descartar cruce de chat
@@ -231,9 +277,9 @@ def open_chat(driver, selectors, celular, group):
 
     return elem
 
-def send_message(mensaje="", celular="", driver=None, selectors=None, group=True):
+def send_message(mensaje="", celular="", driver=None, selectors=None, init=False):
     try:
-        elem = open_chat(driver, selectors, celular, group)
+        elem = open_chat(driver, selectors, celular, init)
         new_message_input = False
 
         # Enviar mensaje
@@ -316,3 +362,236 @@ def send_message(mensaje="", celular="", driver=None, selectors=None, group=True
             print(os.path.split(exc_tb.tb_frame.f_code.co_filename)[1], ", linea ", exc_tb.tb_lineno)
             
         return "ERROR"
+
+def notification_clicker(driver, selectors):
+    notification_resolved = False
+    try:
+        notifications = driver.find_elements_by_xpath(selectors["notification"])
+        print(f"Notificaciones: {len(notifications)}")
+        for n in notifications:
+            parent = get_parent(n)
+            done = None
+            while not done:
+                parent_data_id = parent.get_attribute("data-testid")
+                if parent_data_id:
+                    if 'cell-frame-container' not in parent_data_id:
+                        parent = get_parent(parent)
+                    else:
+                        done = True
+                else:
+                    parent = get_parent(parent)
+
+            # Si es chat de grupo o chat propio, continuar con la siguiente notificación
+            is_permitter_phone = False
+            conversation_name = ""
+
+            try:
+                conversation_name = parent.find_element_by_xpath(selectors["conversation_name"])
+                conversation_name = conversation_name.find_element_by_xpath(".//span[@dir='auto']").text
+                print(f'Conversación: {conversation_name}, BOT PHONE: {bot.PHONE}')
+                formatted_conv_name = cel_formatter(conversation_name)
+                if formatted_conv_name in bot.PHONES_LIST:
+                    is_permitter_phone = True
+            except:pass
+            
+            print("Noti except conditions:", not is_permitter_phone)
+            if not is_permitter_phone:
+                continue
+            
+            # Ingresar al chat
+            parent = get_parent(n)
+            done = None
+            while not done:
+                print(f"Parent class: {parent.get_attribute('class')}, {parent.get_attribute('data-testid')}, {parent.get_attribute('role')}")
+                parent.click()
+                time.sleep(1)
+                n_count = len(driver.find_elements_by_xpath(selectors["notification"]))
+                if n_count < len(notifications):
+                    done = True
+                else:
+                    parent = get_parent(parent)
+            print("Notificación abierta")
+            notification_resolved = True
+            time.sleep(1)
+            break
+    except Exception as e:
+        print(e)
+        if bot.SHOW_EX_PRINTS:
+            print("No hay notificaciones")
+            
+    return notification_resolved
+
+def get_inbounds(driver, selectors):
+    response = None
+    try:
+        done = None
+        first_msg = None
+        reference_elem = None
+        has_data_id = None
+
+        is_unread = False
+        is_from_outbound = False
+        is_first_msg = False
+
+        # Unread message
+        if not reference_elem:
+            for selector in selectors["unread"]:
+                try:
+                    reference_elem = driver.find_element_by_xpath(selector)
+                    is_unread = True
+                    break
+                except:pass
+            
+            if is_unread:
+                reference_elem.click()
+                reference_elem.send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.switch_to.active_element
+                if bot.SHOW_EX_PRINTS:
+                    print("Hay mensajes no leidos")
+
+        # From last outbound
+        if not reference_elem:
+            try:
+                reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+                is_from_outbound = True
+            except:pass
+            print(f"Es un mensaje saliente: {'SI' if is_from_outbound else 'NO'}")
+
+            if is_from_outbound:
+                set_tabindex(reference_elem, driver, selectors)
+                reference_elem.send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.switch_to.active_element
+
+                if bot.SHOW_EX_PRINTS:
+                    print("Navegando a primer mensaje desde ultimo mensaje saliente")
+
+        # First message of chat
+        if not reference_elem:
+            try:
+                reference_elem = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
+                is_first_msg = True
+            except:pass
+
+            if is_first_msg:
+                set_tabindex(reference_elem, driver, selectors)
+                first_msg = reference_elem
+                if bot.SHOW_EX_PRINTS:
+                    print("Obteniendo primer mensaje entrante del chat")
+
+        # Skip
+        if not reference_elem:
+            done = True
+        
+        if not first_msg and not done:
+            set_tabindex(reference_elem, driver, selectors)
+            first_msg = reference_elem
+
+            # Comprobar si es el mensaje de "este chat está cifrado"
+            try:
+                first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] 
+                first_msg.send_keys(Keys.ARROW_DOWN)
+                first_msg = driver.switch_to.active_element
+            except:pass
+            # Comprobar si es el mensaje de "mensajes temporales"
+            try:
+                first_msg.find_element_by_xpath(selectors["temporal_chat"])[-1] 
+                first_msg.send_keys(Keys.ARROW_DOWN)
+                first_msg = driver.switch_to.active_element
+            except:pass
+
+            # Buscar primer mensaje
+            while not get_msg_data_id(first_msg):
+                set_tabindex(first_msg, driver, selectors)
+
+                if bot.SHOW_EX_PRINTS:
+                    print("Obteniendo primer mensaje")
+
+                # Comprobar si es un elemento del chat
+
+                # Condiciones
+                is_chat_item = False
+                for selector in selectors["chat_item_class"]:
+                    if selector in first_msg.get_attribute("class"):
+                        is_chat_item = True
+                        break
+                is_unread_sign = False 
+                for selector in selectors["unread_class"]:
+                    if selector in first_msg.get_attribute("class"):
+                        is_unread_sign = True
+                        break
+                time.sleep(1)
+
+                if is_chat_item or is_unread_sign:
+                    first_msg.send_keys(Keys.ARROW_DOWN)
+                    first_msg = driver.switch_to.active_element
+                else: # Si no es elemento del chat TAB hasta entrar a la ventana del chat
+                    first_msg.send_keys(Keys.TAB)
+                    first_msg = driver.switch_to.active_element
+                    time.sleep(0.5)
+                
+                # Comprobar si es el mensaje de "este chat está cifrado"
+                try:
+                    first_msg.find_element_by_xpath(selectors["encrypted_chat"])
+                    set_tabindex(first_msg, driver, selectors)
+                    first_msg.send_keys(Keys.ARROW_DOWN)
+                    first_msg = driver.switch_to.active_element
+                except:pass
+            time.sleep(1)      
+
+        first_msg_data_id = get_msg_data_id(first_msg)
+        print("Mensaje obtenido")
+        print(f"Primer mensaje: {first_msg_data_id}")
+
+        # Condiciones
+        not_msg_out = ('false' in first_msg_data_id) if first_msg_data_id else False
+
+        print(f"Es un mensaje nuevo: {'SI' if (not_msg_out) else 'NO'}")
+
+        
+        # Guardando primer mensaje
+        if not_msg_out:
+            if bot.START_MSG_CODE in first_msg.text and bot.CHATTER_CODE in first_msg.text:
+                response = first_msg_data_id
+                done = True
+            else:
+                last_msg = first_msg
+        else:
+            done = True
+
+        # Obtener todos los mensajes nuevos
+        print("Revisando mensajes siguientes...")
+        while not done or not response:
+            try:
+                set_focusable_item_class(last_msg, driver, selectors)
+                set_tabindex(last_msg, driver, selectors)
+                last_msg.send_keys(Keys.ARROW_DOWN)
+                next_msg = driver.switch_to.active_element
+                if last_msg != next_msg:
+                    # Condiciones
+                    has_data_id = get_msg_data_id(next_msg)
+                    not_msg_out = False
+                    if has_data_id:
+                        not_msg_out = 'false' in get_msg_data_id(next_msg)
+                    is_message_in = not_msg_out and has_data_id
+                    print(f"Es mensaje entrante: {is_message_in}")
+
+                    if is_message_in:
+                        if bot.START_MSG_CODE in next_msg.text and bot.CHATTER_CODE in next_msg.text:
+                            response = has_data_id
+                            done = True
+                        else:
+                            last_msg = first_msg
+
+                    last_msg = next_msg
+                else:
+                    done = True
+            except:
+                done = True
+
+        print("No hay más mensajes nuevos")
+    except Exception as e:
+        print(e)
+        if bot.SHOW_EX_PRINTS:
+            print("No hay mensajes no leidos")
+    
+    return response
