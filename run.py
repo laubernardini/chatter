@@ -12,6 +12,7 @@ def run():
     parser.add_argument("-c", "--celular", help="Celular")
     parser.add_argument("-s", "--server", help="Server")
     parser.add_argument("-g", "--grupos", help="Grupos")
+    parser.add_argument("-t", "--tiempo", help="Tiempo")
     parser.add_argument("-d", "--desc", help="Descripcion")
     args = parser.parse_args()
 
@@ -28,6 +29,9 @@ def run():
         print(f'Desc: {bot.DESCRIPCION}')
     if args.grupos:
         bot.GROUPS_ONLY = "s" in args.grupos.lower()
+    if args.tiempo:
+        tiempo = args.tiempo.replace("min", "").replace("m", "")
+        bot.AWAIT_TIME = int(tiempo)
 
     print(f"PHONE: {bot.PHONE}")
     system("title CHATTER " + bot.PHONE)

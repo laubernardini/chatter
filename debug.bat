@@ -4,7 +4,8 @@ timeout /t 1 /nobreak > nul
 cls
 set /p bot_phone=Indica CELULAR (si no es business): 
 set /p bot_server=Indica SERVER (dejar en blanco si no es CAT): 
-set /p bot_grupos=Indica si envía solo a GRUPOS (SI/NO): 
+set /p bot_grupos=Indica si envia solo a GRUPOS (SI/NO): 
+set /p bot_tiempo=Tiempo entre envios (5min p. def.): 
 set /p bot_desc=DESCRIPCION: 
 if not "%bot_phone%" == "" (
 	set phone=-c %bot_phone%
@@ -24,11 +25,16 @@ if not "%bot_grupos%" == "" (
 if "%bot_grupos%" == "" (
 	set grupos= 
 )
+if not "%bot_tiempo%" == "" (
+	set tiempo=-t %bot_tiempo%
+)
+if "%bot_tiempo%" == "" (
+	set tiempo= 
+)
 if not "%bot_desc%" == "" (
 	set desc=-d ^"%bot_desc%"
 )
 if "%bot_desc%" == "" (
 	set desc= 
 )
-timeout /t 0 /nobreak > nul
-cmd /k "cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python -m debugpy --listen 0.0.0.0:5678 --wait-for-client ./run.py %phone% %server% %grupos% %desc%"
+cmd /k "cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python -m debugpy --listen 0.0.0.0:5678 --wait-for-client ./run.py %phone% %server% %tiempo% %grupos% %desc%"

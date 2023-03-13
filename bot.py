@@ -7,11 +7,10 @@ OS_SLASH = "\\" # / -> linux \\ -> windows
 SERVER_URL = "https://apicloud.com.ar"#"http://localhost:8000"#
 BROWSER = "chrome"
 DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
-FORCED_ACTIVITY_FREQUENCY = 1 # En minutos. Click para marcar al navegador como "activo" frente al SO 
+FORCED_ACTIVITY_FREQUENCY = 5 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 START_DATE = None
 NEXT_SEND = None
-SERIES = 1
-AWAIT_TIME = 1
+AWAIT_TIME = 5
 MESSAGE = ""
 DESCRIPCION = "-"
 GROUPS_ONLY = False
@@ -29,7 +28,7 @@ NEXT_FORCED_ACTIVITY = None
 SLEEP_TIME = 0
 CLIPBOARD_SLEEP_TIME = 0
 GROUPS_LIST = []
-PHONES_LIST = ["5493517558694", "5493517558839"]
+PHONES_LIST = []
 LAST_SEND = None
 
 def calc_sleeptime():

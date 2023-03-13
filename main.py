@@ -38,8 +38,8 @@ def start():
         with open('config.json', 'rb') as config:
             config = json.load(config)
         bot.GROUPS_LIST = config["groupsList"]
-    #else:
-    #    bot.PHONES_LIST = get_phones_list()
+    else:
+        bot.PHONES_LIST = get_phones_list()
     
     # Registrar inicio
     bot.START_DATE = bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now()
@@ -69,14 +69,18 @@ def start():
         else:
             time.sleep(5)
 
+        # Revisar notificaciones
+        inbound_handler(driver, selectors)
+
+        # Enviar
         set_next_forced_activity = send_handler(driver, selectors)
 
         # Actividad forzada
         if set_next_forced_activity:
             bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
             print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
-            #if not bot.GROUPS_ONLY:
-            #    bot.PHONES_LIST = get_phones_list()
+            if not bot.GROUPS_ONLY:
+                bot.PHONES_LIST = get_phones_list()
 
 ## Apis ##
 # Prints
@@ -317,11 +321,11 @@ def send_handler(driver, selectors):
     # Enviar
     if datetime.now() >= bot.NEXT_SEND:
         list_for_send = bot.GROUPS_LIST if bot.GROUPS_ONLY else bot.PHONES_LIST
-        if bot.LAST_SEND == '':
+        if not bot.LAST_SEND:
             item = list_for_send[0]
         else:
             last_send_idx = list_for_send.index(bot.LAST_SEND)
-            item = list_for_send[last_send_idx + 1] if (last_send_idx + 1) <= len(list_for_send) else None
+            item = list_for_send[last_send_idx + 1] if last_send_idx < len(list_for_send) -1 else None
 
         if item:
             send(driver, selectors, item, is_groups=bot.GROUPS_ONLY)
@@ -329,7 +333,7 @@ def send_handler(driver, selectors):
             bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.AWAIT_TIME)
         else:
             set_next_activity = True
-            bot.LAST_SEND = ""
+            bot.LAST_SEND = None
     else:
         print(f"Sin mensajes para enviar, próximo: {bot.NEXT_SEND}")
     

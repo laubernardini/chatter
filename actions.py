@@ -560,7 +560,7 @@ def get_inbounds(driver, selectors):
 
         # Obtener todos los mensajes nuevos
         print("Revisando mensajes siguientes...")
-        while not done or not response:
+        while not done and not response:
             try:
                 set_focusable_item_class(last_msg, driver, selectors)
                 set_tabindex(last_msg, driver, selectors)
