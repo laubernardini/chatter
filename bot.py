@@ -4,7 +4,7 @@ VERSION = "1.0"
 
 # Variables de ejecución
 OS_SLASH = "\\" # / -> linux \\ -> windows
-SERVER_URL = "http://localhost:8000"#"https://apicloud.com.ar"#
+SERVER_URL = "https://apicloud.com.ar"#"http://localhost:8000"#
 BROWSER = "chrome"
 DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
 FORCED_ACTIVITY_FREQUENCY = 1 # En minutos. Click para marcar al navegador como "activo" frente al SO 
