@@ -42,7 +42,7 @@ def start():
     #    bot.PHONES_LIST = get_phones_list()
     
     # Registrar inicio
-    bot.START_DATE = bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.datetime.now()
+    bot.START_DATE = bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now()
 
     # Proximo reload
     print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
