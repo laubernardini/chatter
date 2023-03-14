@@ -43,7 +43,8 @@ def start():
     
     # Registrar inicio
     bot.START_DATE = datetime.now()
-    bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.START_DATE + timedelta(minutes=bot.NEXT_FORCED_ACTIVITY * 2)
+    
+    bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = (bot.START_DATE) if bot.GROUPS_ONLY else (bot.START_DATE + timedelta(minutes=bot.NEXT_FORCED_ACTIVITY * 2))
 
     # Inicio de envios
     print("Inicio de envios: ", str(bot.NEXT_FORCED_ACTIVITY))
