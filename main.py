@@ -42,10 +42,11 @@ def start():
         bot.PHONES_LIST = get_phones_list()
     
     # Registrar inicio
-    bot.START_DATE = bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now()
+    bot.START_DATE = datetime.now()
+    bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.START_DATE + timedelta(minutes=bot.NEXT_FORCED_ACTIVITY * 2)
 
-    # Proximo reload
-    print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
+    # Inicio de envios
+    print("Inicio de envios: ", str(bot.NEXT_FORCED_ACTIVITY))
 
     # Loop principal
     while True:
