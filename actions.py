@@ -42,6 +42,7 @@ def get_msg_data_id(msg):
     else:
         data_id = msg.get_attribute('data-id')
     return data_id
+
 def get_input(driver, selectors, key):
     input_element = None
     # Obtener input de mensaje
@@ -49,9 +50,11 @@ def get_input(driver, selectors, key):
     while not done:
         try:
             input_element = driver.find_element_by_xpath(selectors[key])
+            input_element.click()
             done = True
-        except:
-            time.sleep(1)
+        except:pass
+        
+        time.sleep(1)
     print("Conversación lista")
 
     return input_element
@@ -291,21 +294,9 @@ def open_chat(driver, selectors, celular, init):
     
     if elem:
         clear_elem(driver, selectors, "search")
+        result = get_input(driver, selectors, "message1")
 
-        # Obtener input de mensaje
-        done = None
-        while not done:
-            try:
-                try:
-                    result = driver.find_element_by_xpath(selectors["message"])
-                except:
-                    result = driver.find_element_by_xpath(selectors["message1"])
-                done = True
-            except:
-                time.sleep(1)
-        print("Conversación lista")
-
-        time.sleep(2)
+        time.sleep(1)
 
     return result
 
@@ -575,6 +566,7 @@ def response_group_msg(driver, selectors, actual_msg, group_name):
 
 def back_to_group(driver, selectors):
     result = False
+    last_send = None
 
     sleep_counter = 0
     done = None
@@ -585,7 +577,8 @@ def back_to_group(driver, selectors):
                 done = True
             else:
                 raise Exception("No se pudo recuperar wa_id")
-        except:
+        except Exception as e:
+            print(e)
             time.sleep(1)
             sleep_counter = sleep_counter + 1
     
@@ -684,7 +677,7 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
                 if bot.SHOW_EX_PRINTS:
                     print("Obteniendo primer mensaje entrante del chat")
 
-    if not first_msg and not reference_elem:
+    if not first_msg and reference_elem:
         set_tabindex(reference_elem, driver, selectors)
         first_msg = reference_elem
 
@@ -738,10 +731,7 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
             except:pass
-        time.sleep(1)     
-    elif reference_elem:
-        set_tabindex(reference_elem, driver, selectors)
-        first_msg = reference_elem
+        time.sleep(1)
 
     if first_msg:
         print("Mensaje obtenido")

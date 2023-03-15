@@ -355,7 +355,7 @@ def send_handler(driver, selectors):
             item = list_for_send[last_send_idx + 1] if last_send_idx < len(list_for_send) -1 else None
 
         if item:
-            send(driver, selectors, item, is_groups=bot.GROUPS_ONLY)
+            send(driver, selectors, item)
             bot.LAST_SEND = item
             bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.AWAIT_TIME if bot.MODE == "REPLY" else 1)
         else:
@@ -366,7 +366,7 @@ def send_handler(driver, selectors):
     
     return set_next_activity
 
-def send(driver, selectors, item, is_groups=True):
+def send(driver, selectors, item):
     error = False
     
     result = actions.send_message(
@@ -374,7 +374,7 @@ def send(driver, selectors, item, is_groups=True):
         celular=item, 
         driver=driver, 
         selectors=selectors,
-        init=not(is_groups)
+        init=bot.MODE == 'REPLY'
     )
     if result == 'ERROR':
         error = True
@@ -394,7 +394,7 @@ def group_read_handler(driver, selectors):
             bot.ACTUAL_READED_MSG = ""
             actual_group_idx = bot.GROUPS_LIST.index(bot.ACTUAL_READED_GROUP)
             if actual_group_idx >= 0:
-                bot.ACTUAL_READED_GROUP = bot.GROUPS_LIST[actual_group_idx + 1] if actual_group_idx < len(bot.GROUPS_LIST) else bot.GROUPS_LIST[0]
+                bot.ACTUAL_READED_GROUP = bot.GROUPS_LIST[actual_group_idx + 1] if actual_group_idx < len(bot.GROUPS_LIST) - 1 else bot.GROUPS_LIST[0]
             else:
                 bot.ACTUAL_READED_GROUP = ""
         else:
