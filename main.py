@@ -44,7 +44,7 @@ def start():
         #bot.PHONES_LIST = get_phones_list()
         bot.GROUPS_LIST = get_groups_list()
         bot.MODE_CHANGE = bot.START_DATE + timedelta(minutes=bot.MODE_CHANGE_TIME)
-        bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.START_DATE + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY * 2)
+        bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.START_DATE + timedelta(minutes=(bot.FORCED_ACTIVITY_FREQUENCY * 2 if bot.MODE == 'REPLY' else 0))
     
     # Inicio de envios
     print("Inicio de envios: ", str(bot.NEXT_FORCED_ACTIVITY))
