@@ -33,56 +33,57 @@ def start():
     sync(driver, selectors)
     send_status("SINCRONIZADO")
 
-    # Obtener configuraciones
-    if bot.GROUPS_ONLY:
-        with open('config.json', 'rb') as config:
-            config = json.load(config)
-        bot.GROUPS_LIST = config["groupsList"]
-    else:
-        bot.PHONES_LIST = get_phones_list()
-    
     # Registrar inicio
     bot.START_DATE = datetime.now()
-    
-    bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = (bot.START_DATE) if bot.GROUPS_ONLY else (bot.START_DATE + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY * 2))
 
+    # Obtener configuraciones
+    if bot.GROUPS_ONLY:
+        bot.GROUPS_LIST = get_groups_list()
+        bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.START_DATE
+    else:
+        #bot.PHONES_LIST = get_phones_list()
+        bot.GROUPS_LIST = get_groups_list()
+        bot.MODE_CHANGE = bot.START_DATE + timedelta(minutes=bot.MODE_CHANGE_TIME)
+        bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.START_DATE + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY * 2)
+    
     # Inicio de envios
     print("Inicio de envios: ", str(bot.NEXT_FORCED_ACTIVITY))
 
     # Loop principal
     while True:
+        set_next_forced_activity = False
         driver.execute_script(f"document.title = 'CHATTER {bot.PHONE}'")
 
         # Revisar desincronización
-        sync_needed = None
-        try:
-            driver.find_element_by_xpath(selectors["qr"])
-            sync_needed = True
-        except:
-            try:
-                driver.find_element_by_xpath(selectors["search"])
-            except:
-                sync_needed = True
-
-        if sync_needed:
-            send_status("BLOQUEADO")
-            bot.PHONE = ""
-            sync(driver, selectors)
-        else:
-            time.sleep(5)
+        check_sync(driver, selectors)
 
         # Revisar notificaciones
-        inbound_handler(driver, selectors)
+        #inbound_handler(driver, selectors)
 
         # Enviar
-        set_next_forced_activity = send_handler(driver, selectors)
-
+        if bot.MODE == "GROUPS":
+            set_next_forced_activity = send_handler(driver, selectors)
+        else:
+            group_read_handler(driver, selectors)
         # Actividad forzada
         if set_next_forced_activity:
             bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
             print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
-            if not bot.GROUPS_ONLY:
-                bot.PHONES_LIST = get_phones_list()
+            #if not bot.GROUPS_ONLY:
+            #    bot.PHONES_LIST = get_phones_list()
+        
+        # Cambio de modo
+        if bot.MODE_CHANGE:
+            print(f"Modo actual {bot.MODE}, próximo cambio: {bot.MODE_CHANGE}")
+            if datetime.now() > bot.MODE_CHANGE:
+                if bot.MODE == "GROUPS":
+                    bot.MODE = "REPLY"
+                    bot.ACTUAL_READED_GROUP = ""
+                    bot.ACTUAL_READED_MSG = ""
+                else:
+                    bot.MODE = "GROUPS"
+                print(f"Cambiando modo a {bot.MODE}")
+                bot.MODE_CHANGE = datetime.now() + timedelta(minutes=bot.MODE_CHANGE_TIME)
 
 ## Apis ##
 # Prints
@@ -195,6 +196,51 @@ def get_phones_list():
 
     return result
 
+def get_groups_list():
+    with open('config.json', 'rb') as config:
+        config = json.load(config)
+
+    return config["groupsList"][bot.GROUPS_LIST_SOURCE]
+
+def get_own_phone(driver, selectors):
+    time.sleep(3)
+    print("Intentando entrar al perfil...")
+    #profile_button = driver.find_element_by_xpath(selectors["main_header"]).find_element_by_xpath(".//div[@role='button']")
+    #profile_button.click()
+    profile = actions.get_parent(driver.find_element_by_xpath(selectors["profile_pic"]))
+    done = None
+    while not done:
+        if profile.get_attribute("role") == 'button':
+            profile.click()
+            done = True
+    
+    time.sleep(3)
+    done = None
+    celular = None
+    print("Buscando numero propio...")
+    while not done:
+        for selector in selectors["own_phone"]:
+            try:
+                celular = driver.find_element_by_xpath(selector).text
+                break
+            except:pass
+        if celular:
+            done = True
+        else:
+            time.sleep(1)
+    bot.PHONE = actions.cel_formatter(celular)
+    bot.set_message()
+    
+    print(f'PHONE: {bot.PHONE}')
+
+    bot.calc_sleeptime()
+
+    for selector in selectors["back_button"]:
+        try:
+            driver.find_element_by_xpath(selector).click()
+            break
+        except:pass
+
 # Funciones de inicio  
 def driver_connect_chrome(url=""):
     options = webdriver.chrome.options.Options()
@@ -276,44 +322,23 @@ def sync(driver, selectors):
     bot.CHATS = []
     bot.CURRENT_CHAT = {}
 
-def get_own_phone(driver, selectors):
-    time.sleep(3)
-    print("Intentando entrar al perfil...")
-    #profile_button = driver.find_element_by_xpath(selectors["main_header"]).find_element_by_xpath(".//div[@role='button']")
-    #profile_button.click()
-    profile = actions.get_parent(driver.find_element_by_xpath(selectors["profile_pic"]))
-    done = None
-    while not done:
-        if profile.get_attribute("role") == 'button':
-            profile.click()
-            done = True
-    
-    time.sleep(3)
-    done = None
-    celular = None
-    print("Buscando numero propio...")
-    while not done:
-        for selector in selectors["own_phone"]:
-            try:
-                celular = driver.find_element_by_xpath(selector).text
-                break
-            except:pass
-        if celular:
-            done = True
-        else:
-            time.sleep(1)
-    bot.PHONE = actions.cel_formatter(celular)
-    bot.set_message()
-    
-    print(f'PHONE: {bot.PHONE}')
-
-    bot.calc_sleeptime()
-
-    for selector in selectors["back_button"]:
+def check_sync(driver, selectors):
+    sync_needed = None
+    try:
+        driver.find_element_by_xpath(selectors["qr"])
+        sync_needed = True
+    except:
         try:
-            driver.find_element_by_xpath(selector).click()
-            break
-        except:pass
+            driver.find_element_by_xpath(selectors["search"])
+        except:
+            sync_needed = True
+
+    if sync_needed:
+        send_status("BLOQUEADO")
+        bot.PHONE = ""
+        sync(driver, selectors)
+    else:
+        time.sleep(5)
 
 # Handlers
 def send_handler(driver, selectors):
@@ -322,7 +347,7 @@ def send_handler(driver, selectors):
 
     # Enviar
     if datetime.now() >= bot.NEXT_SEND:
-        list_for_send = bot.GROUPS_LIST if bot.GROUPS_ONLY else bot.PHONES_LIST
+        list_for_send = bot.GROUPS_LIST# if bot.GROUPS_ONLY else bot.PHONES_LIST
         if not bot.LAST_SEND:
             item = list_for_send[0]
         else:
@@ -332,7 +357,7 @@ def send_handler(driver, selectors):
         if item:
             send(driver, selectors, item, is_groups=bot.GROUPS_ONLY)
             bot.LAST_SEND = item
-            bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.AWAIT_TIME)
+            bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.AWAIT_TIME if bot.MODE == "REPLY" else 1)
         else:
             set_next_activity = True
             bot.LAST_SEND = None
@@ -355,6 +380,27 @@ def send(driver, selectors, item, is_groups=True):
         error = True
     
     return error
+
+def group_read_handler(driver, selectors):
+    print("Revisando grupos")
+    if bot.MODE == "REPLY" and bot.NEXT_SEND <= datetime.now():
+        if bot.ACTUAL_READED_GROUP == "":
+            bot.ACTUAL_READED_GROUP = bot.GROUPS_LIST[0]
+        
+        success = actions.read_chat(driver, selectors, bot.ACTUAL_READED_GROUP)
+
+        if not success:
+            webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+            bot.ACTUAL_READED_MSG = ""
+            actual_group_idx = bot.GROUPS_LIST.index(bot.ACTUAL_READED_GROUP)
+            if actual_group_idx >= 0:
+                bot.ACTUAL_READED_GROUP = bot.GROUPS_LIST[actual_group_idx + 1] if actual_group_idx < len(bot.GROUPS_LIST) else bot.GROUPS_LIST[0]
+            else:
+                bot.ACTUAL_READED_GROUP = ""
+        else:
+            bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.AWAIT_TIME)
+    else:
+        print(f"Sin mensajes por responder, próximo: {bot.NEXT_SEND}")
 
 def inbound_handler(driver, selectors):
     if not bot.GROUPS_ONLY:

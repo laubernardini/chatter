@@ -10,6 +10,7 @@ DRIVER_PATH = "chromedriver.exe"#"/usr/local/bin/chromedriver"#
 FORCED_ACTIVITY_FREQUENCY = 5 # En minutos. Click para marcar al navegador como "activo" frente al SO 
 START_DATE = None
 NEXT_SEND = None
+MODE_CHANGE = None
 AWAIT_TIME = 5
 MESSAGE = ""
 DESCRIPCION = "-"
@@ -17,6 +18,9 @@ GROUPS_ONLY = False
 START_MSG_CODE = "Hola! Soy chatter"
 RESPONSE_MSG = "Ok, "
 CHATTER_CODE = 'cttr'
+GROUPS_LIST_SOURCE = 0
+MODE_CHANGE_TIME = 20
+MODE = "GROUPS"
 
 # Log
 SHOW_ERRORS = True
@@ -30,6 +34,8 @@ CLIPBOARD_SLEEP_TIME = 0
 GROUPS_LIST = []
 PHONES_LIST = []
 LAST_SEND = None
+ACTUAL_READED_MSG = ""
+ACTUAL_READED_GROUP = ""
 
 def calc_sleeptime():
     global PHONE, SLEEP_TIME, CLIPBOARD_SLEEP_TIME

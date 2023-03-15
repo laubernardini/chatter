@@ -30,6 +30,7 @@
 
     "message": "//div[@class='_13NKt copyable-text selectable-text'][@data-tab='10']",
     "message1": "//div[@data-testid='conversation-compose-box-input']",
+    "message_input_id": "conversation-compose-box-input",
     "message_attached": ["//div[@data-testid='pluggable-input-body']", "//div[@data-testid='media-caption-input-container']"],
     "attachments": "//div[@title='Adjuntar']",
 
@@ -60,7 +61,7 @@
     "chat_info": ["//span[@class='_3NUK1 VWPRY _1lF7t']", "//span[@class='_3LrrN _2qKga dd2Ow']"],
     "chat_info_close": ["//button[@class='_18eKe']", "//div[@data-testid='btn-closer-drawer']"],
 
-    "quoted_message": ".//div[@data-testid='quoted-message]",
+    "quoted_message": ".//div[@data-testid='quoted-message']",
     "quoted_message_text_class": "quoted-mention",
 
     "shared_contact_button": ".//div[@data-testid='vcard-msg'][@role='button']",
@@ -75,6 +76,7 @@
     "audio_download": ".//button[@aria-label='Descargar mensaje de voz']",
     "audio_loading": ".//button[@class='_1cZGZ']",
     "download_options": ".//div[@data-testid='icon-down-context']",
+    "private_reply": "//li[@data-testid='mi-msg-reply'][2]/div[1]",
 
     "missed_call_container": "//div[@data-testid='msg-notification-container']",
     "missed_call": ".//span[@data-testid='miss']",

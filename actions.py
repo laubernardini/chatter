@@ -42,6 +42,19 @@ def get_msg_data_id(msg):
     else:
         data_id = msg.get_attribute('data-id')
     return data_id
+def get_input(driver, selectors, key):
+    input_element = None
+    # Obtener input de mensaje
+    done = None
+    while not done:
+        try:
+            input_element = driver.find_element_by_xpath(selectors[key])
+            done = True
+        except:
+            time.sleep(1)
+    print("Conversación lista")
+
+    return input_element
 
 def close_confirm_popup(driver, selectors):
     # Instanciar modal
@@ -258,6 +271,7 @@ def chat_init(driver, selectors, celular):
     return elem
 
 def open_chat(driver, selectors, celular, init):
+    result = None
     elem = None
     elem = search(driver, selectors, celular)
 
@@ -274,73 +288,36 @@ def open_chat(driver, selectors, celular, init):
                 elem = None
         except:
             elem = None
+    
+    if elem:
+        clear_elem(driver, selectors, "search")
 
-    return elem
+        # Obtener input de mensaje
+        done = None
+        while not done:
+            try:
+                try:
+                    result = driver.find_element_by_xpath(selectors["message"])
+                except:
+                    result = driver.find_element_by_xpath(selectors["message1"])
+                done = True
+            except:
+                time.sleep(1)
+        print("Conversación lista")
+
+        time.sleep(2)
+
+    return result
 
 def send_message(mensaje="", celular="", driver=None, selectors=None, init=False):
     try:
-        elem = open_chat(driver, selectors, celular, init)
-        new_message_input = False
+        message_input = open_chat(driver, selectors, celular, init)
 
         # Enviar mensaje
-        if elem:
-            clear_elem(driver, selectors, "search")
-
-            # Obtener input de mensaje
-            done = None
-            while not done:
-                try:
-                    try:
-                        message = driver.find_element_by_xpath(selectors["message"])
-                    except:
-                        message = driver.find_element_by_xpath(selectors["message1"])
-                        new_message_input = True
-                    done = True
-                except:
-                    time.sleep(1)
-            print("Conversación lista")
-
-            time.sleep(2)
-
+        if message_input:
             # Escribir mensaje
-            if new_message_input:
-                act = ActionChains(driver)
-                act.click(message)
-
-                # Manejo del clipboard
-                text = mensaje.replace(':f:', "") + f':{bot.PHONE}:'
-                while pyperclip.paste() != text:
-                    print(f"Esperando {bot.SLEEP_TIME} segundos")
-                    time.sleep(bot.SLEEP_TIME)
-                    while not f":{bot.PHONE}:" in pyperclip.paste():
-                        wait_and_set(text, bot.CLIPBOARD_SLEEP_TIME)
-                
-                # Pegar mensaje
-                act.key_down(Keys.CONTROL).send_keys('v').key_up(Keys.CONTROL)
-                time.sleep(0.5)
-
-                # Limpiar código y liberar clipboard
-                act.click(message)
-                time.sleep(0.5)
-                act.key_down(Keys.CONTROL).send_keys(Keys.END).key_up(Keys.CONTROL)
-                act.send_keys(Keys.BACKSPACE)
-                for d in bot.PHONE:
-                    act.send_keys(Keys.BACKSPACE)
-                act.send_keys(Keys.BACKSPACE)
-                act.perform()
-                release_clipboard()
-            else:
-                driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(mensaje), message)
-                message.send_keys('.')
-                message.send_keys(Keys.BACKSPACE)
+            write_and_send(driver, selectors, message_input, mensaje)
             
-            time.sleep(0.5)
-
-            # Enviar mensaje
-            message.send_keys(Keys.ENTER)
-            time.sleep(2)
-            print("Mensaje enviado")
-
             # Cerrar chat
             webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
@@ -425,133 +402,11 @@ def get_inbounds(driver, selectors):
     response = None
     try:
         done = None
-        first_msg = None
-        reference_elem = None
-        has_data_id = None
+        first_msg = get_next_msg(driver, selectors)
 
-        is_unread = False
-        is_from_outbound = False
-        is_first_msg = False
-
-        # Unread message
-        if not reference_elem:
-            for selector in selectors["unread"]:
-                try:
-                    reference_elem = driver.find_element_by_xpath(selector)
-                    is_unread = True
-                    break
-                except:pass
-            
-            if is_unread:
-                reference_elem.click()
-                reference_elem.send_keys(Keys.ARROW_DOWN)
-                reference_elem = driver.switch_to.active_element
-                if bot.SHOW_EX_PRINTS:
-                    print("Hay mensajes no leidos")
-
-        # From last outbound
-        if not reference_elem:
-            try:
-                reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
-                is_from_outbound = True
-            except:pass
-            print(f"Es un mensaje saliente: {'SI' if is_from_outbound else 'NO'}")
-
-            if is_from_outbound:
-                set_tabindex(reference_elem, driver, selectors)
-                reference_elem.send_keys(Keys.ARROW_DOWN)
-                reference_elem = driver.switch_to.active_element
-
-                if bot.SHOW_EX_PRINTS:
-                    print("Navegando a primer mensaje desde ultimo mensaje saliente")
-
-        # First message of chat
-        if not reference_elem:
-            try:
-                reference_elem = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
-                is_first_msg = True
-            except:pass
-
-            if is_first_msg:
-                set_tabindex(reference_elem, driver, selectors)
-                first_msg = reference_elem
-                if bot.SHOW_EX_PRINTS:
-                    print("Obteniendo primer mensaje entrante del chat")
-
-        # Skip
-        if not reference_elem:
-            done = True
-        
-        if not first_msg and not done:
-            set_tabindex(reference_elem, driver, selectors)
-            first_msg = reference_elem
-
-            # Comprobar si es el mensaje de "este chat está cifrado"
-            try:
-                first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] 
-                first_msg.send_keys(Keys.ARROW_DOWN)
-                first_msg = driver.switch_to.active_element
-            except:pass
-            # Comprobar si es el mensaje de "mensajes temporales"
-            try:
-                first_msg.find_element_by_xpath(selectors["temporal_chat"])[-1] 
-                first_msg.send_keys(Keys.ARROW_DOWN)
-                first_msg = driver.switch_to.active_element
-            except:pass
-
-            # Buscar primer mensaje
-            while not get_msg_data_id(first_msg):
-                set_tabindex(first_msg, driver, selectors)
-
-                if bot.SHOW_EX_PRINTS:
-                    print("Obteniendo primer mensaje")
-
-                # Comprobar si es un elemento del chat
-
-                # Condiciones
-                is_chat_item = False
-                for selector in selectors["chat_item_class"]:
-                    if selector in first_msg.get_attribute("class"):
-                        is_chat_item = True
-                        break
-                is_unread_sign = False 
-                for selector in selectors["unread_class"]:
-                    if selector in first_msg.get_attribute("class"):
-                        is_unread_sign = True
-                        break
-                time.sleep(1)
-
-                if is_chat_item or is_unread_sign:
-                    first_msg.send_keys(Keys.ARROW_DOWN)
-                    first_msg = driver.switch_to.active_element
-                else: # Si no es elemento del chat TAB hasta entrar a la ventana del chat
-                    first_msg.send_keys(Keys.TAB)
-                    first_msg = driver.switch_to.active_element
-                    time.sleep(0.5)
-                
-                # Comprobar si es el mensaje de "este chat está cifrado"
-                try:
-                    first_msg.find_element_by_xpath(selectors["encrypted_chat"])
-                    set_tabindex(first_msg, driver, selectors)
-                    first_msg.send_keys(Keys.ARROW_DOWN)
-                    first_msg = driver.switch_to.active_element
-                except:pass
-            time.sleep(1)      
-
-        first_msg_data_id = get_msg_data_id(first_msg)
-        print("Mensaje obtenido")
-        print(f"Primer mensaje: {first_msg_data_id}")
-
-        # Condiciones
-        not_msg_out = ('false' in first_msg_data_id) if first_msg_data_id else False
-
-        print(f"Es un mensaje nuevo: {'SI' if (not_msg_out) else 'NO'}")
-
-        
-        # Guardando primer mensaje
-        if not_msg_out:
+        if first_msg:
             if bot.START_MSG_CODE in first_msg.text and bot.CHATTER_CODE in first_msg.text:
-                response = first_msg_data_id
+                response = get_msg_data_id(first_msg)
                 done = True
             else:
                 last_msg = first_msg
@@ -595,3 +450,309 @@ def get_inbounds(driver, selectors):
             print("No hay mensajes no leidos")
     
     return response
+
+def write_and_send(driver, selectors, input_element, message):
+    try:
+        input_element_id = input_element.get_attribute("data-testid")
+    except:
+        input_element = get_input(driver, selectors, key="message1")
+        input_element_id = input_element.get_attribute("data-testid")
+    
+    has_new_input_id = (input_element_id == selectors["message_input_id"]) if input_element_id else False
+
+    if has_new_input_id:
+        act = ActionChains(driver)
+        act.click(input_element)
+
+        # Manejo del clipboard
+        text = message.replace(':f:', "") + f':{bot.PHONE}:'
+        while pyperclip.paste() != text:
+            print(f"Esperando {bot.SLEEP_TIME} segundos")
+            time.sleep(bot.SLEEP_TIME)
+            while not f":{bot.PHONE}:" in pyperclip.paste():
+                wait_and_set(text, bot.CLIPBOARD_SLEEP_TIME)    
+        
+        # Pegar mensaje
+        act.key_down(Keys.CONTROL).send_keys('v').key_up(Keys.CONTROL)
+        time.sleep(0.5)
+
+        # Limpiar código y liberar clipboard
+        act.click(input_element)
+        time.sleep(0.5)
+        act.key_down(Keys.CONTROL).send_keys(Keys.END).key_up(Keys.CONTROL)
+        act.send_keys(Keys.BACKSPACE)
+        for d in bot.PHONE:
+            act.send_keys(Keys.BACKSPACE)
+        act.send_keys(Keys.BACKSPACE)
+        act.perform()
+        release_clipboard()
+    else:
+        driver.execute_script("let txt = arguments[0].innerText; arguments[0].innerText = txt + `{}`".format(message), input_element)
+        input_element.send_keys('.')
+        input_element.send_keys(Keys.BACKSPACE)
+    
+    time.sleep(0.5)
+
+    # Enviar mensaje
+    input_element.send_keys(Keys.ENTER)
+    time.sleep(2)
+    print("Mensaje enviado")
+
+def locate_msg_element(driver, selectors, msg_id):
+    reference_elem = None
+    is_cached = False
+
+    if not reference_elem:
+        try:
+            reference_elem = driver.find_element_by_xpath('//div[@data-id="' + msg_id + '"]')
+            is_cached = True
+        except:pass
+
+        if is_cached:
+            set_focusable_item_class(reference_elem, driver, selectors)
+            
+    return reference_elem
+
+def read_chat(driver, selectors, chat_name, type='group'):
+    success = False
+    open_needed = True
+    chat_ready = False
+    try:
+        chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+        chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+        print('Chat name: ', chat_name_header.text)
+        
+        open_needed = chat_name_header.text != chat_name
+    except:pass
+    
+    if open_needed:
+        message_input = open_chat(driver, selectors, celular=chat_name, init=False)
+        chat_ready = message_input != None
+    else:
+        chat_ready = True
+
+    if chat_ready and type == 'group':
+        reference_message = get_next_msg(driver, selectors) if bot.ACTUAL_READED_MSG == "" else get_next_msg(driver, selectors, actual_msg_id=bot.ACTUAL_READED_MSG)
+
+        if reference_message:
+            reference_id = get_msg_data_id(reference_message)
+            success = response_group_msg(driver, selectors, actual_msg=reference_message, group_name=chat_name)
+            if success:
+                bot.ACTUAL_READED_MSG = reference_id
+    
+    return success
+
+def response_group_msg(driver, selectors, actual_msg, group_name):
+    result = False
+    reference_id = get_msg_data_id(actual_msg)
+
+    print("Intentando abrir menu contextual")
+    actual_msg.send_keys(Keys.ARROW_RIGHT)
+    done = None
+    while not done:
+        try:
+            actual_msg.find_element_by_xpath(selectors["download_options"]).click()
+            done = True
+        except:
+            time.sleep(0.5)
+            webdriver.ActionChains(driver).send_keys(Keys.ARROW_RIGHT).perform()
+    
+    private_chat_oppened = False
+    try:
+        driver.find_element_by_xpath(selectors["private_reply"]).click()
+        private_chat_oppened = True
+    except:pass
+
+    if private_chat_oppened:
+        time.sleep(1)
+        input_element = get_input(driver, selectors, key="message1")
+
+        write_and_send(driver, selectors, input_element, message=f'{bot.RESPONSE_MSG} _(cttr)_')
+
+        result = back_to_group(driver, selectors)
+
+    return result
+
+def back_to_group(driver, selectors):
+    result = False
+
+    sleep_counter = 0
+    done = None
+    while (not done) and (sleep_counter < 15):
+        try:
+            last_send = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+            if last_send:
+                done = True
+            else:
+                raise Exception("No se pudo recuperar wa_id")
+        except:
+            time.sleep(1)
+            sleep_counter = sleep_counter + 1
+    
+    if last_send:
+        print(last_send.get_attribute("class"))
+        try:
+            # Click en mención
+            quote = last_send.find_element_by_xpath(selectors["quoted_message"])
+
+            quote.find_element_by_xpath(".//div[@role='button']").click()
+            result = True
+        except Exception as e:
+            print(e)
+
+    return result
+
+def get_next_msg(driver, selectors, actual_msg_id=None):
+    result = None
+    first_msg = None
+    
+    is_unread = False
+    is_from_outbound = False
+    is_first_msg = False
+
+    # Cached message
+    reference_elem = locate_msg_element(driver, selectors, msg_id=actual_msg_id)
+    if reference_elem:
+        reference_elem.send_keys(Keys.ARROW_DOWN)
+        reference_elem = driver.switch_to.active_element
+        is_same = False if get_msg_data_id(reference_elem) != actual_msg_id else True
+        if is_same:
+            reference_elem.send_keys(Keys.ARROW_DOWN)
+            reference_elem = driver.switch_to.active_element
+
+        is_chat_separator = False
+        for selector in selectors["chat_separator_class"]:
+            if selector in reference_elem.get_attribute("class"):
+                is_chat_separator = True
+                break
+        print(f"Es un separador de chat: {'SI' if is_chat_separator else 'NO'}")
+
+        if is_chat_separator:
+            reference_elem.send_keys(Keys.ARROW_DOWN)
+            reference_elem = driver.switch_to.active_element
+
+        if selectors["message_out_class"] in reference_elem.get_attribute("class"):
+            message_out_container = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+            if message_out_container:
+                reference_elem = message_out_container
+                set_tabindex(reference_elem, driver, selectors)
+                reference_elem.send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.switch_to.active_element
+
+    else:
+        # Unread message
+        for selector in selectors["unread"]:
+            try:
+                reference_elem = driver.find_element_by_xpath(selector)
+                is_unread = True
+                break
+            except:pass
+        
+        if is_unread:
+            reference_elem.click()
+            reference_elem.send_keys(Keys.ARROW_DOWN)
+            reference_elem = driver.switch_to.active_element
+            if bot.SHOW_EX_PRINTS:
+                print("Hay mensajes no leidos")
+
+        # From last outbound
+        if not reference_elem:
+            try:
+                reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+                is_from_outbound = True
+            except:pass
+            print(f"Es un mensaje saliente: {'SI' if is_from_outbound else 'NO'}")
+
+            if is_from_outbound:
+                set_tabindex(reference_elem, driver, selectors)
+                reference_elem.send_keys(Keys.ARROW_DOWN)
+                reference_elem = driver.switch_to.active_element
+
+                if bot.SHOW_EX_PRINTS:
+                    print("Navegando a primer mensaje desde ultimo mensaje saliente")
+
+        # First message of chat
+        if not reference_elem:
+            try:
+                reference_elem = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
+                is_first_msg = True
+            except:pass
+
+            if is_first_msg:
+                set_tabindex(reference_elem, driver, selectors)
+                first_msg = reference_elem
+                if bot.SHOW_EX_PRINTS:
+                    print("Obteniendo primer mensaje entrante del chat")
+
+    if not first_msg and not reference_elem:
+        set_tabindex(reference_elem, driver, selectors)
+        first_msg = reference_elem
+
+        # Comprobar si es el mensaje de "este chat está cifrado"
+        try:
+            first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] 
+            first_msg.send_keys(Keys.ARROW_DOWN)
+            first_msg = driver.switch_to.active_element
+        except:pass
+        # Comprobar si es el mensaje de "mensajes temporales"
+        try:
+            first_msg.find_element_by_xpath(selectors["temporal_chat"])[-1] 
+            first_msg.send_keys(Keys.ARROW_DOWN)
+            first_msg = driver.switch_to.active_element
+        except:pass
+
+        # Buscar primer mensaje
+        while not get_msg_data_id(first_msg):
+            set_tabindex(first_msg, driver, selectors)
+
+            if bot.SHOW_EX_PRINTS:
+                print("Obteniendo primer mensaje")
+
+            # Comprobar si es un elemento del chat
+
+            # Condiciones
+            is_chat_item = False
+            for selector in selectors["chat_item_class"]:
+                if selector in first_msg.get_attribute("class"):
+                    is_chat_item = True
+                    break
+            is_unread_sign = False 
+            for selector in selectors["unread_class"]:
+                if selector in first_msg.get_attribute("class"):
+                    is_unread_sign = True
+                    break
+            time.sleep(1)
+
+            if is_chat_item or is_unread_sign:
+                first_msg.send_keys(Keys.ARROW_DOWN)
+                first_msg = driver.switch_to.active_element
+            else: # Si no es elemento del chat TAB hasta entrar a la ventana del chat
+                first_msg.send_keys(Keys.TAB)
+                first_msg = driver.switch_to.active_element
+                time.sleep(0.5)
+            
+            # Comprobar si es el mensaje de "este chat está cifrado"
+            try:
+                first_msg.find_element_by_xpath(selectors["encrypted_chat"])
+                set_tabindex(first_msg, driver, selectors)
+                first_msg.send_keys(Keys.ARROW_DOWN)
+                first_msg = driver.switch_to.active_element
+            except:pass
+        time.sleep(1)     
+    elif reference_elem:
+        set_tabindex(reference_elem, driver, selectors)
+        first_msg = reference_elem
+
+    if first_msg:
+        print("Mensaje obtenido")
+
+        # Condiciones
+        not_msg_out = ('false' in get_msg_data_id(first_msg)) if get_msg_data_id(first_msg) else False
+
+        print(f"Es un mensaje nuevo: {'SI' if (not_msg_out) else 'NO'}")
+
+        if not_msg_out:
+            if get_msg_data_id(first_msg) != actual_msg_id:
+                result = first_msg
+
+    return result
