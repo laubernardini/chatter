@@ -44,7 +44,11 @@ def start():
         #bot.PHONES_LIST = get_phones_list()
         bot.GROUPS_LIST = get_groups_list()
         bot.MODE_CHANGE = bot.START_DATE + timedelta(minutes=bot.MODE_CHANGE_TIME)
-        bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.START_DATE + timedelta(minutes=(bot.FORCED_ACTIVITY_FREQUENCY * 2 if bot.MODE == 'REPLY' else 0))
+        bot.NEXT_FORCED_ACTIVITY = bot.START_DATE + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY * 2)
+        if bot.MODE == 'REPLY':
+            bot.NEXT_SEND = bot.NEXT_FORCED_ACTIVITY
+        else:
+            bot.NEXT_SEND = bot.START_DATE
     
     # Inicio de envios
     print("Inicio de envios: ", str(bot.NEXT_FORCED_ACTIVITY))
@@ -67,8 +71,9 @@ def start():
             group_read_handler(driver, selectors)
         # Actividad forzada
         if set_next_forced_activity:
-            bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
-            print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
+            if bot.NEXT_SEND != bot.NEXT_FORCED_ACTIVITY:
+                bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
+                print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
             #if not bot.GROUPS_ONLY:
             #    bot.PHONES_LIST = get_phones_list()
         
