@@ -23,7 +23,7 @@ def start():
     done = driver = None
     while not done:
         if bot.BROWSER == 'chrome':
-            driver = driver_connect_undetected_chrome("https://web.whatsapp.com")
+            driver = driver_connect_chrome("https://web.whatsapp.com")
             if driver:
                 done = True
             else:
@@ -253,6 +253,13 @@ def get_own_phone(driver, selectors):
 def driver_connect_chrome(url=""):
     options = webdriver.chrome.options.Options()
     options.add_argument("--window-size=950,700")
+    options.add_argument("start-maximized")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
+    driver = webdriver.Chrome(options=options, executable_path=r'C:\WebDrivers\chromedriver.exe')
+    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
+    print(driver.execute_script("return navigator.userAgent;"))
     driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
 
     try:
@@ -270,7 +277,9 @@ def driver_connect_chrome(url=""):
 
 def driver_connect_undetected_chrome(url=""):
     options = uc.ChromeOptions()
-    #options.add_argument("--window-size=950,700")
+    #size = f"9{bot.PHONE[-2:]},7{bot.PHONE[-2:]}"
+    #print(size)
+    #options.add_argument(f"--window-size={size}")
     driver = uc.Chrome(driver_executable_path=bot.DRIVER_PATH, options=options)
 
     try:
