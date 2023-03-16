@@ -270,7 +270,7 @@ def driver_connect_chrome(url=""):
 
 def driver_connect_undetected_chrome(url=""):
     options = uc.ChromeOptions()
-    options.add_argument("--window-size=950,700")
+    #options.add_argument("--window-size=950,700")
     driver = uc.Chrome(driver_executable_path=bot.DRIVER_PATH, options=options)
 
     try:
