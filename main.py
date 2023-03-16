@@ -91,6 +91,7 @@ def start():
                 else:
                     bot.MODE = "GROUPS"
                 print(f"Cambiando modo a {bot.MODE}")
+                bot.NEXT_SEND = datetime.now()
                 bot.MODE_CHANGE = datetime.now() + timedelta(minutes=bot.MODE_CHANGE_TIME)
 
 ## Apis ##
