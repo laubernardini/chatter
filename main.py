@@ -257,12 +257,11 @@ def driver_connect_chrome(url=""):
     options.add_argument("start-maximized")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option('useAutomationExtension', False)
-    driver = webdriver.Chrome(options=options, executable_path=r'C:\WebDrivers\chromedriver.exe')
+    driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
     print(driver.execute_script("return navigator.userAgent;"))
-    driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
-
+    
     try:
         driver.get(url)
     except Exception as e:
