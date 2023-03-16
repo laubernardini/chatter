@@ -696,7 +696,8 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
         except:pass
 
         # Buscar primer mensaje
-        while not get_msg_data_id(first_msg):
+        is_notification = True
+        while not get_msg_data_id(first_msg) and is_notification:
             set_tabindex(first_msg, driver, selectors)
 
             if bot.SHOW_EX_PRINTS:
@@ -715,12 +716,17 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
                 if selector in first_msg.get_attribute("class"):
                     is_unread_sign = True
                     break
+            is_notification = False
+            try:
+                first_msg.find_element(By.XPATH, selectors["invite_notification"]) # Revisar si es notificacion "se unió usando el enlace de invitacion"
+                is_notification = True
+            except:pass
             time.sleep(1)
 
-            if is_chat_item or is_unread_sign:
+            if is_chat_item or is_unread_sign or is_notification:
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
-            else: # Si no es elemento del chat TAB hasta entrar a la ventana del chat
+            elif not is_chat_item: # Si no es elemento del chat TAB hasta entrar a la ventana del chat
                 first_msg.send_keys(Keys.TAB)
                 first_msg = driver.switch_to.active_element
                 time.sleep(0.5)

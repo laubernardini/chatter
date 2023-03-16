@@ -82,6 +82,7 @@
     "missed_call": ".//span[@data-testid='miss']",
     "missed_video_call": ".//span[@data-testid='miss_video']",
     "missed_call_text": [".//span[@class='i0jNr'][@dir='ltr']", ".//span[@class='_11JPr'][@dir='ltr']"],
+    "invite_notification": ".//div[@data-testid='subtype-invite']",
 
     "video_button": ".//span[@data-testid='media-play']",
     "image_download": ".//div[@data-testid='media-state-download']",
