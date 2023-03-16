@@ -6,6 +6,9 @@ from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.remote.webdriver import By
+
+import undetected_chromedriver as uc 
 
 # Application
 import bot, actions
@@ -20,7 +23,7 @@ def start():
     done = driver = None
     while not done:
         if bot.BROWSER == 'chrome':
-            driver = driver_connect_chrome("https://web.whatsapp.com")
+            driver = driver_connect_undetected_chrome("https://web.whatsapp.com")
             if driver:
                 done = True
             else:
@@ -210,9 +213,9 @@ def get_groups_list():
 def get_own_phone(driver, selectors):
     time.sleep(3)
     print("Intentando entrar al perfil...")
-    #profile_button = driver.find_element_by_xpath(selectors["main_header"]).find_element_by_xpath(".//div[@role='button']")
+    #profile_button = driver.find_element(By.XPATH, selectors["main_header"]).find_element(By.XPATH, ".//div[@role='button']")
     #profile_button.click()
-    profile = actions.get_parent(driver.find_element_by_xpath(selectors["profile_pic"]))
+    profile = actions.get_parent(driver.find_element(By.XPATH, selectors["profile_pic"]))
     done = None
     while not done:
         if profile.get_attribute("role") == 'button':
@@ -226,7 +229,7 @@ def get_own_phone(driver, selectors):
     while not done:
         for selector in selectors["own_phone"]:
             try:
-                celular = driver.find_element_by_xpath(selector).text
+                celular = driver.find_element(By.XPATH, selector).text
                 break
             except:pass
         if celular:
@@ -242,7 +245,7 @@ def get_own_phone(driver, selectors):
 
     for selector in selectors["back_button"]:
         try:
-            driver.find_element_by_xpath(selector).click()
+            driver.find_element(By.XPATH, selector).click()
             break
         except:pass
 
@@ -265,6 +268,24 @@ def driver_connect_chrome(url=""):
 
     return driver
 
+def driver_connect_undetected_chrome(url=""):
+    options = uc.ChromeOptions()
+    options.add_argument("--window-size=950,700")
+    driver = uc.Chrome(driver_executable_path=bot.DRIVER_PATH, options=options)
+
+    try:
+        driver.get(url)
+    except Exception as e:
+        if bot.SHOW_ERRORS:
+            print("Error abriendo WhatsApp")
+            print("     Detalle: ")
+            print(e)
+            print(repr(e))
+            print(e.args)
+        driver = None
+
+    return driver
+
 def sync(driver, selectors):
     #if bot.SHOW_EX_PRINTS:
     print("\nWhatsApp abierto")
@@ -272,7 +293,7 @@ def sync(driver, selectors):
     waiting_wpp = False
     
     try:
-        driver.find_element_by_xpath(selectors["search"])
+        driver.find_element(By.XPATH, selectors["search"])
         waiting_qr = False
     except:pass
     
@@ -282,7 +303,7 @@ def sync(driver, selectors):
         done = None
         while not done:
             try:
-                driver.find_element_by_xpath(selectors["search"])
+                driver.find_element(By.XPATH, selectors["search"])
                 waiting_qr = False
                 print("\nQR Escaneado")
                 done = True
@@ -290,11 +311,11 @@ def sync(driver, selectors):
                 time.sleep(2)
                 qr = None
                 try:
-                    qr = driver.find_element_by_xpath(selectors["qr"])
+                    qr = driver.find_element(By.XPATH, selectors["qr"])
                 except:pass
                 if qr:
                     try:
-                        qr.find_element_by_xpath(selectors["refresh_qr"]).click()
+                        qr.find_element(By.XPATH, selectors["refresh_qr"]).click()
                         print("QR Refrescado")
                     except:pass
                 else:
@@ -312,7 +333,7 @@ def sync(driver, selectors):
     phone_disconected = True
     while phone_disconected:
         try:
-            driver.find_element_by_xpath(selectors["phone_disconected"])
+            driver.find_element(By.XPATH, selectors["phone_disconected"])
             if bot.SHOW_EX_PRINTS:
                 print("Teléfono sin conexión, envíos en pausa")
             time.sleep(1)
@@ -330,11 +351,11 @@ def sync(driver, selectors):
 def check_sync(driver, selectors):
     sync_needed = None
     try:
-        driver.find_element_by_xpath(selectors["qr"])
+        driver.find_element(By.XPATH, selectors["qr"])
         sync_needed = True
     except:
         try:
-            driver.find_element_by_xpath(selectors["search"])
+            driver.find_element(By.XPATH, selectors["search"])
         except:
             sync_needed = True
 

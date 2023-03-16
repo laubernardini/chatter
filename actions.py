@@ -5,6 +5,7 @@ import bot
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.remote.webdriver import By
 
 # Acciones
 
@@ -21,7 +22,7 @@ def release_clipboard():
         pyperclip.copy(':f:')
 
 def get_parent(element):
-    return element.find_element_by_xpath('..')
+    return element.find_element(By.XPATH, '..')
 
 def cel_formatter(celular): # Formatear celular
     chars_to_delete = [' ', '+', '-', '(', ')']
@@ -49,7 +50,7 @@ def get_input(driver, selectors, key):
     done = None
     while not done:
         try:
-            input_element = driver.find_element_by_xpath(selectors[key])
+            input_element = driver.find_element(By.XPATH, selectors[key])
             input_element.click()
             done = True
         except:pass
@@ -62,7 +63,7 @@ def get_input(driver, selectors, key):
 def close_confirm_popup(driver, selectors):
     # Instanciar modal
     try:
-        modal_elem_list = driver.find_elements_by_xpath(selectors["modal"])
+        modal_elem_list = driver.find_elements(By.XPATH, selectors["modal"])
         print(f"Modal elem: {len(modal_elem_list)}")
         modal = None
         for m in modal_elem_list:
@@ -78,10 +79,10 @@ def close_confirm_popup(driver, selectors):
         # Click en modal
         for selector in selectors["modal_body"]:
             try:
-                modal.find_element_by_xpath(selector).click()
+                modal.find_element(By.XPATH, selector).click()
             except:pass
         
-        modal.find_element_by_xpath("modal_ok_button").click()
+        modal.find_element(By.XPATH, "modal_ok_button").click()
     except Exception as e:
         print(e)
         print("No hay popup")
@@ -97,7 +98,7 @@ def set_focusable_item_class(elem, driver, selectors):
 
 # Búsqueda
 def clear_elem(driver, selectors, id):
-    elem = driver.find_element_by_xpath(selectors[id])
+    elem = driver.find_element(By.XPATH, selectors[id])
     if id == "search":
         clear_search(driver, selectors, elem)
     else:
@@ -106,7 +107,7 @@ def clear_elem(driver, selectors, id):
 
 def clear_search(driver, selectors, elem):
     try:
-        cancel_icon = get_parent(get_parent(get_parent(elem))).find_element_by_xpath(selectors["clear_search"])
+        cancel_icon = get_parent(get_parent(get_parent(elem))).find_element(By.XPATH, selectors["clear_search"])
         get_parent(cancel_icon).click()
     except Exception as e:
         print(e)
@@ -117,8 +118,8 @@ def search(driver, selectors, text):
     # Obtener input de búsqueda
     result = None
     has_results = True
-    side = driver.find_element_by_xpath(selectors["side"]) 
-    elem = side.find_element_by_xpath(selectors["search"])
+    side = driver.find_element(By.XPATH, selectors["side"]) 
+    elem = side.find_element(By.XPATH, selectors["search"])
     
     # Buscar
     elem.send_keys(text)
@@ -130,9 +131,9 @@ def search(driver, selectors, text):
     done = None
     while not done:
         try:
-            searching = driver.find_element_by_xpath(selectors["searching"])
+            searching = driver.find_element(By.XPATH, selectors["searching"])
             try:
-                searching.find_element_by_xpath(selectors["no_chat_found"])
+                searching.find_element(By.XPATH, selectors["no_chat_found"])
                 has_results = False
                 done = True
             except:
@@ -143,7 +144,7 @@ def search(driver, selectors, text):
     if has_results:
         has_results = False
         try:
-            section_headers = side.find_elements_by_xpath(selectors["section_header"])
+            section_headers = side.find_elements(By.XPATH, selectors["section_header"])
             for section in section_headers:
                 if 'chats' in section.text.lower() or 'contact' in section.text.lower():
                     has_results = True
@@ -159,13 +160,13 @@ def search(driver, selectors, text):
             result = True
         else:
             try:
-                chat_header = driver.find_element_by_xpath(selectors["chat_header"])
+                chat_header = driver.find_element(By.XPATH, selectors["chat_header"])
                 you_label = False
                 try:
-                    chat_header.find_element_by_xpath(selectors["chat_header_you_label"])
+                    chat_header.find_element(By.XPATH, selectors["chat_header_you_label"])
                     you_label = True
                 except:
-                    you_label = (cel_formatter(chat_header.find_element_by_xpath(selectors["chat_name_header"]).text) == bot.PHONE)
+                    you_label = (cel_formatter(chat_header.find_element(By.XPATH, selectors["chat_name_header"]).text) == bot.PHONE)
 
                 result = you_label
             except:pass
@@ -190,9 +191,9 @@ def chat_init(driver, selectors, celular):
     while not done:
         try:
             try:
-                own_chat_message = driver.find_element_by_xpath(selectors["message"])
+                own_chat_message = driver.find_element(By.XPATH, selectors["message"])
             except:
-                own_chat_message = driver.find_element_by_xpath(selectors["message1"])
+                own_chat_message = driver.find_element(By.XPATH, selectors["message1"])
             done = True
         except:
             time.sleep(1)
@@ -207,7 +208,7 @@ def chat_init(driver, selectors, celular):
     done = None
     while not done:
         try:
-            driver.find_element_by_xpath("//a[@href='https://wa.me/" + celular + "']").click()
+            driver.find_element(By.XPATH, "//a[@href='https://wa.me/" + celular + "']").click()
             done = True
         except:
             time.sleep(2)
@@ -218,19 +219,19 @@ def chat_init(driver, selectors, celular):
         try:
             for selector in selectors["modal_backdrop"]:
                 try:
-                    driver.find_element_by_xpath(selector).click()
+                    driver.find_element(By.XPATH, selector).click()
                 except:pass
             
             loadig_confirm = False
             try:
-                driver.find_element_by_xpath(selectors["modal_header"])
-                driver.find_element_by_xpath(selectors["modal_header"]).click()
+                driver.find_element(By.XPATH, selectors["modal_header"])
+                driver.find_element(By.XPATH, selectors["modal_header"]).click()
                 loadig_confirm = True
             except:pass
 
             if not loadig_confirm:
                 # Instanciar modal
-                modal_elem_list = driver.find_elements_by_xpath(selectors["modal"])
+                modal_elem_list = driver.find_elements(By.XPATH, selectors["modal"])
                 print(f"Modal elem: {len(modal_elem_list)}")
                 modal = None
                 for m in modal_elem_list:
@@ -246,21 +247,21 @@ def chat_init(driver, selectors, celular):
                 # Click en modal
                 for selector in selectors["modal_body"]:
                     try:
-                        modal.find_element_by_xpath(selector).click()
+                        modal.find_element(By.XPATH, selector).click()
                     except:pass
 
                 # Comprobar número inválido
                 try:
-                    modal.find_element_by_xpath(selectors["modal_header"])
-                    if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
-                        modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
+                    modal.find_element(By.XPATH, selectors["modal_header"])
+                    if "inválido" in modal.find_element(By.XPATH, selectors["modal_text"]).text:
+                        modal.find_element(By.XPATH, selectors["modal_ok_button"]).click()
                         elem = None
                         done = True
                         print("Número inválido")
                 except:
                     try:
-                        if "inválido" in modal.find_element_by_xpath(selectors["modal_text"]).text:
-                            modal.find_element_by_xpath(selectors["modal_ok_button"]).click()
+                        if "inválido" in modal.find_element(By.XPATH, selectors["modal_text"]).text:
+                            modal.find_element(By.XPATH, selectors["modal_ok_button"]).click()
                             elem = None
                             done = True
                             print("Número inválido")
@@ -284,8 +285,8 @@ def open_chat(driver, selectors, celular, init):
     # Descartar cruce de chat
     if elem:
         try:
-            chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-            chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+            chat_header = driver.find_element(By.XPATH, selectors["chat_header"])
+            chat_name_header = chat_header.find_element(By.XPATH, selectors["chat_name_header"])
             print('Chat name: ', chat_name_header.text)
             if bot.PHONE == cel_formatter(chat_name_header.text):
                 elem = None
@@ -334,7 +335,7 @@ def send_message(mensaje="", celular="", driver=None, selectors=None, init=False
 def notification_clicker(driver, selectors):
     notification_resolved = False
     try:
-        notifications = driver.find_elements_by_xpath(selectors["notification"])
+        notifications = driver.find_elements(By.XPATH, selectors["notification"])
         print(f"Notificaciones: {len(notifications)}")
         for n in notifications:
             parent = get_parent(n)
@@ -354,8 +355,8 @@ def notification_clicker(driver, selectors):
             conversation_name = ""
 
             try:
-                conversation_name = parent.find_element_by_xpath(selectors["conversation_name"])
-                conversation_name = conversation_name.find_element_by_xpath(".//span[@dir='auto']").text
+                conversation_name = parent.find_element(By.XPATH, selectors["conversation_name"])
+                conversation_name = conversation_name.find_element(By.XPATH, ".//span[@dir='auto']").text
                 print(f'Conversación: {conversation_name}, BOT PHONE: {bot.PHONE}')
                 formatted_conv_name = cel_formatter(conversation_name)
                 if formatted_conv_name in bot.PHONES_LIST:
@@ -373,7 +374,7 @@ def notification_clicker(driver, selectors):
                 print(f"Parent class: {parent.get_attribute('class')}, {parent.get_attribute('data-testid')}, {parent.get_attribute('role')}")
                 parent.click()
                 time.sleep(1)
-                n_count = len(driver.find_elements_by_xpath(selectors["notification"]))
+                n_count = len(driver.find_elements(By.XPATH, selectors["notification"]))
                 if n_count < len(notifications):
                     done = True
                 else:
@@ -495,7 +496,7 @@ def locate_msg_element(driver, selectors, msg_id):
 
     if not reference_elem:
         try:
-            reference_elem = driver.find_element_by_xpath('//div[@data-id="' + msg_id + '"]')
+            reference_elem = driver.find_element(By.XPATH, '//div[@data-id="' + msg_id + '"]')
             is_cached = True
         except:pass
 
@@ -509,8 +510,8 @@ def read_chat(driver, selectors, chat_name, type='group'):
     open_needed = True
     chat_ready = False
     try:
-        chat_header = driver.find_element_by_xpath(selectors["chat_header"])
-        chat_name_header = chat_header.find_element_by_xpath(selectors["chat_name_header"])
+        chat_header = driver.find_element(By.XPATH, selectors["chat_header"])
+        chat_name_header = chat_header.find_element(By.XPATH, selectors["chat_name_header"])
         print('Chat name: ', chat_name_header.text)
         
         open_needed = chat_name_header.text != chat_name
@@ -542,7 +543,7 @@ def response_group_msg(driver, selectors, actual_msg, group_name):
     done = None
     while not done:
         try:
-            actual_msg.find_element_by_xpath(selectors["download_options"]).click()
+            actual_msg.find_element(By.XPATH, selectors["download_options"]).click()
             done = True
         except:
             time.sleep(0.5)
@@ -550,7 +551,7 @@ def response_group_msg(driver, selectors, actual_msg, group_name):
     
     private_chat_oppened = False
     try:
-        driver.find_element_by_xpath(selectors["private_reply"]).click()
+        driver.find_element(By.XPATH, selectors["private_reply"]).click()
         private_chat_oppened = True
     except:pass
 
@@ -572,7 +573,7 @@ def back_to_group(driver, selectors):
     done = None
     while (not done) and (sleep_counter < 15):
         try:
-            last_send = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+            last_send = driver.find_elements(By.CSS_SELECTOR, selectors["message_out_container"])[-1]
             if last_send:
                 done = True
             else:
@@ -586,9 +587,9 @@ def back_to_group(driver, selectors):
         print(last_send.get_attribute("class"))
         try:
             # Click en mención
-            quote = last_send.find_element_by_xpath(selectors["quoted_message"])
+            quote = last_send.find_element(By.XPATH, selectors["quoted_message"])
 
-            quote.find_element_by_xpath(".//div[@role='button']").click()
+            quote.find_element(By.XPATH, ".//div[@role='button']").click()
             result = True
         except Exception as e:
             print(e)
@@ -625,7 +626,7 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
             reference_elem = driver.switch_to.active_element
 
         if selectors["message_out_class"] in reference_elem.get_attribute("class"):
-            message_out_container = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+            message_out_container = driver.find_elements(By.CSS_SELECTOR, selectors["message_out_container"])[-1]
             if message_out_container:
                 reference_elem = message_out_container
                 set_tabindex(reference_elem, driver, selectors)
@@ -636,7 +637,7 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
         # Unread message
         for selector in selectors["unread"]:
             try:
-                reference_elem = driver.find_element_by_xpath(selector)
+                reference_elem = driver.find_element(By.XPATH, selector)
                 is_unread = True
                 break
             except:pass
@@ -651,7 +652,7 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
         # From last outbound
         if not reference_elem:
             try:
-                reference_elem = driver.find_elements_by_css_selector(selectors["message_out_container"])[-1]
+                reference_elem = driver.find_elements(By.CSS_SELECTOR, selectors["message_out_container"])[-1]
                 is_from_outbound = True
             except:pass
             print(f"Es un mensaje saliente: {'SI' if is_from_outbound else 'NO'}")
@@ -667,7 +668,7 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
         # First message of chat
         if not reference_elem:
             try:
-                reference_elem = driver.find_elements_by_css_selector(selectors["message_in_container"])[0]
+                reference_elem = driver.find_elements(By.CSS_SELECTOR, selectors["message_in_container"])[0]
                 is_first_msg = True
             except:pass
 
@@ -683,13 +684,13 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
 
         # Comprobar si es el mensaje de "este chat está cifrado"
         try:
-            first_msg.find_element_by_xpath(selectors["encrypted_chat"])[-1] 
+            first_msg.find_element(By.XPATH, selectors["encrypted_chat"])[-1] 
             first_msg.send_keys(Keys.ARROW_DOWN)
             first_msg = driver.switch_to.active_element
         except:pass
         # Comprobar si es el mensaje de "mensajes temporales"
         try:
-            first_msg.find_element_by_xpath(selectors["temporal_chat"])[-1] 
+            first_msg.find_element(By.XPATH, selectors["temporal_chat"])[-1] 
             first_msg.send_keys(Keys.ARROW_DOWN)
             first_msg = driver.switch_to.active_element
         except:pass
@@ -726,7 +727,7 @@ def get_next_msg(driver, selectors, actual_msg_id=None):
             
             # Comprobar si es el mensaje de "este chat está cifrado"
             try:
-                first_msg.find_element_by_xpath(selectors["encrypted_chat"])
+                first_msg.find_element(By.XPATH, selectors["encrypted_chat"])
                 set_tabindex(first_msg, driver, selectors)
                 first_msg.send_keys(Keys.ARROW_DOWN)
                 first_msg = driver.switch_to.active_element
