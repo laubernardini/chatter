@@ -32,7 +32,7 @@ def run():
     if args.grupos:
         bot.GROUPS_ONLY = "s" in args.grupos.lower()
     if args.lista_grupos:
-        bot.GROUPS_LIST_SOURCE = int(args.grupos) - 1
+        bot.GROUPS_LIST_SOURCE = int(args.lista_grupos) - 1
     if args.tiempo_modo:
         tiempo_modo = args.tiempo_modo.replace("min", "").replace("m", "")
         bot.MODE_CHANGE_TIME = int(tiempo_modo)
