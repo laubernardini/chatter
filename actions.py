@@ -548,6 +548,7 @@ def response_group_msg(driver, selectors, actual_msg, group_name):
         except:
             time.sleep(0.5)
             webdriver.ActionChains(driver).send_keys(Keys.ARROW_RIGHT).perform()
+            time.sleep(2)
     
     private_chat_oppened = False
     try:
