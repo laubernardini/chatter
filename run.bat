@@ -62,4 +62,4 @@ if "%bot_desc%" == "" (
 	set desc= 
 )
 
-cmd /k "git pull bot master & cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python run.py %phone% %server% %tiempo% %tiempo_modo% %grupos% %lista_grupos% %desc%"
+cmd /k "cd /d ..\vbot\scripts & activate & cd /d ..\..\bot & python run.py %phone% %server% %tiempo% %tiempo_modo% %grupos% %lista_grupos% %desc%"

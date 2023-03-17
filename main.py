@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webdriver import By
+from selenium.webdriver.support.ui import WebDriverWait
 
 import undetected_chromedriver as uc 
 
@@ -23,7 +24,7 @@ def start():
     done = driver = None
     while not done:
         if bot.BROWSER == 'chrome':
-            driver = driver_connect_chrome("https://web.whatsapp.com")
+            driver = driver_connect_undetected_chrome("https://web.whatsapp.com")
             if driver:
                 done = True
             else:
@@ -31,68 +32,71 @@ def start():
                 time.sleep(5)
     
     driver.execute_script(f"document.title = 'CHATTER {bot.PHONE}'")
+    try:
+        # Sincronización
+        sync(driver, selectors)
+        send_status("SINCRONIZADO")
 
-    # Sincronización
-    sync(driver, selectors)
-    send_status("SINCRONIZADO")
+        # Registrar inicio
+        bot.START_DATE = datetime.now()
 
-    # Registrar inicio
-    bot.START_DATE = datetime.now()
-
-    # Obtener configuraciones
-    if bot.GROUPS_ONLY:
-        bot.GROUPS_LIST = get_groups_list()
-        bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.START_DATE
-    else:
-        #bot.PHONES_LIST = get_phones_list()
-        bot.GROUPS_LIST = get_groups_list()
-        bot.MODE_CHANGE = bot.START_DATE + timedelta(minutes=bot.MODE_CHANGE_TIME)
-        bot.NEXT_FORCED_ACTIVITY = bot.START_DATE + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY * 2)
-        if bot.MODE == 'REPLY':
-            bot.NEXT_SEND = bot.NEXT_FORCED_ACTIVITY
+        # Obtener configuraciones
+        if bot.GROUPS_ONLY:
+            bot.GROUPS_LIST = get_groups_list()
+            bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = bot.START_DATE
         else:
-            bot.NEXT_SEND = bot.START_DATE
-    
-    # Inicio de envios
-    print("Inicio de envios: ", str(bot.NEXT_FORCED_ACTIVITY))
-
-    # Loop principal
-    while True:
-        set_next_forced_activity = False
-        driver.execute_script(f"document.title = 'CHATTER {bot.PHONE}'")
-
-        # Revisar desincronización
-        check_sync(driver, selectors)
-
-        # Revisar notificaciones
-        #inbound_handler(driver, selectors)
-
-        # Enviar
-        if bot.MODE == "GROUPS":
-            set_next_forced_activity = send_handler(driver, selectors)
-        else:
-            group_read_handler(driver, selectors)
-        # Actividad forzada
-        if set_next_forced_activity:
-            if bot.NEXT_SEND != bot.NEXT_FORCED_ACTIVITY:
-                bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
-                print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
-            #if not bot.GROUPS_ONLY:
-            #    bot.PHONES_LIST = get_phones_list()
+            #bot.PHONES_LIST = get_phones_list()
+            bot.GROUPS_LIST = get_groups_list()
+            bot.MODE_CHANGE = bot.START_DATE + timedelta(minutes=bot.MODE_CHANGE_TIME)
+            bot.NEXT_FORCED_ACTIVITY = bot.START_DATE + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY * 2)
+            if bot.MODE == 'REPLY':
+                bot.NEXT_SEND = bot.NEXT_FORCED_ACTIVITY
+            else:
+                bot.NEXT_SEND = bot.START_DATE
         
-        # Cambio de modo
-        if bot.MODE_CHANGE:
-            print(f"Modo actual {bot.MODE}, próximo cambio: {bot.MODE_CHANGE}")
-            if datetime.now() > bot.MODE_CHANGE:
-                if bot.MODE == "GROUPS":
-                    bot.MODE = "REPLY"
-                    bot.ACTUAL_READED_GROUP = ""
-                    bot.ACTUAL_READED_MSG = ""
-                else:
-                    bot.MODE = "GROUPS"
-                print(f"Cambiando modo a {bot.MODE}")
-                bot.NEXT_SEND = datetime.now()
-                bot.MODE_CHANGE = datetime.now() + timedelta(minutes=bot.MODE_CHANGE_TIME)
+        # Inicio de envios
+        print("Inicio de envios: ", str(bot.NEXT_FORCED_ACTIVITY))
+
+        # Loop principal
+        while True:
+            set_next_forced_activity = False
+            driver.execute_script(f"document.title = 'CHATTER {bot.PHONE}'")
+
+            # Revisar desincronización
+            check_sync(driver, selectors)
+
+            # Revisar notificaciones
+            #inbound_handler(driver, selectors)
+
+            # Enviar
+            if bot.MODE == "GROUPS":
+                set_next_forced_activity = send_handler(driver, selectors)
+            else:
+                group_read_handler(driver, selectors)
+            # Actividad forzada
+            if set_next_forced_activity:
+                if bot.NEXT_SEND != bot.NEXT_FORCED_ACTIVITY:
+                    bot.NEXT_FORCED_ACTIVITY = bot.NEXT_SEND = datetime.now() + timedelta(minutes=bot.FORCED_ACTIVITY_FREQUENCY)
+                    print("Próxima actividad forzada: ", str(bot.NEXT_FORCED_ACTIVITY))
+                #if not bot.GROUPS_ONLY:
+                #    bot.PHONES_LIST = get_phones_list()
+            
+            # Cambio de modo
+            if bot.MODE_CHANGE:
+                print(f"Modo actual {bot.MODE}, próximo cambio: {bot.MODE_CHANGE}")
+                if datetime.now() > bot.MODE_CHANGE:
+                    if bot.MODE == "GROUPS":
+                        bot.MODE = "REPLY"
+                        bot.ACTUAL_READED_GROUP = ""
+                        bot.ACTUAL_READED_MSG = ""
+                    else:
+                        bot.MODE = "GROUPS"
+                    print(f"Cambiando modo a {bot.MODE}")
+                    bot.NEXT_SEND = datetime.now()
+                    bot.MODE_CHANGE = datetime.now() + timedelta(minutes=bot.MODE_CHANGE_TIME)
+    except KeyboardInterrupt:
+        print("cerrando navegador")
+        driver.quit()
 
 ## Apis ##
 # Prints
@@ -253,14 +257,14 @@ def get_own_phone(driver, selectors):
 # Funciones de inicio  
 def driver_connect_chrome(url=""):
     options = webdriver.chrome.options.Options()
-    options.add_argument("--window-size=950,700")
-    options.add_argument("start-maximized")
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option('useAutomationExtension', False)
+    #options.add_argument("--window-size=950,700")
+    #options.add_argument("start-maximized")
+    #options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    #options.add_experimental_option('useAutomationExtension', False)
     driver = webdriver.Chrome(executable_path=bot.DRIVER_PATH, chrome_options=options)
-    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-    driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
-    print(driver.execute_script("return navigator.userAgent;"))
+    #driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    #driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
+    #print(driver.execute_script("return navigator.userAgent;"))
     
     try:
         driver.get(url)
@@ -283,6 +287,8 @@ def driver_connect_undetected_chrome(url=""):
     driver = uc.Chrome(driver_executable_path=bot.DRIVER_PATH, options=options)
 
     try:
+        driver.delete_all_cookies()
+        delete_cache(driver)
         driver.get(url)
     except Exception as e:
         if bot.SHOW_ERRORS:
@@ -291,6 +297,7 @@ def driver_connect_undetected_chrome(url=""):
             print(e)
             print(repr(e))
             print(e.args)
+        driver.quit()
         driver = None
 
     return driver
@@ -374,6 +381,21 @@ def check_sync(driver, selectors):
         sync(driver, selectors)
     else:
         time.sleep(5)
+
+def delete_cache(driver):
+    driver.execute_script("window.open('')")  # Create a separate tab than the main one
+    driver.switch_to.window(driver.window_handles[-1])  # Switch window to the second tab
+    driver.get('chrome://settings/clearBrowserData')  # Open your chrome settings.
+    #perform_actions(driver, (Keys.TAB * 3) + (Keys.DOWN * 4) + (Keys.TAB * 5))  # Tab to the time select and key down to say "All Time" then go to the Confirm button and press Enter
+    time.sleep(10)
+    driver.switch_to.window(driver.window_handles[0])  # Switch Selenium controls to the original tab to continue normal functionality.
+
+def perform_actions(driver, keys):
+    actions = ActionChains(driver)
+    actions.send_keys(keys)
+    time.sleep(2)
+    print('Performing Actions!')
+    actions.perform()
 
 # Handlers
 def send_handler(driver, selectors):
