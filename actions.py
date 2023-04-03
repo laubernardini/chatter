@@ -81,8 +81,13 @@ def close_confirm_popup(driver, selectors):
             try:
                 modal.find_element(By.XPATH, selector).click()
             except:pass
+
+        for selector in selectors["modal_ok_button"]:
+            try:
+                modal.find_element(By.XPATH, selector).click()
+                break
+            except:pass
         
-        modal.find_element(By.XPATH, "modal_ok_button").click()
     except Exception as e:
         print(e)
         print("No hay popup")
@@ -254,14 +259,22 @@ def chat_init(driver, selectors, celular):
                 try:
                     modal.find_element(By.XPATH, selectors["modal_header"])
                     if "inválido" in modal.find_element(By.XPATH, selectors["modal_text"]).text:
-                        modal.find_element(By.XPATH, selectors["modal_ok_button"]).click()
+                        for selector in selectors["modal_ok_button"]:
+                            try:
+                                modal.find_element(By.XPATH, selector).click()
+                                break
+                            except:pass
                         elem = None
                         done = True
                         print("Número inválido")
                 except:
                     try:
                         if "inválido" in modal.find_element(By.XPATH, selectors["modal_text"]).text:
-                            modal.find_element(By.XPATH, selectors["modal_ok_button"]).click()
+                            for selector in selectors["modal_ok_button"]:
+                                try:
+                                    modal.find_element(By.XPATH, selector).click()
+                                    break
+                                except:pass
                             elem = None
                             done = True
                             print("Número inválido")

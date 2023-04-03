@@ -98,7 +98,7 @@
     "modal_backdrop": ["//div[@class='lhggkp7q qq0sjtgm ebjesfe0 jxacihee tkdu00h0'][@role='dialog']", "//div[@data-testid='confirm-popup']", "//div[@data-animate-modal-backdrop='true']"],
     "modal_header": ".//div[@data-testid='popup-title']",
     "modal_body": [".//div[@data-animate-modal-popup='true']", ".//div[@data-animate-modal-body='true']"],
-    "modal_ok_button": ".//div[@data-testid='popup-controls-ok']",
+    "modal_ok_button": [".//div[@data-testid='popup-controls-ok']", ".//button[@data-testid='popup-controls-ok']"],
     "modal_text": ".//div[@data-testid='popup-contents']",
 
     "emogi_container": [".//span[@class='_3R6rC']", ".//span[@class='Ov-s3']"],
