@@ -13,11 +13,13 @@ import undetected_chromedriver as uc
 
 # Application
 import bot, actions
+from tools import *
 
 def start():
     # Obtener selectores
     with open('selectores.json', 'rb') as selectors:
         selectors = json.load(selectors)
+    bot.SELECTORS = selectors
         
     # Abrir WhatsApp
     print("Intentando abrir navegador")
@@ -218,9 +220,8 @@ def get_groups_list():
 def get_own_phone(driver, selectors):
     time.sleep(3)
     print("Intentando entrar al perfil...")
-    #profile_button = driver.find_element(By.XPATH, selectors["main_header"]).find_element(By.XPATH, ".//div[@role='button']")
-    #profile_button.click()
-    profile = actions.get_parent(driver.find_element(By.XPATH, selectors["profile_pic"]))
+    
+    profile = get_element(parent=driver, selector=selectors["profile_pic"])
     done = None
     while not done:
         if profile.get_attribute("role") == 'button':
@@ -232,11 +233,9 @@ def get_own_phone(driver, selectors):
     celular = None
     print("Buscando numero propio...")
     while not done:
-        for selector in selectors["own_phone"]:
-            try:
-                celular = driver.find_element(By.XPATH, selector).text
-                break
-            except:pass
+        own_phone = get_element(parent=driver, selector=selectors["own_phone"])
+        if own_phone:
+            celular = own_phone.text
         if celular:
             done = True
         else:
@@ -248,11 +247,7 @@ def get_own_phone(driver, selectors):
 
     bot.calc_sleeptime()
 
-    for selector in selectors["back_button"]:
-        try:
-            driver.find_element(By.XPATH, selector).click()
-            break
-        except:pass
+    click_element(parent=driver, selector=selectors["back_button"])
 
 # Funciones de inicio  
 def driver_connect_chrome(url=""):
@@ -307,33 +302,25 @@ def sync(driver, selectors):
     print("\nWhatsApp abierto")
     waiting_qr = True
     waiting_wpp = False
-    
-    try:
-        driver.find_element(By.XPATH, selectors["search"])
+
+    if get_element(parent=driver, selector=selectors["search"]):
         waiting_qr = False
-    except:pass
     
     # Sincronización
     if waiting_qr:
         print("\nEsperando escaneo de QR")
         done = None
         while not done:
-            try:
-                driver.find_element(By.XPATH, selectors["search"])
+            if get_element(parent=driver, selector=selectors["search"]):
                 waiting_qr = False
                 print("\nQR Escaneado")
                 done = True
-            except:
+            else:
                 time.sleep(2)
-                qr = None
-                try:
-                    qr = driver.find_element(By.XPATH, selectors["qr"])
-                except:pass
+                qr = get_element(parent=driver, selector=selectors["qr"])
                 if qr:
-                    try:
-                        qr.find_element(By.XPATH, selectors["refresh_qr"]).click()
+                    if click_element(parent=qr, selector=selectors["refresh_qr"]):
                         print("QR Refrescado")
-                    except:pass
                 else:
                     if not waiting_wpp:
                         waiting_wpp = True
@@ -346,15 +333,7 @@ def sync(driver, selectors):
     print("\nSincronización completada!")
 
     # Buscar desconexión de celular
-    phone_disconected = True
-    while phone_disconected:
-        try:
-            driver.find_element(By.XPATH, selectors["phone_disconected"])
-            if bot.SHOW_EX_PRINTS:
-                print("Teléfono sin conexión, envíos en pausa")
-            time.sleep(1)
-        except:
-            phone_disconected = False
+    phone_disconected = False
 
     time.sleep(2)
     if bot.PHONE == "":
@@ -366,13 +345,10 @@ def sync(driver, selectors):
 
 def check_sync(driver, selectors):
     sync_needed = None
-    try:
-        driver.find_element(By.XPATH, selectors["qr"])
+    if get_element(parent=driver, selector=selectors["qr"]):
         sync_needed = True
-    except:
-        try:
-            driver.find_element(By.XPATH, selectors["search"])
-        except:
+    else:
+        if not get_element(parent=driver, selector=selectors["search"]):
             sync_needed = True
 
     if sync_needed:

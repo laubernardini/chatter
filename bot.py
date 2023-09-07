@@ -37,6 +37,7 @@ PHONES_LIST = []
 LAST_SEND = None
 ACTUAL_READED_MSG = ""
 ACTUAL_READED_GROUP = ""
+SELECTORS = []
 
 def calc_sleeptime():
     global PHONE, SLEEP_TIME, CLIPBOARD_SLEEP_TIME
