@@ -60,17 +60,29 @@ def set_focusable_item_class(elem, driver, selectors):
             driver.execute_script('arguments[0].classList.add("focusable-list-item")', elem)
 
 # Búsqueda
-def clear_elem(driver, selectors, id):
+def clear_elem(driver, selectors, id, text=""):
     if id == "search":
-        clear_search(driver, selectors)
+        clear_search(driver, selectors, text)
     else:
         elem = get_element(parent=driver, selector=selectors[id])
         elem.clear()
         elem.send_keys(Keys.ESCAPE)
 
-def clear_search(driver, selectors):
+def clear_search(driver, selectors, text):
     if not (click_element(parent=driver, selector=selectors["clear_search"])):
-        print("No se pudo limpiar el buscador")
+        try:
+            elem = get_element(parent=driver, selector=selectors["search"])
+            ActionChains(driver).click(elem).perform()
+            ActionChains(driver).key_down(Keys.CONTROL).send_keys(Keys.END).key_up(Keys.CONTROL).perform()
+
+            act = ActionChains(driver)
+            for d in text:
+                act.send_keys(Keys.BACKSPACE)
+                
+            act.perform()
+        except Exception as e:
+            print(e)
+            print("No se pudo limpiar el buscador")
 
 def search(driver, selectors, text):
     print("Buscando: ", text)
@@ -118,18 +130,18 @@ def search(driver, selectors, text):
 
             result = you_label
     else:
-        clear_elem(driver, selectors, "search")
+        clear_elem(driver, selectors, "search", text)
         
     return result
 
 def chat_init(driver, selectors, celular):
-    clear_elem(driver, selectors, "search")
+    clear_elem(driver, selectors, "search", celular)
 
     # Verificar chat propio abierto
     done = None
     while not done:
         search(driver, selectors, bot.PHONE)
-        clear_elem(driver, selectors, "search")
+        clear_elem(driver, selectors, "search", celular)
 
         chat_header = get_element(parent=driver, selector=selectors["chat_header"])
         you_label = False
@@ -272,7 +284,7 @@ def send_message(mensaje="", celular="", driver=None, selectors=None, init=False
         else:
             if bot.SHOW_ERRORS:
                 print("Chat no encontrado")
-            clear_elem(driver, selectors, "search")
+            clear_elem(driver, selectors, "search", celular)
         
         return "OK"
     except Exception as e:
