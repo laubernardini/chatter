@@ -23,7 +23,7 @@
     "group_name": ["//*[@id='app']/div/div/div[6]/span/div/span/div/div/div/section/div[1]/div/div[2]/div/div/div/div/span/span"],
     "chat_header": ["//*[@id='main']/header"],
     "chat_name_header": [".//div[2]/div[1]/div/span[1]", ".//div[2]/div[1]/div//span[1]"],
-    "chat_header_you_label": [".//div[2]/div[1]/div/span[contains(text(), '(Tú)')]", ".//div[2]/div[1]/div/span[contains(text(), '(You)')]"],
+    "chat_header_you_label": [".//div[2]/div[1]/div//span[contains(text(), '(Tú)')]", ".//div[2]/div[1]/div//span[contains(text(), '(You)')]"],
 
     "message": ["//*[@id='main']//footer//div[@role='textbox']"],
     "message_attached": ["//*[@id='wa-popovers-bucket']//..//div[3]//div[@role='textbox']", "//*[@id='app']/div/div/div[3]/div[2]/span/div/span/div/div/div[2]/div/div[1]/div[3]/div/div/div[2]/div[1]/div[1]"],
