@@ -279,6 +279,7 @@ def driver_connect_undetected_chrome(url=""):
     #size = f"9{bot.PHONE[-2:]},7{bot.PHONE[-2:]}"
     #print(size)
     #options.add_argument(f"--window-size={size}")
+    options.binary_location = bot.BINARY
     driver = uc.Chrome(driver_executable_path=bot.DRIVER_PATH, options=options)
 
     try:

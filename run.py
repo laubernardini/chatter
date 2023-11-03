@@ -16,8 +16,10 @@ def run():
     parser.add_argument("-t", "--tiempo", help="Tiempo")
     parser.add_argument("-tm", "--tiempo_modo", help="TiempoModo")
     parser.add_argument("-d", "--desc", help="Descripcion")
+    parser.add_argument("-so", "--so", help="Sistema Operativo")
     args = parser.parse_args()
-
+    print(args)
+    print(args.so)
     if args.celular:
         phone = args.celular
         if phone and phone != "":
@@ -39,6 +41,11 @@ def run():
     if args.tiempo:
         tiempo = args.tiempo.replace("min", "").replace("m", "")
         bot.AWAIT_TIME = int(tiempo)
+    if args.so:
+        if args.so == 'linux':
+            bot.OS_SLASH = "/" # / -> linux \\ -> windows
+            bot.DRIVER_PATH = "/usr/local/bin/chromedriver"#"chromedriver.exe"#
+            bot.BINARY = "/home/cris/dev/chrome/chrome/chrome"#"c:\cft\chrome.exe"#
 
     print(f"PHONE: {bot.PHONE}")
     system("title CHATTER " + bot.PHONE)
