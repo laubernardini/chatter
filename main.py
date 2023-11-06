@@ -252,7 +252,8 @@ def get_own_phone(driver, selectors):
 # Funciones de inicio  
 def driver_connect_chrome(url=""):
     options = webdriver.chrome.options.Options()
-    #options.add_argument("--window-size=950,700")
+    options.add_argument("--window-size=950,700")
+    options.binary_location = bot.BINARY
     #options.add_argument("start-maximized")
     #options.add_experimental_option("excludeSwitches", ["enable-automation"])
     #options.add_experimental_option('useAutomationExtension', False)
